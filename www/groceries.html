@@ -1,0 +1,120 @@
+<!doctype>
+<html>
+<head>
+<title>Groceries</title>
+
+<link rel="stylesheet" type="text/css" href="groceries.css">
+
+<script type="text/javascript" src="groceries.js"></script>
+
+</head>
+
+<body onload="initialize();">
+<!--onkeypress="keyEffect(event)"-->
+
+<div id="container">
+	<div id="recipe_area">
+		<div id="meal_entry" class="recipe_entry">
+			<input type="text" id="meal_name" class="menu_input_box" placeholder="New Meal" onkeyup="meal_keyPress(event)"></input>
+			<input type="button" id="meal_button" onclick="createNewMeal()" value="Add New Meal"></input>
+		</div>
+
+		<div id="ingredient_entry" class="recipe_entry">
+			<input type="text" id="new_ingredient" class="menu_input_box ingredient_box" placeholder="New Ingredient" onkeyup="ingrORdesc_keyPress(event, 'ingredient')" style="display:none;"></input>
+		</div>
+
+		<div id="description_entry" class="recipe_entry">
+			<input type="text" id="new_description" class="menu_input_box description_box" placeholder="New Description" onkeyup="ingrORdesc_keyPress(event, 'description')" style="display:none;"></input>
+		</div>
+	</div>
+	
+	<div id="search_area">
+		<div id="search_tab">
+			<div id="iTab" class="iSearch Tab tab_selected" onclick="switchTab(0)">Ingredient Search</div>
+			<div id="mgTab" class="mgSearch Tab tab_unselected" onclick="switchTab(1)">Menu Generator</div>
+			<div id="mTab" class="mSearch Tab tab_unselected" onclick="switchTab(2)">Meal Lookup</div>
+		</div>
+		<div id="search_window">
+			<div id="iArea" class="iSearch area_selected">
+				<table class="iSearch searchTable">
+					<tr valign="middle">
+						<td>Search Meals<br />by Ingredients:</td>
+						<td><textarea id="ingredientSearch" rows="3" cols="25" style="resize:none;" onkeyup="launchSearch()"></textarea></td>
+					</tr>
+				</table>
+			</div>
+		
+			<div id="mgArea" class="mgSearch area_unselected">
+				<table class="mgSearch searchTable">
+					<tr valign="middle">
+						<td>
+							# of Meals: <input type="text" id="mealNumValue" class="mgSearch" size="1" onkeyup="mealGenNum()" value="7"></input>
+							<br />
+							<input type="button" onclick="generate()" value="Generate">
+						</td>
+						<td>
+							Specifications (min/max ingredient):
+							<br />
+							<textarea id="mealConditions" rows="4" cols="25" style="resize:none;"></textarea>
+						</td>
+					</tr>
+				</table>
+			</div>
+		
+			<div id="mArea" class="mSearch area_unselected">
+				<table class="mSearch searchTable">
+					<tr valign="middle">
+						<td>Search for specific meals:</td>
+						<td><textarea id="mealLookup" rows="1" cols="20" style="resize:none;" onkeyup="launchSearch()"></textarea></td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		<div id="Results">
+			<input type="button" id="addMeal" class="menuButtons" onclick="transferMeal(1)" value="Add to Menu>>"></input>
+			<input type="button" id="addAllMeals" class="menuButtons" onclick="transferMeal(2)" value="Add All to Menu>>"></input>
+		</div>
+	</div>
+	
+	<div id="menu_area">
+		<div id="mealChoices">
+			<div class="mcTitle">
+				<input type="button" id="removeMeal" class="menuButtons" onclick="transferMeal(-1)" value="<<Remove"></input>
+				Chosen Menu
+				<input type="button" id="clearMeals" class="menuButtons" onclick="transferMeal(-2)" value="Clear Menu"></input>
+			</div>
+			<div id="menuField">
+				
+			</div>
+		</div>
+		<div id="groceryList">
+			<div class="mcTitle">
+				Ingredients for Above Menu
+			</div>
+			<div id="groceryField">
+				
+			</div>
+		</div>
+	</div>
+	
+</div>
+
+<div id = "limbo" style = "display: none;"></div>
+
+<div id="extraMenu">
+	<input type="button" id="saveButton" value="Save" onclick="printSaveData()"></input>
+	<input type="text" id="saveOrLoadRecord" size="1"></input>
+	<input type="button" id="loadButton" value="Load" onclick="loadPrintedData()"></input>
+	<br />
+	<input type="button" id="unselectAll" value="Unselect All" onclick="choose(-2)"></input>
+	<br />
+	<input type="button" id="undoButton" value="Undo" onclick="historyChange(1)" disabled="disabled"></input>
+	<input type="button" id="redoButton" value="Redo" onclick="historyChange(-1)" disabled="disabled"></input>
+	<br />
+	<input type="button" value="Done" onclick="qmenu(1)"></input>
+</div>
+
+</body>
+</html>
+

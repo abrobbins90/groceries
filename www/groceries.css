@@ -1,0 +1,267 @@
+div.word_text {
+	position:absolute;
+	left:-500px;
+	top:-500px;
+	z-index:3;
+	font-family: serif;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+div.meal_text {
+	background-color:#CACBB5;
+	color:#000000;
+}
+div.meal_onMenu_text {
+	background-color:#333333;
+	color:#FFFFFF;
+}
+div.ingr_text {
+	background-color:#333333;
+	color:#FFFFFF;
+}
+div.ingr_onMenu_text {
+	background-color:#333333;
+	color:#FFFFFF;
+}
+
+#container {
+	height:95%;
+	width:100%;
+	display:flex;
+}
+
+/* Meal Entry Panel */
+#recipe_area {
+	flex:0 0 200px;
+	background-color:#FF5555;
+	color:#FFFFFF;
+	display:flex;
+	flex-direction:column;
+}
+
+.recipe_entry {
+	display:flex;
+	align-items:center;	
+	flex-direction:column;
+	justify-content:space-around;
+}
+#meal_entry {
+	flex:1 0 80px;
+	background-color:#FF5555;
+	border-bottom:10px solid #FF0000;
+}
+#ingredient_entry {
+	flex:10 0 250px;
+	justify-content:flex-start;
+	padding-top:10px;
+	border-bottom:10px solid #FF0000;
+}
+#description_entry {
+	flex:2 0 100px;
+	justify-content:flex-start;
+	padding-top:10px;
+}
+
+#meal_name {
+	
+}
+#meal_button {
+	height:25px;
+	border:2px solid #FFFFFF;
+	border-radius: 4px;
+	background-color:#FFFFFF;
+	color:#000000;
+	transition-duration: 0.1s;
+}
+#meal_button:hover {
+	border:2px solid #FFFFFF;
+	background-color:#FF0000;
+	color:#FFFFFF;
+}
+
+.menu_input_box {
+	text-align:center;
+	background-color:#FF9999;
+	border:2px solid #FF9999;
+	border-radius: 4px;
+	outline: none;
+	width:150px;
+	height:24px;
+	font-size:14px;
+	padding:3px;	
+}
+.meal_selected {
+	border-color:#99FF99;
+}
+.ingredient_box {
+	margin:3px;
+}
+.description_box {
+	margin:3px;
+}
+
+#new_ingredient {
+	order:2;
+}
+#new_description {
+	order:2;
+}
+
+
+/* Search panel to look up meals */
+#search_area {
+	flex:1 0 380px;
+	background-color:#CACBB5;
+	display:flex;
+	flex-direction:column;
+}
+
+#search_tab{
+	height:23px;
+	display:flex
+}
+.Tab {
+	font-weight:bold;
+	text-align:center;
+}
+.tab_unselected {
+	padding:0px;
+	border:2px solid black;
+}
+.tab_selected {
+	padding:2px;
+	border:none;
+}
+
+.iSearch {
+	background-color:#00EE00;
+	color:#000000;
+}
+.mgSearch {
+	background-color:#FF0000;
+	color:#FFFFFF;
+}
+.mSearch {
+	background-color:#66FFFF;
+	color:#000000;
+}
+.searchTable {
+	height:100%;
+	text-align:center;
+}
+
+#iTab {
+	flex:1.3;
+}
+#mgTab {
+	flex:1.2;
+}
+#mTab {
+	flex:1;
+}
+
+#search_window {
+	height:100px;
+	z-index:1;
+}
+.area_selected {
+	display:block;
+}
+.area_unselected {
+	display:none;
+}
+
+#Results {
+	flex:1 0 200px;
+}
+
+
+
+/* Menu display area: includes meals and ingredient lists */
+#menu_area {
+	flex:3 0 300px;
+	flex-basis:300px;
+	border:2px solid #333333;
+	padding:2px;
+	background-color:#333333;
+	color:#FFFFFF;
+	display:flex;
+	flex-direction:column;
+}
+
+#mealChoices {
+	flex:1 0 100px;
+	padding:2px;
+	border:2px solid white;
+}
+#groceryList {
+	flex:2 0 300px;
+	padding:2px;
+	border:2px solid white;
+}
+
+.mcTitle {
+	height:23px;
+	padding-left:2px;
+	padding-right:2px;
+	background-color:#500091;
+	color:#FFFFFF;
+	text-align:center;
+	font-weight:bold;
+}
+
+
+
+
+
+.menuButtons {
+display:none;
+padding:0px;
+}
+
+#addMeal {
+right:-4px;
+bottom:20px;
+}
+#addAllMeals {
+right:-4px;
+bottom:-4px;
+}
+#removeMeal {
+top:0px;
+left:0px;
+}
+#clearMeals {
+top:0px;
+right:0px;
+}
+
+
+
+
+
+
+
+#extramenu {
+display:none;
+position:absolute;
+top:510px;
+padding:2px;
+background-color:CACBB5;
+}
+
+
+#mealNumvalue {
+border:1px;
+width:18px;
+background-color:#FFCCCC;
+color:#000000;
+text-align:center;
+font-weight:bold;
+}
+#mealNumvalue:focus{
+outline-width: 0;
+}
+body {
+background-color:EAEBD5;
+}
