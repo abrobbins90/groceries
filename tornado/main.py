@@ -57,7 +57,7 @@ def make_app():
 		[
                         url('/mySocket', SocketHandler, {} , name = "mySocket!!!"),
                    	url('/form', FormHandler, { "var":"initialize this!" }, name = "forlorn"),
-			url(r'/(.*)', StaticFileHandler, { "path":"../www/" }) # captures anything at all, and serves it as a static file. simple!
+			url(r'/(.*)', StaticFileHandler, { "path": "../www-built/" }) # captures anything at all, and serves it as a static file. simple!
 		],
 		#settings
 		debug = True,
