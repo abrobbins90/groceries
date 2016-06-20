@@ -1,3 +1,7 @@
+// This file holds the main functionality of the program  (it imports floaty and classes, then uses them)
+
+
+
 // Define websocket to be used for server interaction
 var myWS = new WebSocket("ws://learnnation.org:8243/mySocket")
 
