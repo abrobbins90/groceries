@@ -122,7 +122,7 @@ function meal_node(name) {
 	
 	///// Properties
 	
-	this.inMenu = 0;// store whether meal node is in the menu or not
+	this.inMenu = 0; // store whether meal node is in the menu or not
 	
 	///// Methods
 	
