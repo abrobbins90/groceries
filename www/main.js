@@ -1,5 +1,9 @@
+// This file holds the main functionality of the program  (it imports floaty and classes, then uses them)
+
+
+
 // Define websocket to be used for server interaction
-var myWS = new WebSocket("ws://learnnation.org:8243/mySocket")
+//var myWS = new WebSocket("ws://learnnation.org:8243/mySocket")
 
 //////////////////////////////
 ////////////////////////////// Class Definitions
@@ -7,7 +11,7 @@ var myWS = new WebSocket("ws://learnnation.org:8243/mySocket")
 
 
 // Define a node
-function node(name, type) { // suggest Node (CapitalCase is conventional for class names)
+function node(name = '', type) {
 	// Define an instance of a node
 	// A node possesses various properties, as well as connections to other nodes
 	// This node is meant to be a superclass
@@ -24,7 +28,7 @@ function node(name, type) { // suggest Node (CapitalCase is conventional for cla
 	this.found = 0; // 1 if in current search results. 0 otherwise
 	
 	//set html element properties
-	this.ID = document.createElement("div"); // Create an element to be displayed on the page // just wondering why we are calling this ID when in reality it is a DOM Element.  Are we using this as a unique identifier somehow?
+	this.ID = document.createElement("div"); // Create an element to be displayed on the page
 	this.xstart = -500; //root location
 	this.ystart = -500;
 	this.xpos = -500;
@@ -39,7 +43,7 @@ function node(name, type) { // suggest Node (CapitalCase is conventional for cla
 	//method to change name of item
 	this.edit = function(newName) { //update true name
 		this.name = name_trim(newName);
-		this.shownName = newName; // here and below we are manually updating stuff as a reaction to changing the name.  We should instead have getters that calculate themselves based on the name when requested, mainly because it is simpler and less likely for us to make an error.
+		this.shownName = newName;
 		this.ID.setAttribute("id", "ID_" + type + '_' + this.name);
 		this.ID.setAttribute("onclick","choose('" + newName.toLowerCase() + "')");
 		this.calcDim();
@@ -53,7 +57,7 @@ function node(name, type) { // suggest Node (CapitalCase is conventional for cla
 	
 	// put node in limbo (hidden from view)
 	this.sendToLimbo = function() {
-		document.getElementById("limbo").appendChild(this.ID); // question: Hypothetically, let's say an element is already appended to some div in the webpage.  Then say we run appendChild to append the element elsewhere.  Will the element be removed from it's previous location?  or duplicated?
+		document.getElementById("limbo").appendChild(this.ID);
 	}
 	
 	//updates object coordinates
@@ -76,10 +80,14 @@ function node(name, type) { // suggest Node (CapitalCase is conventional for cla
 	// Add connections
 	this.addConnections = function(nodeList) {
 		// nodeList : list of nodes to add
+		if (!Array.isArray(nodeList)) { // Allow single object to be passed as well
+			var nodeTemp = nodeList;
+			var nodeList = [nodeTemp];
+		}
 		for (var i in nodeList) {
-			if (this.isConnected(nodeList[i])) {
+			if (!this.isConnected(nodeList[i])) { // not yet connected
 				// Add connection
-				this.connections.push(nodeList[i]); // if we replace our connections array with a connections SET, then we don't need the if statement above.  Also, we never have to worry about adding something twice by accident
+				this.connections.push(nodeList[i]);
 				nodeList[i].connections.push(this);
 			}
 		}
@@ -91,24 +99,26 @@ function node(name, type) { // suggest Node (CapitalCase is conventional for cla
 			if (this.isConnected(nodeList[i])) { // is connected, so remove connection
 				// Remove connection in this node
 				var index = this.connections.indexOf(nodeList[i])
-				this.connections.splice(index, 1); // nice splice :)
+				this.connections.splice(index, 1);
 				// Then remove connection in connected node
 				var thisIndex = nodeList[i].connections.indexOf(this);
 				nodeList[i].connections.splice(thisIndex, 1);
 			}
 		}
 	}
-	// for convenience, want to have a removeConnection method also?
+	
 	// Initialize several properties using methods
-	this.edit(name);
-	this.sendToLimbo();
+	if (name != '') {
+		this.edit(name);
+		this.sendToLimbo();
+	}
 }
 
 // Define a subclass of node specific to meals
-function meal_node(name) { // suggest Meal
+function meal_node(name) {
 	
 	node.call(this, name, 'meal');
-	this.ID.setAttribute("class", "meal_text word_text"); // suggest meal-text and word-text, because it's rare we can use dashes in variable names (so it definitely won't clash with other stuff, and when i see dashes i'll know right away it's a CSS class)
+	this.ID.setAttribute("class", "meal_text word_text");
 	
 	///// Properties
 	
@@ -117,18 +127,18 @@ function meal_node(name) { // suggest Meal
 	///// Methods
 	
 	// Add meal to menu
-	this.addToMenu = function() { // question: is a menu essentially a meal list?
+	this.addToMenu = function() {
 		this.inMenu = 1;
 		this.chosen = 0;
 		
-		document.getElementById("menuField").appendChild(this.ID); // suggest menu-field
+		document.getElementById("menuField").appendChild(this.ID);
 		this.ID.setAttribute("class","meal_onMenu_text word_text");
 	}
 	// add meal to search results
 	this.addToMealResults = function() {
 		this.inMenu = 0;
 		
-		document.getElementById("Results").appendChild(this.ID); // suggest results
+		document.getElementById("Results").appendChild(this.ID);
 		this.ID.setAttribute("class","meal_text word_text");
 	}
 	
@@ -144,7 +154,7 @@ function ingredient_node(name) {
 	///// Methods
 	
 	// Add ingredient to grocery list
-	this.addToGroceryList = function() { // question: is the grocery list essentially an ingredient list?
+	this.addToGroceryList = function() {
 		this.chosen = 0;
 		
 		document.getElementById("groceryField").appendChild(this.ID);
@@ -152,8 +162,8 @@ function ingredient_node(name) {
 	}
 	
 	//update shown name based on item quantity
-	this.quantityChange = function(quan) { // this feels problematic because if somebody is viewing this ingredient and quantity, and then they SWITCH TO A DIFFERENT meal, which has this same ingredient, will the quantity still be this old quantity?  perhaps the quantity should be stored outside the ingredient, in the meal instead.  So the meal could hold something like [('asparagous', '5 grams'), ('carrots', '2 large'), ('broccoli', '1 head')] or similar.
-		if (quan > 1) {this.shownName = "<b>" + this.name + " x" + quan + "</b>";} //name x3 // suggest using a CSS class name like "strong" instead of a bold tag.  This is for organization purposes: it's nice to keep styles in the CSS and content in the HTML.
+	this.quantityChange = function(quan) {
+		if (quan > 1) {this.shownName = "<b>" + this.name + " x" + quan + "</b>";} //name x3
 		else {this.shownName = this.name;}
 		this.calcDim();
 	}
@@ -161,7 +171,7 @@ function ingredient_node(name) {
 ingredient_node.prototype = new node;
 
 // Define a subclass of node specific to descriptions
-function description_node(name) { // what is a description?  I think I understand that menus are a list of meals and meals are a list of ingredients.  But what is a description used for?
+function description_node(name) {
 	node.call(this, name, 'description');
 	this.ID.setAttribute("class", "word_text");
 }
@@ -180,46 +190,48 @@ function initialize() {
 }
 
 
-////////////////////////////// Node Functions
-var mealNodes = new Array(); // List of all meal nodes // also see my comment on line 222 about creating a class called Graph.
-var ingrNodes = new Array(); // List of all ingredient nodes // may be redundant, if we know the meals and can access the ingr through the meals.  Do you want ingredients to appear even if they are not present in any meal?
+////////////////////////////// Node Creation/Deletion Functions
+var mealNodes = new Array(); // List of all meal nodes
+var ingrNodes = new Array(); // List of all ingredient nodes
 var descNodes = new Array(); // List of all description nodes
 
 // [ACTION: Add Meal Button] Add a new meal node
-function addMeal() {
+function createNewMeal() {
 	// On press of the add meal button, read the contents of the text box for the new meal and add 
 	// it to the meal nodes
-	var mealName = document.getElementById("mealBox").value;
+	var mealName = document.getElementById("meal_name").value;
 	// First check it is valid
-	var mealNameTrim = name_trim(mealName); // is this trimming function specific to meals?  If it's general and could be used in other ways, then we can just call it "trim" or "strip".  Also, if this function is always used when grabbing user inputs, we might even make a shortcut function like:
-// function trim_input(id) {
-//	return trim(document.getElementById(id).value)
-// }
-	if (mealNameTrim.length == 0) {return} // nothing there // in JS, using === is good habit, since it is a direct comparison.  == tries to be "smart" but as a result it just very unpredictable.  For example, is "" == 0 ?  Who knows!  Is "" === 0 ?  No. // Also, why not write if(mealNameTrim === "")
+	var mealNameTrim = name_trim(mealName);
+	if (mealNameTrim.length == 0) {return} // nothing there
 	
 	// Create meal node
 	mealNode = new meal_node(mealName);
 	// Add to list
 	mealNodes.push(mealNode);
+	
+	mealSelect(mealNode); // Select newly created meal
 }
 	
 	
 // Remove a recipe
-function removeRecipe(mealNode) { // is "recipe" synonymous with "meal"?  suggest choosing one
-	// mealNode : node object of meal to be deleted
+function removeRecipe(mealNode = selectedMeal) {
+	// mealNode : node object of meal to be deleted (default meal to delete is current selection)
 	
+	// Delete meal
+	var index = mealNodes.indexOf(mealNode);
+	if (index == -1) {
+		return
+	}
+	mealNodes.splice(index, 1);
+
 	// Grab list of currently connected nodes
 	var mealConnections = mealNode.connections;
 	
 	// Remove all connections
 	mealNode.removeConnections(mealConnections);
 	
-	// Delete meal
-	var index = mealNodes.indexOf(mealNode);
-	mealNodes.splice(index, 1);
-	
 	// Cycle through it connections, deleting them if they no longer have any connections
-	for (var i in mealConnections) { // this is nice, but consider this...  What if we had a class called Graph (or some cooler name) that held all the nodes?  And that graph class had a generic removeNode function?  It would basically be the same as removeRecipe, but more general.
+	for (var i in mealConnections) {
 		if (mealConnections[i].connections.length == 0) {
 			// Delete it
 			if (mealConnections[i].type == 'ingredient') {
@@ -232,6 +244,167 @@ function removeRecipe(mealNode) { // is "recipe" synonymous with "meal"?  sugges
 			}
 		}
 	}
+	
+	// If the deleted meal was the selected meal, change selected meal to nothing
+	if (mealNode == selectedMeal) {
+		mealSelect(-1);
+	}
+}
+
+
+////////////////////////////// Key / Typing Automatic Response & Searching Functions
+
+// Function to respond to any key presses in the meal name text box
+
+// Meal name
+function meal_keyPress(event) {
+
+	var key = event.keyCode;
+	if (key == 13 && selectedMeal == -1) { // Enter Button
+		// Simulate clicking the Add New Meal Button (if it's available)
+		createNewMeal()		
+	}
+	else { // Initial search to see if entered meal matches any currently
+		// Read meal name in box
+		var mealName = document.getElementById("meal_name").value;
+		// First check it is valid
+		var mealNameTrim = name_trim(mealName);
+		if (mealNameTrim.length == 0) {return} // nothing there
+		
+		var mealNames = getNodeStrings(mealNodes);
+		var index = -1;
+		for (var i in mealNames) {
+			if (mealNames[i] == mealNameTrim) {
+				index = i;
+				break
+			}
+		}
+		if (index != -1) { // Found match. Select it
+			mealSelect(mealNodes[index]);
+		}
+		else {
+			mealSelect(-1);
+		}
+	}
+}
+// Ingredient OR description name
+function ingrORdesc_keyPress(event, ingrORdesc) {
+	
+	var key = event.keyCode;
+	if (key == 13) { // Enter Button (Add this ingredient/description)
+		// First check to see if this node exists already
+		var nodeList
+		if (ingrORdesc == "ingredient") {nodeList = ingrNodes;}
+		else {nodeList = descNodes;}
+		var nodeStrings = getNodeStrings(nodeList);
+		
+		var nameToAdd = document.getElementById("new_" + ingrORdesc).value;
+		var nameTrim = name_trim(nameToAdd);
+		if (nameTrim == "") {return}
+		
+		var index = nodeStrings.indexOf(nameTrim);
+		var nodeToAdd
+		if (index == -1) { // Add node
+			if (ingrORdesc == "ingredient") {
+				nodeToAdd = new ingredient_node(nameTrim);
+				// Add to list
+				ingrNodes.push(nodeToAdd);
+			}
+			else {
+				nodeToAdd = new description_node(nameTrim);
+				// Add to list
+				descNodes.push(nodeToAdd);
+			}			
+		}
+		else {nodeToAdd = nodeStrings[index];}
+		
+		// Add connection
+		selectedMeal.addConnections(nodeToAdd);
+		document.getElementById("new_" + ingrORdesc).value = ""; // clear entry box
+		showSelectedRecipe();
+	}
+	else { // Initial search to see if entered meal matches any currently
+	
+	}
+}
+
+
+
+// Deal with meal selection in the recipe area. This will affect the ingredient/description
+// list as well as affecting editing
+var selectedMeal = -1; // Keep track of meal selected in recipe area
+function mealSelect(mealNode) {
+	if (mealNode == -1) {
+		selectedMeal = -1;
+		document.getElementById("meal_button").value = "Add New Meal";
+		document.getElementById("meal_button").setAttribute("onclick", "createNewMeal()");
+		
+		clearRecipeArea();
+		
+		// Make meal name unselected
+		document.getElementById("meal_name").setAttribute("class", "menu_input_box");
+	}
+	else {
+		selectedMeal = mealNode;
+		document.getElementById("meal_button").value = "Remove Meal";
+		document.getElementById("meal_button").setAttribute("onclick", "removeRecipe()");
+	
+		// If a meal is successfully selected, show all ingredients and descriptions
+		// associated with it and allow for more to be added
+		showSelectedRecipe();
+		
+		// Also highlight meal name
+		document.getElementById("meal_name").setAttribute("class", "menu_input_box meal_selected");
+	}
+}
+
+////////// Recipe Display Functions
+
+// Show all nodes connected to selected meal
+var boxElements = [];
+function showSelectedRecipe() {
+	if (selectedMeal == -1) {clearRecipeArea();return}
+	
+	var connectedNodes =(selectedMeal.connections);
+	
+	for (var i in connectedNodes) {
+		
+		// Check to see if there is an available element to show this node
+		// If not, make one
+		if (i + 1 > boxElements.length) {
+			boxElements[i] = document.createElement("input");
+			boxElements[i].setAttribute("type", "text");
+			boxElements[i].setAttribute("id", "boxElement" + i);
+			boxElements[i].setAttribute("disabled", true);
+		}
+		// set class and parent element based on type
+		if (connectedNodes[i].type == "ingredient") {
+			boxElements[i].setAttribute("class", "menu_input_box ingredient_box");
+			document.getElementById("ingredient_entry").appendChild(boxElements[i]);
+		}
+		else if (connectedNodes[i].type == "description") {
+			boxElements[i].setAttribute("class", "menu_input_box description_box");
+			document.getElementById("description_entry").appendChild(boxElements[i]);
+		}
+		boxElements[i].style.display = "inline";
+		boxElements[i].value = connectedNodes[i].shownName;
+	}
+	// Ensure the rest of the boxElements that might exist are not displayed
+	for (var i = connectedNodes.length; i < boxElements.length; i++) {
+		boxElements[i].style.display = "none";
+	}
+	
+	// Also show the new ingredient and new description fields
+	document.getElementById("new_ingredient").style.display = "inline";
+	document.getElementById("new_description").style.display = "inline";
+}
+// Remove all nodes from view
+function clearRecipeArea() {
+	for (var i in boxElements) {
+		boxElements[i].style.display = "none";
+	}
+	document.getElementById("new_ingredient").style.display = "none";
+	document.getElementById("new_description").style.display = "none";
 }
 
 ////////////////////////////// Helper Functions
@@ -243,13 +416,13 @@ function name_trim(name) {
 	
 	name = name.toLowerCase(); // make lowercase
 	name = name.trim(); // remove spaces from the ends
-	name = name.replace(/\s+/g, '_'); // Replace spaces with underscores // necessary?  what is purpose?
+	name = name.replace(/\s+/g, '_'); // Replace spaces with underscores
 	name = name.replace(/\W/g, ''); // remove anything but letters, numbers, and _
 	
 	return name
 }
 // Return list of all node names
-function getNodeStrings(nodeList) { // if a Graph class gets adopted, this function would move into Graph
+function getNodeStrings(nodeList) {
 	// nodeList : any array of node objects
 	var nodeStrings = new Array();
 	for (var i in nodeList) {
@@ -262,198 +435,19 @@ function getNodeStrings(nodeList) { // if a Graph class gets adopted, this funct
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
 /////////////////////////////////////////////////////Function to add more Items/////////////////////////////////////////////////////
-
-var itemList = new Array(); //itemList[i] is the pointer to the ith item object (itemObject)
-var itemListStrings = new Array(); //parallel array of itemList for easier searching
-
- //removes extra \n and extra spaces between items, from input and returns shortened string
-function removeExtra(stringInput) {
-	stringInput=stringInput.replace(/\n/g,""); //remove all "new line"s
-	stringInput=stringInput.replace(/, +/g,","); //remove all spaces after commas
-	return stringInput
-}
- //Input processing: called by submitting items
-function readItem(addOrEdit) {//add(0) or edit(1) an item
-	//Read items and process strings
-
-	var item1Value=document.getElementById("item1").value; //meal
-	var item2Value=document.getElementById("item2").value; //ingredients
-	var item3Value=document.getElementById("item3").value; //descriptions
-	
-	if (item1Value!='' ||item2Value!='') { //if they aren't both empty
-		document.getElementById("item1").value='';
-		document.getElementById("item2").value='';
-		document.getElementById("item3").value='';
-		item1Value=removeExtra(item1Value.trim());
-		item2Value=removeExtra(item2Value.trim());
-		item3Value=removeExtra(item3Value.trim());
-
-		item1Value=item1Value.split(","); //convert to arrays
-		item2Value=item2Value.split(",");
-		item3Value=item3Value.split(",");
-
-		//pass arrays to addItem or editItem
-		if (addOrEdit==0) {
-			addItem(item1Value,item2Value,item3Value);
-		}
-		else {
-			editItem(item1Value,item2Value,item3Value);
-		}
-	}
-	
-	saveData();
-	launchSearch();
-	showMenu();
-		
-}
- //takes in an array representing the item1's and an array for item2's
-function addItem(item1Value,item2Value,item3Value) { // is "item" synonymous with "ingredient"
-
-	var item1Objects=new Array();
-	var item2Objects=new Array();
-	var item3Objects=new Array(); //pointers of all entered items
-	for (var i in item1Value) { //loop through item1 strings
-		var itemIndex=itemListStrings.indexOf(item1Value[i].toLowerCase()); //find in existing items
-		if (itemIndex==-1 && item1Value[i]!="") { //if nonexistent, create and add to existing items
-			var newItem=new itemObject(item1Value[i],1) // create new meal item
-			itemList.push(newItem);
-			itemListStrings.push(item1Value[i].toLowerCase());
-			item1Objects.push(newItem); //add to list of entered item pointers
-		}
-		else if (item1Value[i]!="") {
-			item1Objects.push(itemList[itemIndex]);
-		}
-	}
-	for (var i in item2Value) { //loop through item2 strings
-		var itemIndex=itemListStrings.indexOf(item2Value[i].toLowerCase()); //find in existing items
-		if (itemIndex==-1 && item2Value[i]!="") { //if nonexistent, create and add to existing items
-			var newItem=new itemObject(item2Value[i],2) //create new ingredient item
-			itemList.push(newItem);
-			itemListStrings.push(item2Value[i].toLowerCase());
-			item2Objects.push(newItem); //add to list of entered item pointers
-		}
-		else if (item2Value[i]!="") {
-			item2Objects.push(itemList[itemIndex]);
-		}
-	}
-	for (var i in item3Value) { //loop through item3 strings
-		var itemIndex=itemListStrings.indexOf(item3Value[i].toLowerCase()); //find in existing items
-		if (itemIndex==-1 && item3Value[i]!="") { //if nonexistent, create and add to existing items
-			var newItem=new itemObject(item3Value[i],3) //create new description item
-			itemList.push(newItem);
-			itemListStrings.push(item3Value[i].toLowerCase());
-			//purposefully still adding to item2Objects
-			item2Objects.push(newItem); //add to list of entered item pointers
-		}
-		else if (item3Value[i]!="") {
-			item2Objects.push(itemList[itemIndex]);	//purposefully still adding to item2Objects
-		}
-	}
-
-	// add connections
-	for (var i in item1Objects) {
-		for (var j in item2Objects) {
-			if (item1Objects[i].connections.indexOf(item2Objects[j])==-1) {
-				item1Objects[i].connections.push(item2Objects[j]);
-				item2Objects[j].connections.push(item1Objects[i]);
-			}
-		}
-	}
-}
-//if editing instead of adding a new item. If >1 item 1's entered, then edit the first and add others
-function editItem(item1Value,item2Value,item3Value) {
-	var item1Objects=new Array();
-	var item2Objects=new Array();
-	var item3Objects=new Array(); //pointers of all entered items
-	
-	// if editType is 2, flip the first two inputs (yes this is a confusing way to do it)
-	if (editType==2) {
-		var tempSwitch=item1Value;
-		item1Value=item2Value;
-		item2Value=tempSwitch;
-	}
-	
-	//check if the new item name already exists:
-	if (itemListStrings.indexOf(item1Value[0].toLowerCase())!=editing && itemListStrings.indexOf(item1Value[0].toLowerCase())!=-1) {
-		alert("This name is already in use.\nEither edit that one or use something else :P")
-	}
-	else {
-		//update the new name, everywhere it appears
-		itemList[editing].edit(item1Value[0]);
-		itemListStrings[editing]=item1Value[0].toLowerCase();
-
-		//now go through entries and find pointers for all items entered, adding new ones if necessary
-		for (var i in item1Value) { //loop through item1 strings
-			var itemIndex=itemListStrings.indexOf(item1Value[i].toLowerCase()); //find in existing items
-			if (itemIndex==-1) { //if nonexistent, create and add to existing items
-				var newItem=new itemObject(item1Value[i],editType) //if editing a menu item, item1 refers to menu items (and vice versa)
-				itemList.push(newItem);
-				itemListStrings.push(item1Value[i].toLowerCase());
-				item1Objects.push(newItem); //add to list of entered item pointers
-			}
-			else {
-				item1Objects.push(itemList[itemIndex]);
-			}
-		}
-		for (var i in item2Value) { //loop through item2 strings
-			var itemIndex=itemListStrings.indexOf(item2Value[i].toLowerCase()); //find in existing items
-			if (itemIndex==-1) { //if nonexistent, create and add to existing items
-				var newItem=new itemObject(item2Value[i],3-editType) //if editing a menu item, item2 is ingredients (and vice versa)
-				itemList.push(newItem);
-				itemListStrings.push(item2Value[i].toLowerCase());
-				item2Objects.push(newItem); //add to list of entered item pointers
-			}
-			else {
-				item2Objects.push(itemList[itemIndex]);
-			}
-		}
-		for (var i in item3Value) { //loop through item3 strings
-			var itemIndex=itemListStrings.indexOf(item3Value[i].toLowerCase()); //find in existing items
-			if (itemIndex==-1) { //if nonexistent, create and add to existing items
-				var newItem=new itemObject(item3Value[i],3)
-				itemList.push(newItem);
-				itemListStrings.push(item3Value[i].toLowerCase());
-				//add objects to ingredients
-				if (editType==1) {item2Objects.push(newItem);} //add to list of entered item pointers
-				else if (editType==2) {item1Objects.push(newItem);}
-			}
-			else {
-				if (editType==1) {item2Objects.push(itemList[itemIndex]);}
-				else if (editType==2) {item1Objects.push(itemList[itemIndex]);}
-			}
-		}
-
-		//first sever all connections for editing item (item1Objects[0], or itemList[editing])
-		var removals=new Array;//mark any items left compeltely disconnected
-		for (var j in itemList[editing].connections) {//disconnected with each connection before deletion
-			itemList[editing].connections[j].connections.splice(itemList[editing].connections[j].connections.indexOf(itemList[editing]),1);
-			if (itemList[editing].connections[j].connections.length==0) {removals.push(itemList[editing].connections[j]);}
-		}
-
-		itemList[editing].connections=new Array();
-
-		// add connections
-		for (var i in item1Objects) {
-			for (var j in item2Objects) {
-				if (item1Objects[i].connections.indexOf(item2Objects[j])==-1) {
-					item1Objects[i].connections.push(item2Objects[j]);
-					item2Objects[j].connections.push(item1Objects[i]);
-				}
-			}
-		}
-
-		choose(-2);
-		//check again if they are still disconnected, and remove if so
-		for (var i in removals) {//disconnected with each connection before deletion
-			if (removals[i].connections.length==0) {removals[i].chosen=1;}
-		}
-		deleteItems(0);
-	}
-}
-
-
-///////////////////////////////////////////////////////Choose and Edit Items//////////////////////////////////////////////////////
 
 //process when user chooses to edit item(s)
 var editing=-1;
@@ -1073,7 +1067,7 @@ function getCookie(cname) {
 
 
 
-
+/*
 myWS.onmessage = function(event){
 	inData = JSON.parse(event.data);
 	receiveData(inData);
@@ -1082,7 +1076,7 @@ function WSsend(outData) {
 	outDataStr = JSON.stringify(outData);
 	myWS.send(outDataStr);
 }
-
+*/
 
 ////////////////////////////////////////////////Options and Effects and User Interface////////////////////////////////////////////////
 
