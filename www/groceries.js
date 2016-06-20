@@ -1,5 +1,5 @@
 // Define websocket to be used for server interaction
-//var myWS = new WebSocket("ws://learnnation.org:8243/mySocket")
+var myWS = new WebSocket("ws://learnnation.org:8243/mySocket")
 
 //////////////////////////////
 ////////////////////////////// Class Definitions
@@ -7,55 +7,59 @@
 
 
 // Define a node
-function node(name = '', type) {
+class Node() {
 	// Define an instance of a node
 	// A node possesses various properties, as well as connections to other nodes
 	// This node is meant to be a superclass
-			
-	///// Properties
+	constructor(name = '', type) {	
+
+		// Default Initializations
+		this.shownName = name;
+		this.connections = new Set();
+		this.chosen = 0; //track whether this node is selected this.hrad = 0;
+		this.found = 0; // 1 if in current search results. 0 otherwise this.vrad = 0;
+
+		//set html element properties this.chosen = 0; //track whether this node is selected
+		this.element = document.createElement("div"); // Create an element to be displayed on the page this.found = 0; // 1 if in current search results. 0 otherwise
+		this.xstart = -500; //root location
+		this.ystart = -500;
+		this.xpos = -500;
+		this.ypos = -500;
 	
-	// Default Initializations
-	this.name = '';
-	this.shownName = '';
-	this.hrad = 0;
-	this.vrad = 0;
-	this.connections = new Array();
-	this.chosen = 0; //track whether this node is selected
-	this.found = 0; // 1 if in current search results. 0 otherwise
-	
-	//set html element properties
-	this.ID = document.createElement("div"); // Create an element to be displayed on the page
-	this.xstart = -500; //root location
-	this.ystart = -500;
-	this.xpos = -500;
-	this.ypos = -500;
-	
-	// Declare node type
-	this.type = type; // "meal", "ingredient", or "description"
-	
-	
-	///// Methods
-	
+		// Declare node type
+		this.type = type; // "meal", "ingredient", or "description"
+
+
+		this.sendToLimbo();	///// Methods
+		
+	}
+
 	//method to change name of item
-	this.edit = function(newName) { //update true name
+	set shownName(newName) { //update true name
 		this.name = name_trim(newName);
 		this.shownName = newName;
-		this.ID.setAttribute("id", "ID_" + type + '_' + this.name);
-		this.ID.setAttribute("onclick","choose('" + newName.toLowerCase() + "')");
-		this.calcDim();
+		this.element.setAttribute("id", this.id);
+		this.element.setAttribute("onclick", "choose(event)");
+		this.updateDim();
 	}
+
+	get id() {
+		return "ID_" + type + '_' + this.name
+	}
+
+
 	//update innerHTML and dimensions
-	this.calcDim = function() {
-		this.ID.innerHTML = this.shownName;
-		this.hrad = this.ID.clientWidth / 2;  //vertical radius
-		this.vrad = this.ID.clientHeight / 2;  //horizontal radius
+	updateDim() {
+		this.element.innerHTML = this.shownName;
+		this.hrad = this.element.clientWidth / 2;  //vertical radius
+		this.vrad = this.element.clientHeight / 2;  //horizontal radius
 	}
-	
+
 	// put node in limbo (hidden from view)
-	this.sendToLimbo = function() {
-		document.getElementById("limbo").appendChild(this.ID);
+	sendToLimbo() {
+		document.getElementById("limbo").appendChild(this.element);
 	}
-	
+
 	//updates object coordinates
 	this.toStart = function() {
 		this.xpos = this.xstart;
@@ -64,13 +68,13 @@ function node(name = '', type) {
 	}
 	//updates actual object location in window
 	this.draw = function() {
-		this.ID.style.left = this.xpos - this.hrad;
-		this.ID.style.top = this.ypos - this.vrad;
+		this.element.style.left = this.xpos - this.hrad;
+		this.element.style.top = this.ypos - this.vrad;
 	}
 
 	// check connection
 	this.isConnected = function(that) {
-		if (this.connections.indexOf(that) == -1) { return false }
+		if (!this.connections.has(that)) { return false }
 		else { return true }
 	}
 	// Add connections
@@ -103,18 +107,14 @@ function node(name = '', type) {
 		}
 	}
 	
-	// Initialize several properties using methods
-	if (name != '') {
-		this.edit(name);
-		this.sendToLimbo();
-	}
+
 }
 
 // Define a subclass of node specific to meals
 function meal_node(name) {
 	
 	node.call(this, name, 'meal');
-	this.ID.setAttribute("class", "meal_text word_text");
+	this.element.setAttribute("class", "meal_text word_text");
 	
 	///// Properties
 	
@@ -127,15 +127,15 @@ function meal_node(name) {
 		this.inMenu = 1;
 		this.chosen = 0;
 		
-		document.getElementById("menuField").appendChild(this.ID);
-		this.ID.setAttribute("class","meal_onMenu_text word_text");
+		document.getElementById("menuField").appendChild(this.element);
+		this.element.setAttribute("class","meal_onMenu_text word_text");
 	}
 	// add meal to search results
 	this.addToMealResults = function() {
 		this.inMenu = 0;
 		
-		document.getElementById("Results").appendChild(this.ID);
-		this.ID.setAttribute("class","meal_text word_text");
+		document.getElementById("Results").appendChild(this.element);
+		this.element.setAttribute("class","meal_text word_text");
 	}
 	
 }
@@ -145,7 +145,7 @@ meal_node.prototype = new node;
 function ingredient_node(name) {
 	
 	node.call(this, name, 'ingredient');
-	this.ID.setAttribute("class", "ingr_text word_text");
+	this.element.setAttribute("class", "ingr_text word_text");
 	
 	///// Methods
 	
@@ -153,15 +153,15 @@ function ingredient_node(name) {
 	this.addToGroceryList = function() {
 		this.chosen = 0;
 		
-		document.getElementById("groceryField").appendChild(this.ID);
-		this.ID.setAttribute("class", "ingr_onMenu_text word_text");
+		document.getElementById("groceryField").appendChild(this.element);
+		this.element.setAttribute("class", "ingr_onMenu_text word_text");
 	}
 	
 	//update shown name based on item quantity
 	this.quantityChange = function(quan) {
 		if (quan > 1) {this.shownName = "<b>" + this.name + " x" + quan + "</b>";} //name x3
 		else {this.shownName = this.name;}
-		this.calcDim();
+		this.updateDim();
 	}
 }
 ingredient_node.prototype = new node;
@@ -169,7 +169,7 @@ ingredient_node.prototype = new node;
 // Define a subclass of node specific to descriptions
 function description_node(name) {
 	node.call(this, name, 'description');
-	this.ID.setAttribute("class", "word_text");
+	this.element.setAttribute("class", "word_text");
 }
 description_node.prototype = new node;
 
@@ -187,9 +187,9 @@ function initialize() {
 
 
 ////////////////////////////// Node Creation/Deletion Functions
-var mealNodes = new Array(); // List of all meal nodes
-var ingrNodes = new Array(); // List of all ingredient nodes
-var descNodes = new Array(); // List of all description nodes
+var mealNodes = new Set(); // List of all meal nodes
+var ingrNodes = new Set(); // List of all ingredient nodes
+var descNodes = new Set(); // List of all description nodes
 
 // [ACTION: Add Meal Button] Add a new meal node
 function createNewMeal() {
@@ -461,14 +461,14 @@ function choose(wch) {
 	if(wch==-2) { //unselect all items
 		for (var i in itemList) {
 			itemList[i].chosen=0;
-			itemList[i].ID.style.opacity=1;
+			itemList[i].element.style.opacity=1;
 		}
 	}
 	else if (itemList[itemListStrings.indexOf(wch)].chosen==0) { //select
 		editing=itemListStrings.indexOf(wch);
 		editType=itemList[editing].type; //record which type (meal or ingredient)
 		itemList[editing].chosen=1;
-		itemList[editing].ID.style.opacity=.5;
+		itemList[editing].element.style.opacity=.5;
 		document.getElementById("editButton").disabled=false;
 		document.getElementById("submitButton").disabled=true;
 		if (editType==1) { //if editing a meal
@@ -493,7 +493,7 @@ function choose(wch) {
 	}
 	else { //deselect
 		itemList[itemListStrings.indexOf(wch)].chosen=0;
-		itemList[itemListStrings.indexOf(wch)].ID.style.opacity=1;
+		itemList[itemListStrings.indexOf(wch)].element.style.opacity=1;
 	}
 	
 	//make sure the correct buttons are shown
@@ -504,7 +504,7 @@ function choose(wch) {
 function deleteItems(overRide) {
 	if (overRide==1) {
 		for (var i in itemList) { //delete all items
-			oldObjId=itemList[i].ID;
+			oldObjId=itemList[i].element;
 			if (itemList[i].type==1 && itemList[i].inMenu==0) {document.getElementById("Results").removeChild(oldObjId);}
 			else if (itemList[i].type==1 && itemList[i].inMenu==1) {document.getElementById("mealField").removeChild(oldObjId);}
 			else if (itemList[i].type==2) {document.getElementById("groceryField").removeChild(oldObjId);}
@@ -515,7 +515,7 @@ function deleteItems(overRide) {
 	else {
 		for (var i=itemList.length-1;i>=0;i--) { //start at end so stored indices don't change
 			if(itemList[i].chosen==1) {
-				oldObjId=itemList[i].ID;
+				oldObjId=itemList[i].element;
 				//delete from appropriate location
 				if (itemList[i].type==1 && itemList[i].inMenu==0) {document.getElementById("Results").removeChild(oldObjId);}
 				else if (itemList[i].type==1 && itemList[i].inMenu==1) {document.getElementById("mealField").removeChild(oldObjId);}
@@ -814,7 +814,7 @@ function positionResults(itemDisplay,section) {
 	
 	for (var i in itemList){ //if item is removed from search, chosen=0
 		itemList[i].chosen*=itemList[i].found;
-		itemList[i].ID.style.opacity=1-itemList[i].chosen*.5;
+		itemList[i].element.style.opacity=1-itemList[i].chosen*.5;
 	}
 	//if an item is removed from view or for some reason unchosen, reset editing conditions
 	if (editing!=-1 && itemList[editing].chosen==0) {
