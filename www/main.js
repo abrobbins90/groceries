@@ -1,41 +1,110 @@
-// This file holds the main functionality of the program  (it imports floaty and classes, then uses them)
+// This file holds the main functionality of the program
+// additional code is imported for floaty and classes
 
 
 
 // Define websocket to be used for server interaction
-var myWS = new WebSocket("ws://learnnation.org:8243/mySocket")
+/*var myWS = new WebSocket("ws://learnnation.org:8243/mySocket")*/
 
 //////////////////////////////
 ////////////////////////////// Class Definitions
 //////////////////////////////
 
+// Define graph to deal with all node operations
+class GraphClass() {
+	constructor() {
+		this.mealNodes = new Set(); // List of all meal nodes
+		this.ingrNodes = new Set(); // List of all ingredient nodes
+		this.descNodes = new Set(); // List of all description nodes
+	}
+	
+	///// Methods
+	
+	addMeal(mealName) {
+		var mealNode = new meal_node(mealName);
+		this.mealNodes.add(mealNode);
+	}
+	addIngr(ingrName) {
+		var ingrNode = new ingr_node(ingrName);
+		this.ingrNodes.add(ingrNode);
+	}
+	addDesc(descName) {
+		var descNode = new desc_node(descName);
+		this.descNodes.add(descNode);
+	}
+	
+	removeMeal(mealNode) {
+		// Remove mealNode from mealNodes
+		// Remove any edges between mealNode and other nodes
+		
+		// Delete meal
+		if (!mealNodes.delete(mealNode)) {return} // Abort if object doesn't exist
+		
+		// Delete meal's DOM element
+		mealNode.selfDestruct();
+		
+		// Remove its connections
+		for (let node of mealNode.connections) {
+			removeConnection(mealNode, node);
+		}
+	}
+	
+	// Return a node if it exists in the appropriate list, search by its name
+	getMealNodeByName(mealName) {
+		return getNodeByName(this.mealNodes, mealName)
+	}
+	getIngrNodeByName(ingrName) {
+		return getNodeByName(this.ingrNodes, ingrName)
+	}
+	getDescNodeByName(descName) {
+		return getNodeByName(this.descNodes, descName)
+	}
+	getNodeByName(nodeList, name) {
+		for (let node of nodeList) {
+			if (node.name == name) {return node}
+		}
+		return -1 // not found
+	}
+	
+	
+	// Deal with connections (edges)
+	addConnection(node1, node2) {
+		node1.connections.add(node2);
+		node2.connections.add(node1);
+	}
+	removeConnection(node1, node2) {
+		node1.connections.delete(node2);
+		node2.connections.delete(node1);
+	}
+	isConnected(node1, node2) {
+		if (node1.connections.has(node2)) { return true }
+		return false
+	}
+	
+}
 
 // Define a node
-class Node() {
+class NodeClass() {
 	// Define an instance of a node
 	// A node possesses various properties, as well as connections to other nodes
 	// This node is meant to be a superclass
 	constructor(name = '', type) {	
 
 		// Default Initializations
+		this.type = type; // Declare node type: "meal", "ingredient", or "description"
+		this.element = document.createElement("div"); // Create an element to be displayed on the page
 		this.shownName = name;
 		this.connections = new Set();
+		
 		this.chosen = 0; //track whether this node is selected this.hrad = 0;
 		this.found = 0; // 1 if in current search results. 0 otherwise this.vrad = 0;
 
-		//set html element properties this.chosen = 0; //track whether this node is selected
-		this.element = document.createElement("div"); // Create an element to be displayed on the page this.found = 0; // 1 if in current search results. 0 otherwise
-		this.xstart = -500; //root location
-		this.ystart = -500;
-		this.xpos = -500;
-		this.ypos = -500;
+		this.xstart = 0; //root location
+		this.ystart = 0;
+		this.xpos = 0;
+		this.ypos = 0;
 	
-		// Declare node type
-		this.type = type; // "meal", "ingredient", or "description"
-
-
-		this.sendToLimbo();	///// Methods
-		
+		this.sendToLimbo();	// store object in limbo (not visible)
 	}
 
 	//method to change name of item
@@ -63,6 +132,12 @@ class Node() {
 	sendToLimbo() {
 		document.getElementById("limbo").appendChild(this.element);
 	}
+	// Delete element
+	selfDestruct(){
+		// Delete element by putting in limbo, then removing into the void...
+		this.sendToLimbo();
+		document.getElementById("limbo").removeChild(this.element);
+	}
 
 	//updates object coordinates
 	this.toStart = function() {
@@ -76,48 +151,13 @@ class Node() {
 		this.element.style.top = this.ypos - this.vrad;
 	}
 
-	// check connection
-	this.isConnected = function(that) {
-		if (!this.connections.has(that)) { return false }
-		else { return true }
-	}
-	// Add connections
-	this.addConnections = function(nodeList) {
-		// nodeList : list of nodes to add
-		if (!Array.isArray(nodeList)) { // Allow single object to be passed as well
-			var nodeTemp = nodeList;
-			var nodeList = [nodeTemp];
-		}
-		for (var i in nodeList) {
-			if (!this.isConnected(nodeList[i])) { // not yet connected
-				// Add connection
-				this.connections.push(nodeList[i]);
-				nodeList[i].connections.push(this);
-			}
-		}
-	}
-	// Remove connections
-	this.removeConnections = function(nodeList) {
-		// nodeList : list of nodes to remove
-		for (var i in nodeList) {
-			if (this.isConnected(nodeList[i])) { // is connected, so remove connection
-				// Remove connection in this node
-				var index = this.connections.indexOf(nodeList[i])
-				this.connections.splice(index, 1);
-				// Then remove connection in connected node
-				var thisIndex = nodeList[i].connections.indexOf(this);
-				nodeList[i].connections.splice(thisIndex, 1);
-			}
-		}
-	}
-	
 
 }
 
 // Define a subclass of node specific to meals
-function meal_node(name) {
+class meal_node(name) {
 	
-	node.call(this, name, 'meal');
+	NodeClass.call(this, name, 'meal');
 	this.element.setAttribute("class", "meal_text word_text");
 	
 	///// Properties
@@ -143,12 +183,12 @@ function meal_node(name) {
 	}
 	
 }
-meal_node.prototype = new node;
+meal_node.prototype = new NodeClass;
 
 // Define a subclass of node specific to ingredients
-function ingredient_node(name) {
+class ingredient_node(name) {
 	
-	node.call(this, name, 'ingredient');
+	NodeClass.call(this, name, 'ingredient');
 	this.element.setAttribute("class", "ingr_text word_text");
 	
 	///// Methods
@@ -168,14 +208,14 @@ function ingredient_node(name) {
 		this.updateDim();
 	}
 }
-ingredient_node.prototype = new node;
+ingredient_node.prototype = new NodeClass;
 
 // Define a subclass of node specific to descriptions
-function description_node(name) {
-	node.call(this, name, 'description');
+class description_node(name) {
+	NodeClass.call(this, name, 'description');
 	this.element.setAttribute("class", "word_text");
 }
-description_node.prototype = new node;
+description_node.prototype = new NodeClass;
 
 
 //////////////////////////////
@@ -185,15 +225,14 @@ description_node.prototype = new node;
 ////////////////////////////// Setup Function
 
 // Called on page load to perform initial loading of data and node setup
+var graph
 function initialize() {
-
+	//graph = new GraphClass();
 }
 
 
 ////////////////////////////// Node Creation/Deletion Functions
-var mealNodes = new Set(); // List of all meal nodes
-var ingrNodes = new Set(); // List of all ingredient nodes
-var descNodes = new Set(); // List of all description nodes
+
 
 // [ACTION: Add Meal Button] Add a new meal node
 function createNewMeal() {
@@ -201,50 +240,19 @@ function createNewMeal() {
 	// it to the meal nodes
 	var mealName = document.getElementById("meal_name").value;
 	// First check it is valid
-	var mealNameTrim = name_trim(mealName);
-	if (mealNameTrim.length == 0) {return} // nothing there
+	if (name_trim(mealName).length == 0) {return} // nothing there
 	
 	// Create meal node
-	mealNode = new meal_node(mealName);
-	// Add to list
-	mealNodes.push(mealNode);
-	
+	var mealNode = graph.addMeal(mealName);
 	mealSelect(mealNode); // Select newly created meal
 }
 	
-	
-// Remove a recipe
+// [ACTION: Remove Meal Button] Remove a recipe
 function removeRecipe(mealNode = selectedMeal) {
 	// mealNode : node object of meal to be deleted (default meal to delete is current selection)
 	
-	// Delete meal
-	var index = mealNodes.indexOf(mealNode);
-	if (index == -1) {
-		return
-	}
-	mealNodes.splice(index, 1);
-
-	// Grab list of currently connected nodes
-	var mealConnections = mealNode.connections;
-	
-	// Remove all connections
-	mealNode.removeConnections(mealConnections);
-	
-	// Cycle through it connections, deleting them if they no longer have any connections
-	for (var i in mealConnections) {
-		if (mealConnections[i].connections.length == 0) {
-			// Delete it
-			if (mealConnections[i].type == 'ingredient') {
-				index = ingrNodes.indexOf(mealConnection[i]);
-				ingrNodes.splice(index, 1);
-			}
-			else {
-				index = descNodes.indexOf(mealConnection[i]);
-				descNodes.splice(index, 1);
-			}
-		}
-	}
-	
+	graph.removeMeal(mealNode); // Delete meal
+		
 	// If the deleted meal was the selected meal, change selected meal to nothing
 	if (mealNode == selectedMeal) {
 		mealSelect(-1);
@@ -271,20 +279,9 @@ function meal_keyPress(event) {
 		var mealNameTrim = name_trim(mealName);
 		if (mealNameTrim.length == 0) {return} // nothing there
 		
-		var mealNames = getNodeStrings(mealNodes);
-		var index = -1;
-		for (var i in mealNames) {
-			if (mealNames[i] == mealNameTrim) {
-				index = i;
-				break
-			}
-		}
-		if (index != -1) { // Found match. Select it
-			mealSelect(mealNodes[index]);
-		}
-		else {
-			mealSelect(-1);
-		}
+		var mealNode = graph.getMealNodeByName(mealNameTrim);
+		// If such a node doesn't exist, this returns -1
+		mealSelect(mealNodes[index]);
 	}
 }
 // Ingredient OR description name
@@ -292,34 +289,28 @@ function ingrORdesc_keyPress(event, ingrORdesc) {
 	
 	var key = event.keyCode;
 	if (key == 13) { // Enter Button (Add this ingredient/description)
-		// First check to see if this node exists already
-		var nodeList
-		if (ingrORdesc == "ingredient") {nodeList = ingrNodes;}
-		else {nodeList = descNodes;}
-		var nodeStrings = getNodeStrings(nodeList);
-		
+		// First check to see if there is anything in the box
 		var nameToAdd = document.getElementById("new_" + ingrORdesc).value;
 		var nameTrim = name_trim(nameToAdd);
 		if (nameTrim == "") {return}
 		
-		var index = nodeStrings.indexOf(nameTrim);
-		var nodeToAdd
-		if (index == -1) { // Add node
-			if (ingrORdesc == "ingredient") {
-				nodeToAdd = new ingredient_node(nameTrim);
-				// Add to list
-				ingrNodes.push(nodeToAdd);
+		// If so, see if it already exists. Add it if it doesn't
+		var node
+		if (ingrORdesc == "ingredient") {
+			node = graph.getIngrNodeByName(nameTrim);
+			if (node == -1) {
+				node = graph.addIngr(nameTrim);
 			}
-			else {
-				nodeToAdd = new description_node(nameTrim);
-				// Add to list
-				descNodes.push(nodeToAdd);
-			}			
 		}
-		else {nodeToAdd = nodeStrings[index];}
+		else if (ingrORdesc == "description") {
+			node = graph.getDescNodeByName(nameTrim);
+			if (node == -1) {
+				node = graph.addDesc(nameTrim);
+			}
+		}
 		
 		// Add connection
-		selectedMeal.addConnections(nodeToAdd);
+		graph.addConnection(selectedMeal, node);
 		document.getElementById("new_" + ingrORdesc).value = ""; // clear entry box
 		showSelectedRecipe();
 	}
@@ -421,31 +412,31 @@ function name_trim(name) {
 	
 	return name
 }
-// Return list of all node names
-function getNodeStrings(nodeList) {
-	// nodeList : any array of node objects
-	var nodeStrings = new Array();
-	for (var i in nodeList) {
-		nodeStrings[i] = nodeList[i].name;
-	}
-	return nodeStrings
+
+
+
+
+
+
+
+
+/*
+myWS.onmessage = function(event){
+	inData = JSON.parse(event.data);
+	receiveData(inData);
 }
+function WSsend(outData) {
+	outDataStr = JSON.stringify(outData);
+	myWS.send(outDataStr);
+}
+*/
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
+/*
 
 /////////////////////////////////////////////////////Function to add more Items/////////////////////////////////////////////////////
 
@@ -617,20 +608,7 @@ function ingrSearchFunc() {
 	}
 	return foundIngrList
 }
-// is searchWord connected to item (returns true or false)
-function isConnected(searchWord,item) {
-	searchWord=searchWord.trim();
-	searchWord=searchWord.toLowerCase();
-	if(itemListStrings.indexOf(searchWord)==-1) {return false} //check if the searchWord is even an item
-	var searchWordItem=itemList[itemListStrings.indexOf(searchWord)]; //find pointer of searchWord
-	
-	connectedItemList=new Array();
-	for (var i in item.connections) { //search all connections
-		connectedItemList.push(item.connections[i]);
-	}
-	if (connectedItemList.indexOf(searchWordItem)==-1) {return false}
-	else {return true}
-}
+
 
 //meal lookup
 function mealSearch() {
@@ -1066,18 +1044,6 @@ function getCookie(cname) {
 }
 
 
-
-/*
-myWS.onmessage = function(event){
-	inData = JSON.parse(event.data);
-	receiveData(inData);
-}
-function WSsend(outData) {
-	outDataStr = JSON.stringify(outData);
-	myWS.send(outDataStr);
-}
-*/
-
 ////////////////////////////////////////////////Options and Effects and User Interface////////////////////////////////////////////////
 
 //pressing "Enter" in item box substitutes for pressing "Submit"
@@ -1114,6 +1080,8 @@ function mealGenNum() { //when entering the number of meals to generate, ensure 
 //switch between search tabs
 var currentTab=0; //iSearch(0), mgSearch(1), or mSearch(2)
 function switchTab(tabNum) {
+
+
 	currentTab=tabNum;
 	var tabs=new Array(document.getElementById("iTab"),document.getElementById("mgTab"),document.getElementById("mTab"));
 	var sAreas=new Array(document.getElementById("iArea"),document.getElementById("mgArea"),document.getElementById("mArea"));
@@ -1127,3 +1095,4 @@ function switchTab(tabNum) {
 	launchSearch();
 	transferButtons();
 }
+*/
