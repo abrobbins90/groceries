@@ -11,7 +11,7 @@
 //////////////////////////////
 
 // Define graph to deal with all node operations
-class GraphClass() {
+class GraphClass {
 	constructor() {
 		this.mealNodes = new Set(); // List of all meal nodes
 		this.ingrNodes = new Set(); // List of all ingredient nodes
@@ -21,16 +21,19 @@ class GraphClass() {
 	///// Methods
 	
 	addMeal(mealName) {
-		var mealNode = new meal_node(mealName);
+		var mealNode = new MealNode(mealName);
 		this.mealNodes.add(mealNode);
+		return mealNode
 	}
 	addIngr(ingrName) {
-		var ingrNode = new ingr_node(ingrName);
+		var ingrNode = new IngrNode(ingrName);
 		this.ingrNodes.add(ingrNode);
+		return ingrNode
 	}
 	addDesc(descName) {
-		var descNode = new desc_node(descName);
+		var descNode = new DescNode(descName);
 		this.descNodes.add(descNode);
+		return descNode
 	}
 	
 	removeMeal(mealNode) {
@@ -51,13 +54,13 @@ class GraphClass() {
 	
 	// Return a node if it exists in the appropriate list, search by its name
 	getMealNodeByName(mealName) {
-		return getNodeByName(this.mealNodes, mealName)
+		return this.getNodeByName(this.mealNodes, mealName)
 	}
 	getIngrNodeByName(ingrName) {
-		return getNodeByName(this.ingrNodes, ingrName)
+		return this.getNodeByName(this.ingrNodes, ingrName)
 	}
 	getDescNodeByName(descName) {
-		return getNodeByName(this.descNodes, descName)
+		return this.getNodeByName(this.descNodes, descName)
 	}
 	getNodeByName(nodeList, name) {
 		for (let node of nodeList) {
@@ -84,7 +87,7 @@ class GraphClass() {
 }
 
 // Define a node
-class NodeClass() {
+class NodeClass {
 	// Define an instance of a node
 	// A node possesses various properties, as well as connections to other nodes
 	// This node is meant to be a superclass
@@ -107,23 +110,27 @@ class NodeClass() {
 		this.sendToLimbo();	// store object in limbo (not visible)
 	}
 
+	// Setters
+	
 	//method to change name of item
 	set shownName(newName) { //update true name
-		this.name = name_trim(newName);
-		this.shownName = newName;
+		this._shownName = newName;
 		this.element.setAttribute("id", this.id);
-		this.element.setAttribute("onclick", "choose(event)");
-		this.updateDim();
+		this.updateElement();
 	}
 
+	// Getters
 	get id() {
-		return "ID_" + type + '_' + this.name
+		return "ID_" + this.type + '_' + this.name
+	}
+	get name() {
+		return name_trim(this._shownName)
 	}
 
 
 	//update innerHTML and dimensions
-	updateDim() {
-		this.element.innerHTML = this.shownName;
+	updateElement() {
+		this.element.innerHTML = this._shownName;
 		this.hrad = this.element.clientWidth / 2;  //vertical radius
 		this.vrad = this.element.clientHeight / 2;  //horizontal radius
 	}
@@ -140,13 +147,13 @@ class NodeClass() {
 	}
 
 	//updates object coordinates
-	this.toStart = function() {
+	toStart() {
 		this.xpos = this.xstart;
 		this.ypos = this.ystart;
 		this.draw();
 	}
 	//updates actual object location in window
-	this.draw = function() {
+	draw() {
 		this.element.style.left = this.xpos - this.hrad;
 		this.element.style.top = this.ypos - this.vrad;
 	}
@@ -154,20 +161,17 @@ class NodeClass() {
 
 }
 
-// Define a subclass of node specific to meals
-class meal_node(name) {
-	
-	NodeClass.call(this, name, 'meal');
-	this.element.setAttribute("class", "meal_text word_text");
-	
-	///// Properties
-	
-	this.inMenu = 0; // store whether meal node is in the menu or not
-	
-	///// Methods
+class MealNode extends NodeClass {
+	// Define a subclass of node specific to meals
+	constructor(name) {
+		super(name, 'meal');
+		this.element.setAttribute("class", "meal_text word_text");
+		
+		this.inMenu = 0; // store whether meal node is in the menu or not
+	}
 	
 	// Add meal to menu
-	this.addToMenu = function() {
+	addToMenu() {
 		this.inMenu = 1;
 		this.chosen = 0;
 		
@@ -175,7 +179,7 @@ class meal_node(name) {
 		this.element.setAttribute("class","meal_onMenu_text word_text");
 	}
 	// add meal to search results
-	this.addToMealResults = function() {
+	addToMealResults() {
 		this.inMenu = 0;
 		
 		document.getElementById("Results").appendChild(this.element);
@@ -183,40 +187,49 @@ class meal_node(name) {
 	}
 	
 }
-meal_node.prototype = new NodeClass;
 
-// Define a subclass of node specific to ingredients
-class ingredient_node(name) {
-	
-	NodeClass.call(this, name, 'ingredient');
-	this.element.setAttribute("class", "ingr_text word_text");
-	
-	///// Methods
+
+
+class IngrNode extends NodeClass {
+	// Define a subclass of node specific to ingredients
+	constructor(name) {
+		super(name, 'ingredient');
+		this.quantity = 0;
+		
+		this.element.setAttribute("class", "ingr_text word_text");
+	}
 	
 	// Add ingredient to grocery list
-	this.addToGroceryList = function() {
+	addToGroceryList() {
 		this.chosen = 0;
 		
 		document.getElementById("groceryField").appendChild(this.element);
 		this.element.setAttribute("class", "ingr_onMenu_text word_text");
 	}
 	
-	//update shown name based on item quantity
-	this.quantityChange = function(quan) {
-		if (quan > 1) {this.shownName = "<b>" + this.name + " x" + quan + "</b>";} //name x3
-		else {this.shownName = this.name;}
-		this.updateDim();
+	//update innerHTML and dimensions (overwrite superclass method)
+	updateElement() {
+		if (this.quantity > 1) {
+			// if multiple entries, bold and include x#
+			this.element.innerHTML = this._shownName + "<b>" + " x" + quan + "</b>";
+		}
+		else {
+			this.element.innerHTML = this._shownName;
+		}
+		
+		this.hrad = this.element.clientWidth / 2;  //vertical radius
+		this.vrad = this.element.clientHeight / 2;  //horizontal radius
+	}
+	
+}
+
+class DescNode extends NodeClass{
+	// Define a subclass of node specific to descriptions
+	constructor(name) {
+		NodeClass.call(this, name, 'description');
+		this.element.setAttribute("class", "word_text");
 	}
 }
-ingredient_node.prototype = new NodeClass;
-
-// Define a subclass of node specific to descriptions
-class description_node(name) {
-	NodeClass.call(this, name, 'description');
-	this.element.setAttribute("class", "word_text");
-}
-description_node.prototype = new NodeClass;
-
 
 //////////////////////////////
 ////////////////////////////// Functions
@@ -227,7 +240,7 @@ description_node.prototype = new NodeClass;
 // Called on page load to perform initial loading of data and node setup
 var graph
 function initialize() {
-	//graph = new GraphClass();
+	graph = new GraphClass();
 }
 
 
@@ -244,6 +257,7 @@ function createNewMeal() {
 	
 	// Create meal node
 	var mealNode = graph.addMeal(mealName);
+	
 	mealSelect(mealNode); // Select newly created meal
 }
 	
@@ -281,7 +295,7 @@ function meal_keyPress(event) {
 		
 		var mealNode = graph.getMealNodeByName(mealNameTrim);
 		// If such a node doesn't exist, this returns -1
-		mealSelect(mealNodes[index]);
+		mealSelect(mealNode);
 	}
 }
 // Ingredient OR description name
@@ -325,6 +339,7 @@ function ingrORdesc_keyPress(event, ingrORdesc) {
 // list as well as affecting editing
 var selectedMeal = -1; // Keep track of meal selected in recipe area
 function mealSelect(mealNode) {
+	
 	if (mealNode == -1) {
 		selectedMeal = -1;
 		document.getElementById("meal_button").value = "Add New Meal";
