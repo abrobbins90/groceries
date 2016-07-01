@@ -4,8 +4,10 @@
 <title>Groceries</title>
 
 <link rel="stylesheet" type="text/css" href="style.css">
+<link rel="stylesheet" type="text/css" href="connection-force.css">
 
 <script type="text/javascript" src="helper.js"></script>
+<script type="text/javascript" src="connection-force.js"></script>
 <script type="text/javascript" src="class.js"></script>
 <script type="text/javascript" src="main.js"></script>
 
@@ -29,7 +31,7 @@
 			<input type="text" id="new_description" class="menu_input_box description_box" placeholder="New Description" onkeyup="ingrORdesc_keyPress(event, 'description')" style="display:none;"></input>
 		</div>
 	</div>
-	
+
 	<div id="search_area">
 		<div id="search_tab">
 			<div id="iTab" class="iSearch Tab tab_selected" onclick="switchTab(0)">Ingredient Search</div>
@@ -45,7 +47,7 @@
 					</tr>
 				</table>
 			</div>
-		
+
 			<div id="mgArea" class="mgSearch area_unselected">
 				<table class="mgSearch searchTable">
 					<tr valign="middle">
@@ -62,7 +64,7 @@
 					</tr>
 				</table>
 			</div>
-		
+
 			<div id="mArea" class="mSearch area_unselected">
 				<table class="mSearch searchTable">
 					<tr valign="middle">
@@ -72,13 +74,13 @@
 				</table>
 			</div>
 		</div>
-		
+
 		<div id="Results">
 			<input type="button" id="addMeal" class="menuButtons" onclick="transferMeal(1)" value="Add to Menu>>"></input>
 			<input type="button" id="addAllMeals" class="menuButtons" onclick="transferMeal(2)" value="Add All to Menu>>"></input>
 		</div>
 	</div>
-	
+
 	<div id="menu_area">
 		<div id="mealChoices">
 			<div class="mcTitle">
@@ -87,7 +89,7 @@
 				<input type="button" id="clearMeals" class="menuButtons" onclick="transferMeal(-2)" value="Clear Menu"></input>
 			</div>
 			<div id="menuField">
-				
+
 			</div>
 		</div>
 		<div id="groceryList">
@@ -95,11 +97,11 @@
 				Ingredients for Above Menu
 			</div>
 			<div id="groceryField">
-				
+
 			</div>
 		</div>
 	</div>
-	
+
 </div>
 
 <div id = "limbo" style = "display: none;"></div>
