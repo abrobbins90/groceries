@@ -37,6 +37,7 @@ function createNewMeal() {
 	var mealNode = graph.addMeal(mealName);
 	
 	mealSelect(mealNode); // Select newly created meal
+	document.getElementById("new_ingredient").focus();
 }
 	
 // [ACTION: Remove Meal Button] Remove a recipe
@@ -49,6 +50,7 @@ function removeRecipe(mealNode = selectedMeal) {
 	if (mealNode == selectedMeal) {
 		mealSelect(-1);
 	}
+	document.getElementById("meal_name").focus();
 }
 
 
@@ -111,6 +113,25 @@ function ingrORdesc_keyPress(event, ingrORdesc) {
 	}
 }
 
+// Remove an ingredient or description from a menu
+function removeIngr(name) {
+	var node = graph.getIngrNodeByName(name);
+	graph.removeConnection(selectedMeal, node);
+	if (node.connections.size == 0) {
+		graph.removeIngr(node);
+	}
+	showSelectedRecipe()
+	document.getElementById("new_ingredient").focus();
+}
+function removeDesc(name) {
+	var node = graph.getDescNodeByName(name);
+	graph.removeConnection(selectedMeal, node);
+	if (node.connections.size == 0) {
+		graph.removeDesc(node);
+	}
+	showSelectedRecipe()
+	document.getElementById("new_description").focus();
+}
 
 
 // Deal with meal selection in the recipe area. This will affect the ingredient/description
@@ -155,22 +176,30 @@ function showSelectedRecipe() {
 		// Check to see if there is an available element to show this node
 		// If not, make one
 		if (i + 1 > boxElements.length) {
-			boxElements[i] = document.createElement("input");
-			boxElements[i].setAttribute("type", "text");
+			boxElements[i] = document.createElement("span");
 			boxElements[i].setAttribute("id", "boxElement" + i);
-			boxElements[i].setAttribute("disabled", true);
 		}
+		// Also add button to remove the item if need be
+		var rmButton = document.createElement("input");
+		rmButton.setAttribute("type", "button");
+		rmButton.setAttribute("class", "rmItemButton");
+		rmButton.setAttribute("value", "x");
+		
 		// set class and parent element based on type
 		if (node.type == "ingredient") {
-			boxElements[i].setAttribute("class", "menu_input_box ingredient_box");
+			boxElements[i].setAttribute("class", "menu_item_box ingredient_box");
 			document.getElementById("ingredient_entry").appendChild(boxElements[i]);
+			rmButton.setAttribute("onclick", "removeIngr('" + node.name + "')");
 		}
 		else if (node.type == "description") {
-			boxElements[i].setAttribute("class", "menu_input_box description_box");
+			boxElements[i].setAttribute("class", "menu_item_box description_box");
 			document.getElementById("description_entry").appendChild(boxElements[i]);
+			rmButton.setAttribute("onclick", "removeDesc('" + node.name + "')");
 		}
 		boxElements[i].style.display = "inline";
-		boxElements[i].value = node.shownName;
+		boxElements[i].innerHTML = node.shownName;
+		boxElements[i].appendChild(rmButton);
+		
 		i++; // update to be number of box elements gone through
 	}
 	// Ensure the rest of the boxElements that might exist are not displayed

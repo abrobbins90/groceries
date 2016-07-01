@@ -7,9 +7,7 @@ class GraphClass {
 		this.ingrNodes = new Set(); // List of all ingredient nodes
 		this.descNodes = new Set(); // List of all description nodes
 	}
-	
-	///// Methods
-	
+
 	addMeal(mealName) {
 		var mealNode = new MealNode(mealName);
 		this.mealNodes.add(mealNode);
@@ -30,16 +28,26 @@ class GraphClass {
 		// Remove mealNode from mealNodes
 		// Remove any edges between mealNode and other nodes
 		
-		// Delete meal
-		if (!this.mealNodes.delete(mealNode)) {return} // Abort if object doesn't exist
-		
-		// Delete meal's DOM element
-		mealNode.selfDestruct();
+		this.deleteNode(this.mealNodes, mealNode);
 		
 		// Remove its connections
 		for (let node of mealNode.connections) {
 			this.removeConnection(mealNode, node);
 		}
+	}
+	removeIngr(ingrNode) {
+		this.deleteNode(this.ingrNodes, ingrNode);
+	}
+	removeDesc(descNode) {
+		this.deleteNode(this.descNodes, descNode);
+	}
+	// helper method for above removal methods
+	deleteNode(nodeSet, node) {
+		// Delete node
+		if (!nodeSet.delete(node)) {return} // Abort if object doesn't exist
+		
+		// Delete DOM element
+		node.selfDestruct();
 	}
 	
 	// Return a node if it exists in the appropriate list, search by its name

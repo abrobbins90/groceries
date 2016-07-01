@@ -1,28 +1,13 @@
-div.word_text {
-	position:absolute;
-	left:-500px;
-	top:-500px;
-	z-index:3;
-	font-family: serif;
-	padding-left: 2px;
-	padding-right: 2px;
+
+
+input[type="text"] {
+	font-family: "Arial";
 }
-div.meal_text {
-	background-color:#CACBB5;
-	color:#000000;
+span {
+	font-family: "Arial";
 }
-div.meal_onMenu_text {
-	background-color:#333333;
-	color:#FFFFFF;
-}
-div.ingr_text {
-	background-color:#333333;
-	color:#FFFFFF;
-}
-div.ingr_onMenu_text {
-	background-color:#333333;
-	color:#FFFFFF;
-}
+
+
 
 #container {
 	height:95%;
@@ -34,7 +19,6 @@ div.ingr_onMenu_text {
 #recipe_area {
 	flex:0 0 200px;
 	background-color:#FF5555;
-	color:#FFFFFF;
 	display:flex;
 	flex-direction:column;
 }
@@ -53,6 +37,7 @@ div.ingr_onMenu_text {
 #ingredient_entry {
 	flex:10 0 250px;
 	justify-content:flex-start;
+	flex-wrap:wrap;
 	padding-top:10px;
 	border-bottom:10px solid #FF0000;
 }
@@ -82,14 +67,36 @@ div.ingr_onMenu_text {
 .menu_input_box {
 	text-align:center;
 	background-color:#FF9999;
-	border:2px solid #FF9999;
+	border:0px;
 	border-radius: 4px;
 	outline: none;
 	width:150px;
-	height:24px;
-	font-size:14px;
-	padding:3px;	
+	
+	font-size:15px;
+	padding:4px;	
 }
+.menu_item_box {
+	background-color:#FF9999;
+	border:0px;
+	border-radius: 4px;
+	font-size:15px;
+	padding:4px;
+}
+.rmItemButton {
+	background-color:#FF2222;
+	color:#FFFFFF;
+	font-size:12px;
+	border:0px;
+	border-radius: 4px;
+	display:none;
+	outline:none;
+	margin-left:5px;
+}
+.menu_item_box:hover > .rmItemButton {
+	display:inline;
+}
+
+
 .meal_selected {
 	border-color:#99FF99;
 }
