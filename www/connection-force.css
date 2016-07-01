@@ -1,0 +1,28 @@
+div.wordObjectItem {
+	position: absolute;
+	z-index: 0;
+	background-color: black;
+	color: #FFFFFF;
+	font-family: serif;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+div.wordObjectKeyword {
+	position: absolute;
+	z-index: 1;
+	background-color: black;
+	color: #FFFFFF;
+	font-size: 150%;
+	font-weight: bold;
+	font-family: serif;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+div.displayBox {
+	background-color: #FFFFFF;
+	color: #000000;
+	border: 2px solid black;
+	padding: 2px;
+}

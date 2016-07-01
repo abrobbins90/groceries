@@ -1,0 +1,59 @@
+<!DOCTYPE>
+<html>
+<head>
+	<title>Connections</title>
+
+	<link rel="stylesheet" type="text/css" href="connection-force.css">
+
+	<script type="text/javascript" src="connection-force.js"></script>
+</head>
+<body onload="loadData();" onclick="randColorChange(0)" style="background-color: white">
+
+	<form id="con">
+		<div id="conarea" class="displayBox" onclick="randColorChange(1)" style="position:absolute;left:5px;top:5px;width:350px;height:100px;">
+			<table id="conareaTable">
+				<tr>
+					<td>Items: </td>
+					<td>Items: </td>
+				</tr>
+				<tr>
+					<td><textarea id="item1" rows="2" cols="17" style="resize:none;" onkeyup="actionSubmit(event)" onfocus="keyEffects(0)"></textarea></td>
+					<td><textarea id="item2" rows="2" cols="17" style="resize:none;" onkeyup="actionSubmit(event)" onfocus="keyEffects(0)"></textarea></td>
+				</tr>
+			</table>
+			<input type="button" value="Submit Item" onclick="readItem(0)"></input>
+			<input type="button" id="editButton" value="Edit Item" onclick="readItem(1)" disabled="disabled"></input>
+			<input type="text" id="saveOrLoadRecord" size="5"></input>
+			<input type="button" id="saveButton" value="Save" onclick="printSaveData()"></input>
+			<input type="button" id="loadButton" value="Load" onclick="loadPrintedData()"></input>
+		</div>
+
+		<div id="options" class="displayBox" onclick="randColorChange(3)" style="position:absolute;left:365px;top:5px;">
+			<input type="radio" name="tORv" id="textopt" onclick="changeopt(1)" value="text">List</input>
+			<input type="radio" name="tORv" id="visualopt" onclick="changeopt(2)" value="visual" checked>Floating</input><br />
+			Links:
+			<input type="radio" name="order" onclick="linkOrder(1)" value="1order">1st Order</input>
+			<input type="radio" name="order" onclick="linkOrder(2)" value="2order" checked>2nd Order</input>
+			<input type="radio" name="order" onclick="linkOrder(-1)" value="allorder">All</input><br />
+			<input type="checkbox" id="colorOpt" onchange="colorEffectToggle()">Color Change</input>
+			<input type="button" id="resetColor" onclick="resetColors()" value="Reset Colors"></input><br />
+			<input type="checkbox" id="keyEffectSwitch" onchange="keyEffects(-1)">Key Effects</input><br />
+			<input type="checkbox" id="mouseGravitySwitch" onchange="mouseGravity()">Mouse Gravity</input>
+		</div>
+
+		<div id="displayarea" class="displayBox" onclick="randColorChange(2)" style="position:absolute;left:5px;top:115px;width:350px;">
+			<table id="displayareaTable">
+				<tr>
+					<td>Keywords:</td>
+					<td><textarea id="itemSearch" rows="3" cols="26" style="resize:none;" onkeyup="search()" onfocus="keyEffects(0)"></textarea></td>
+				</tr>
+			</table>
+
+			<input type="button" value="Delete" onclick="deleteItems()"></input>
+			<input type="button" id="selectAll" value="Select All" onclick="choose(-1)"></input>
+			<input type="button" id="unselectAll" value="Unselect All" onclick="choose(-2)"></input>
+		</div>
+	</form>
+
+</body>
+</html>

@@ -1,46 +1,9 @@
-<!DOCTYPE>
-<html>
-<head>
-<title>Connections</title>
-
-<style type="text/css">
-div.wordObjectItem {
-position:absolute;
-z-index:0;
-background-color:black;
-color:#FFFFFF;
-font-family: serif;
-padding-left: 2px;
-padding-right: 2px;
-}
-
-div.wordObjectKeyword {
-position:absolute;
-z-index:1;
-background-color:black;
-color:#FFFFFF;
-font-size:150%;
-font-weight:bold;
-font-family: serif;
-padding-left: 2px;
-padding-right: 2px;
-}
-
-div.displayBox {
-background-color:#FFFFFF;
-color:#000000;
-border:2px solid black;
-padding:2px;
-}
-
-</style>
-
-<script type="text/javascript">
+// This file holds the floaty graph-animation code
 
 /////////////////////////////////////////////////////Function to add more Items/////////////////////////////////////////////////////
 
-var itemList //itemList[i] is the pointer to the ith item object (itemObject)
-var itemListStrings //parallel array of itemList for easier searching
+var itemList = [] //itemList[i] is the pointer to the ith item object (itemObject)
+var itemListStrings = [] //parallel array of itemList for easier searching
 
  //removes extra \n and extra spaces between items, from input and returns shortened string
 function removeExtra(stringInput) {
@@ -51,7 +14,7 @@ function removeExtra(stringInput) {
  //Input processing: called by submitting items
 function readItem(addOrEdit) {//add(0) or edit(1) an item
 	//Read items and process strings
-	
+
 	var item1Value=document.getElementById("item1").value;
 	var item2Value=document.getElementById("item2").value;
 
@@ -73,12 +36,12 @@ function readItem(addOrEdit) {//add(0) or edit(1) an item
 	}
 }
  //takes in an array representing the item1's and an array for item2's
-function addItem(item1Value,item2Value) {
+function addItem(item1Value, item2Value) {
 
 	var item1Objects=new Array();
 	var item2Objects=new Array(); //pointers of all entered items
 	for (var i in item1Value) { //loop through item1 strings
-		var itemIndex=itemListStrings.indexOf(item1Value[i].toLowerCase()); //find in existing items
+		var itemIndex = itemListStrings.indexOf(item1Value[i].toLowerCase()); //find in existing items
 		if (itemIndex==-1) { //if nonexistent, create and add to existing items
 			var newItem=new itemObject(item1Value[i])
 			itemList.push(newItem);
@@ -109,7 +72,7 @@ function addItem(item1Value,item2Value) {
 				item1Objects[i].connections.push(item2Objects[j]);
 				item2Objects[j].connections.push(item1Objects[i]);
 				item1Objects[i].obj.mass=defaultMass*Math.pow((item1Objects[i].connections.length),1)
-				item2Objects[i].obj.mass=defaultMass*Math.pow((item2Objects[i].connections.length),1)
+				item2Objects[j].obj.mass=defaultMass*Math.pow((item2Objects[j].connections.length),1)
 			}
 		}
 	}
@@ -125,7 +88,7 @@ function editItem(item1Value,item2Value) {alert("DONT COME HERE!!!")
 		itemIdNum[editing].obj.hrad=itemIdNum[editing].obj.ID.clientWidth/2;
 		itemIdNum[editing].obj.vrad=itemIdNum[editing].obj.ID.clientHeight/2;
 
-		for (kk in keywords) { //cycle through keywords to add new ones to list
+		for (var kk in keywords) { //cycle through keywords to add new ones to list
 			if (keyList[0].lastIndexOf(keywords[kk])==-1) {
 				keyNum=keyList[0].push(keywords[kk]); //add keyword to list and return new length
 				keyList[1].push(L2Set.shift()); //store pointer for object
@@ -156,9 +119,9 @@ function itemObject(name) {
 ///////////////////////// Function to search and display items based on searched items /////////////////////////
 var foundItemList
 function search() { // search stored data (called after every keystroke)
-	
+
 	foundItemList=new Array();
-	numberFound=0; //number of items found so far
+	var numberFound=0; //number of items found so far
 
 	// read keywords
 	var searchedItems=document.getElementById("itemSearch").value;
@@ -171,7 +134,7 @@ function search() { // search stored data (called after every keystroke)
 	searchedItems=searchedItems.replace(/&&\s*$/ig,"and");
 	searchedItems=searchedItems.replace(/\|\|\s*$/ig,"or");
 	searchedItems=searchedItems.replace(/(^|\&&|\|\||\()((?:[^(](?!$|\)|&&|\|\|))*.(?=$|\)|&&|\|\|))/g,"$1isConnected(\"$2\",temp)");
-	
+
 	//cycle through all items and compare to search criteria
 	for (var i in itemList) {
 		var temp=itemList[i];
@@ -213,7 +176,7 @@ function isConnected(searchWord,item) {
 	searchWord=searchWord.toLowerCase();
 	if(itemListStrings.indexOf(searchWord)==-1) {return false}
 	searchWord=itemList[itemListStrings.indexOf(searchWord)];
-	
+
 	var connectedItemList=orderExpand(item);//returns all items connected to item in order searchLinkOrder
 	if (connectedItemList.indexOf(searchWord)==-1) {return false}
 	else {return true}
@@ -311,8 +274,8 @@ function saveData() {
 			itemStore+=itemList[i].connections[j].name;
 		}
 	}
-	setCookie("itemStore",itemStore)
-	setCookie("colors",colors.join("|"))
+	setCookie("itemStore", itemStore)
+	setCookie("colors", colors.join("|"))
 }
 //make string representing saved data
 var dataString
@@ -338,7 +301,7 @@ function printSaveData() {
 //data encyption
 function encrypt(strInput) {
 	var strOut="";
-	for (ch=0;ch<strInput.length;ch++) {
+	for (var ch=0;ch<strInput.length;ch++) {
 		charNum=strInput.charCodeAt(ch);//Unicode of character at ch
 		if (charNum>=97 && charNum<=122) {charNum=((charNum-97)*7)%26+97;}
 		strOut+=String.fromCharCode(charNum);
@@ -348,7 +311,7 @@ function encrypt(strInput) {
 //data decryption
 function decrypt(strInput) {
 var strOut="";
-	for (ch=0;ch<strInput.length;ch++) {
+	for (var ch=0;ch<strInput.length;ch++) {
 		charNum=strInput.charCodeAt(ch);//Unicode of character at ch
 		if (charNum>=97 && charNum<=122) {charNum=((charNum-97)*15)%26+97;}
 		strOut+=String.fromCharCode(charNum);
@@ -358,15 +321,15 @@ var strOut="";
 
 /////////////////////////////////////////////Access, load, & set cookies and variables////////////////////////////////////////////
 
-var colors
+var colors = []
 var colorReset=new Array("#EAEBD5","#0037F0","#60FF60","#FF3030");
 //load cookie data or default values if no cookies
 function loadData() {
 
 	//Check if there are any cookies first
-	colors=getCookie("colors");
+	var color_string=getCookie("colors");
 
-	if(colors!="") { //there is data on record
+	if(color_string!="") { //there is data on record
 		var systemRead=getCookie("itemStore");
 		systemRead=systemRead.split("|||");
 		for(var i in systemRead) {
@@ -375,7 +338,7 @@ function loadData() {
 			var item2Read=systemRead[i][1].split("|");
 			addItem(item1Read,item2Read);
 		}
-		colors=colors.split("|");
+		colors=color_string.split("|");
 	}
 	else {
 		itemList=new Array();
@@ -399,8 +362,8 @@ function loadPrintedData() {
 			addItem(item1Read,item2Read);
 		}
 
-		colors=dataString[3];
-		colors=colors.split("|");
+		color_string=dataString[3];
+		colors=color_string.split("|");
 		document.getElementById("saveOrLoadRecord").value='';
 	}
 	setColorAreas();
@@ -574,16 +537,16 @@ function HoriWall (reflect,lBound,rBound,yLine) {
 var vWall=new Array();
 var hWall=new Array();
 function setWalls () {
-	temp1=document.getElementById("options");
-	temp2=document.getElementById("displayarea");
-	t1top=temp1.offsetTop;
-	t1left=temp1.offsetLeft;
-	t1height=temp1.clientHeight+2;
-	t1width=temp1.clientWidth+2;
-	t2top=temp2.offsetTop;
-	t2left=temp2.offsetLeft;
-	t2height=temp2.clientHeight+2;
-	t2width=temp2.clientWidth+2;
+	var temp1=document.getElementById("options");
+	var temp2=document.getElementById("displayarea");
+	var t1top=temp1.offsetTop;
+	var t1left=temp1.offsetLeft;
+	var t1height=temp1.clientHeight+2;
+	var t1width=temp1.clientWidth+2;
+	var t2top=temp2.offsetTop;
+	var t2left=temp2.offsetLeft;
+	var t2height=temp2.clientHeight+2;
+	var t2width=temp2.clientWidth+2;
 	vWall[0]=new VertWall(1,t1top,t1top+t1height,t1left+t1width)
 	vWall[1]=new VertWall(1,t2top,t2top+t2height,t2left+t2width)
 	hWall[0]=new HoriWall(1,t1left,t1left+t1width,t1top+t1height)
@@ -640,28 +603,28 @@ function itemBox(itemName) {
 
 	this.calcDist = function(other,displace) { //calculate angle and distant between 2 objects
 		//displace is 1 if subtracting out the radii
-		tempx=other.xpos-this.xpos;
-		tempy=other.ypos-this.ypos;
-		tempangle=Math.atan2(tempy,tempx);
-		tempx=Math.max(Math.abs(tempx)-(this.hrad+other.hrad)*displace,0)
-		tempy=Math.max(Math.abs(tempy)-(this.vrad+other.vrad)*displace,0)
-		tempdist=quad(tempx,tempy);
+		var tempx=other.xpos-this.xpos;
+		var tempy=other.ypos-this.ypos;
+		var tempangle=Math.atan2(tempy,tempx);
+		var tempx=Math.max(Math.abs(tempx)-(this.hrad+other.hrad)*displace,0)
+		var tempy=Math.max(Math.abs(tempy)-(this.vrad+other.vrad)*displace,0)
+		var tempdist=quad(tempx,tempy);
 		return new Array(tempdist,tempangle)
 	};
 
 	this.rootDist = function() { //calculate distance to root if rooted
-		tempx=this.xstart-this.xpos;
-		tempy=this.ystart-this.ypos;
-		rootdistance=Math.sqrt(tempx*tempx+tempy*tempy);
-		rootangle=Math.atan2(tempy,tempx);
+		var tempx=this.xstart-this.xpos;
+		var tempy=this.ystart-this.ypos;
+		var rootdistance=Math.sqrt(tempx*tempx+tempy*tempy);
+		var rootangle=Math.atan2(tempy,tempx);
 		return new Array(rootdistance,rootangle)
 	};
 
 	this.centerRootDist = function () { //calculate distance to center if center force is on
-		tempx=hlen/2-this.xpos;
-		tempy=vlen/2-this.ypos;
-		centerdist=Math.sqrt(tempx*tempx+tempy*tempy);
-		centerangle=Math.atan2(tempy,tempx);
+		var tempx=hlen/2-this.xpos;
+		var tempy=vlen/2-this.ypos;
+		var centerdist=Math.sqrt(tempx*tempx+tempy*tempy);
+		var centerangle=Math.atan2(tempy,tempx);
 		return new Array(centerdist,centerangle)
 	};
 
@@ -673,7 +636,7 @@ function itemBox(itemName) {
 
 		// root force
 		if (this.rooted==1 || displaymethod==1) { //This is the only force when list display(1) is in effect
-			rootvar=this.rootDist();
+			var rootvar=this.rootDist();
 			force=rootvar[0]*rootforce;
 			this.xacc+=force*Math.cos(rootvar[1]);
 			this.yacc+=force*Math.sin(rootvar[1]);
@@ -682,19 +645,19 @@ function itemBox(itemName) {
 		//If floating display(2) is in effect, calculate forces between objects
 		if (displaymethod==2) {
 			if (this.centerrooted==1) {
-				centervar=this.centerRootDist();
+				var centervar=this.centerRootDist();
 				force=Math.sqrt(centervar[0])*centerforce;
 				this.xacc+=force*Math.cos(centervar[1]);
 				this.yacc+=force*Math.sin(centervar[1]);
 			}
 			// mouse force
 			if (mouseOnorOff==1) {
-				baseg=gconsts.mouse; //store object base
+				var baseg=gconsts.mouse; //store object base
 				//calculate distance and angle
-				tempx=x-this.xpos;
-				tempy=y-this.ypos;
-				mousedist=quad(tempx,tempy);
-				mouseangle=Math.atan2(tempy,tempx);
+				var tempx=x-this.xpos;
+				var tempy=y-this.ypos;
+				var mousedist=quad(tempx,tempy);
+				var mouseangle=Math.atan2(tempy,tempx);
 
 				force=(baseg.attrep*baseg.gconst*mousemass*this.mass)/Math.pow(mousedist,baseg.forcePower); //force is a temporary variable
 				if(baseg.forcePower2>0 && baseg.attrep==1) {
@@ -708,8 +671,8 @@ function itemBox(itemName) {
 			baseg=gconsts.connected;
 			for (var i in this.connectedObjects) {
 				var tempvals=this.calcDist(this.connectedObjects[i],0)
-				currdist=tempvals[0];
-				currangle=tempvals[1];
+				var currdist=tempvals[0];
+				var currangle=tempvals[1];
 				force=(baseg.attrep*baseg.gconst*this.connectedObjects[i].mass*this.mass)/Math.pow(currdist,baseg.forcePower);
 				if(baseg.forcePower2>0 && baseg.attrep==1) {
 					force-=(baseg.gconst*Math.pow(baseg.forceradius,baseg.forcePower2-baseg.forcePower)*this.connectedObjects[i].mass*this.mass)/Math.pow(currdist,baseg.forcePower2)
@@ -778,7 +741,7 @@ function itemBox(itemName) {
 		var bP=this.ypos+this.vrad;
 
 		//Horizontal
-		for (i in hWall) {
+		for (var i in hWall) {
 			if (hWall[i].side==1 && rP>=hWall[i].lBound && lP<=hWall[i].rBound && tP-this.yvel*sp>=hWall[i].yLine && hWall[i].yLine>=tP) { //top
 				this.ypos+=2*(hWall[i].yLine-tP);
 				this.yvel=Math.abs(this.yvel);
@@ -789,7 +752,7 @@ function itemBox(itemName) {
 			}
 		}
 		//Vertical
-		for (i in vWall) {
+		for (var i in vWall) {
 			if (vWall[i].side==1 && bP>=vWall[i].tBound && tP<=vWall[i].bBound && lP-this.xvel*sp>=vWall[i].xLine && vWall[i].xLine>=lP) { //left
 				this.xpos+=2*(vWall[i].xLine-lP);
 				this.xvel=Math.abs(this.xvel);
@@ -989,52 +952,3 @@ function presed(event) {
 	}
 }
 
-</script>
-</head>
-
-<body onload="loadData();"
-onclick="randColorChange(0)"
-style="background-color:white">
-
-<form id="con">
-
-<div id="conarea" class="displayBox" onclick="randColorChange(1)"style="position:absolute;left:5px;top:5px;width:350px;height:100px;">
-<table id="conareaTable">
-<tr><td>Items: </td>
-<td>Items: </td></tr>
-<tr><td><textarea id="item1" rows="2" cols="17" style="resize:none;" onkeyup="actionSubmit(event)" onfocus="keyEffects(0)"></textarea></td>
-<td><textarea id="item2" rows="2" cols="17" style="resize:none;" onkeyup="actionSubmit(event)" onfocus="keyEffects(0)"></textarea></td></tr>
-</table>
-<input type="button" value="Submit Item" onclick="readItem(0)"></input>
-<input type="button" id="editButton" value="Edit Item" onclick="readItem(1)" disabled="disabled"></input>
-<input type="text" id="saveOrLoadRecord" size="5"></input>
-<input type="button" id="saveButton" value="Save" onclick="printSaveData()"></input>
-<input type="button" id="loadButton" value="Load" onclick="loadPrintedData()"></input>
-</div>
-
-<div id="options" class="displayBox" onclick="randColorChange(3)" style="position:absolute;left:365px;top:5px;">
-<input type="radio" name="tORv" id="textopt" onclick="changeopt(1)" value="text">List</input>
-<input type="radio" name="tORv" id="visualopt" onclick="changeopt(2)" value="visual" checked>Floating</input><br />
-Links:
-<input type="radio" name="order" onclick="linkOrder(1)" value="1order">1st Order</input>
-<input type="radio" name="order" onclick="linkOrder(2)" value="2order" checked>2nd Order</input>
-<input type="radio" name="order" onclick="linkOrder(-1)" value="allorder">All</input><br />
-<input type="checkbox" id="colorOpt" onchange="colorEffectToggle()">Color Change</input>
-<input type="button" id="resetColor" onclick="resetColors()" value="Reset Colors"></input><br />
-<input type="checkbox" id="keyEffectSwitch" onchange="keyEffects(-1)">Key Effects</input><br />
-<input type="checkbox" id="mouseGravitySwitch" onchange="mouseGravity()">Mouse Gravity</input>
-</div>
-
-<div id="displayarea" class="displayBox" onclick="randColorChange(2)" style="position:absolute;left:5px;top:115px;width:350px;">
-<table id="displayareaTable">
-<tr><td>Keywords:</td>
-<td><textarea id="itemSearch" rows="3" cols="26" style="resize:none;" onkeyup="search()" onfocus="keyEffects(0)"></textarea></td></tr>
-</table>
-
-<input type="button" value="Delete" onclick="deleteItems()"></input>
-<input type="button" id="selectAll" value="Select All" onclick="choose(-1)"></input>
-<input type="button" id="unselectAll" value="Unselect All" onclick="choose(-2)"></input>
-</div>
-
-</body>
-</html>
