@@ -8,7 +8,7 @@ var itemListStrings = [] //parallel array of itemList for easier searching
  //removes extra \n and extra spaces between items, from input and returns shortened string
 function removeExtra(stringInput) {
 	stringInput=stringInput.replace(/\n/g,"");
-	stringInput=stringInput.replace(/, +/g,",");
+	stringInput=stringInput.replace(/,\s+/g,",");
 	return stringInput
 }
  //Input processing: called by submitting items
@@ -18,7 +18,7 @@ function readItem(addOrEdit) {//add(0) or edit(1) an item
 	var item1Value=document.getElementById("item1").value;
 	var item2Value=document.getElementById("item2").value;
 
-	if (item1Value!='' || item2Value!='') { //if both aren't empty (you mean, "if they aren't both empty" )
+	if (item1Value!='' || item2Value!='') { //if they aren't both empty
 		document.getElementById("item1").value='';
 		document.getElementById("item2").value='';
 		item1Value=removeExtra(item1Value.trim());
@@ -37,6 +37,11 @@ function readItem(addOrEdit) {//add(0) or edit(1) an item
 }
  //takes in an array representing the item1's and an array for item2's
 function addItem(item1Value, item2Value) {
+	if( Object.prototype.toString.call(item1Value) !== '[object Array]' ){
+		alert('item1Value not array')
+		alert(item1Value)
+	}
+	if( Object.prototype.toString.call(item2Value) !== '[object Array]' ) alert('item2Value not array')
 
 	var item1Objects=new Array();
 	var item2Objects=new Array(); //pointers of all entered items
@@ -138,7 +143,7 @@ function search() { // search stored data (called after every keystroke)
 	//cycle through all items and compare to search criteria
 	for (var i in itemList) {
 		var temp=itemList[i];
-		if (eval(searchedItems)) {
+		if (eval(searchedItems)) { // do we need to replace things like "one" with the OBJECT POINTER?
 			itemList[i].found=1;
 			numberFound=foundItemList.push(itemList[i]);
 		}
@@ -334,7 +339,7 @@ function loadData() {
 		systemRead=systemRead.split("|||");
 		for(var i in systemRead) {
 			systemRead[i]=systemRead[i].split("||");
-			var item1Read=systemRead[i][0];
+			var item1Read=systemRead[i][0].split("|");
 			var item2Read=systemRead[i][1].split("|");
 			addItem(item1Read,item2Read);
 		}
