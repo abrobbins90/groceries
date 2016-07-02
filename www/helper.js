@@ -12,16 +12,5 @@ function name_trim(name) {
 
 	return name
 }
-// Return list of all node names
-function getNodeStrings(nodeList) {
-	// nodeList : any array of node objects
-	var nodeStrings = new Array();
-	for (var i in nodeList) {
-		nodeStrings[i] = nodeList[i].name;
-	}
-	return nodeStrings
-}
-
-
 
 

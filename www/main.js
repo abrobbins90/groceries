@@ -34,7 +34,7 @@ function createNewMeal() {
 	if (name_trim(mealName).length == 0) {return} // nothing there
 	
 	// Create meal node
-	var mealNode = graph.addMeal(mealName);
+	var mealNode = graph.addNode("meal", mealName);
 	
 	mealSelect(mealNode); // Select newly created meal
 	document.getElementById("new_ingredient").focus();
@@ -44,7 +44,7 @@ function createNewMeal() {
 function removeRecipe(mealNode = selectedMeal) {
 	// mealNode : node object of meal to be deleted (default meal to delete is current selection)
 	
-	graph.removeMeal(mealNode); // Delete meal
+	graph.removeNode(mealNode); // Delete meal
 		
 	// If the deleted meal was the selected meal, change selected meal to nothing
 	if (mealNode == selectedMeal) {
@@ -73,64 +73,61 @@ function meal_keyPress(event) {
 		var mealNameTrim = name_trim(mealName);
 		if (mealNameTrim.length == 0) {return} // nothing there
 		
-		var mealNode = graph.getMealNodeByName(mealNameTrim);
+		var mealNode = graph.getNodeByName("meal", mealNameTrim);
 		// If such a node doesn't exist, this returns -1
 		mealSelect(mealNode);
 	}
 }
 // Ingredient OR description name
-function ingrORdesc_keyPress(event, ingrORdesc) {
+function ingrORdesc_keyPress(event, type) {
 
 	var key = event.keyCode;
 	if (key == 13) { // Enter Button (Add this ingredient/description)
 		// First check to see if there is anything in the box
-		var nameToAdd = document.getElementById("new_" + ingrORdesc).value;
+		var nameToAdd = document.getElementById("new_" + type).value;
 		var nameTrim = name_trim(nameToAdd);
 		if (nameTrim == "") {return}
 		
 		// If so, see if it already exists. Add it if it doesn't
-		var node
-		if (ingrORdesc == "ingredient") {
-			node = graph.getIngrNodeByName(nameTrim);
-			if (node == -1) {
-				node = graph.addIngr(nameToAdd);
-			}
-		}
-		else if (ingrORdesc == "description") {
-			node = graph.getDescNodeByName(nameTrim);
-			if (node == -1) {
-				node = graph.addDesc(nameToAdd);
-			}
+		var node = graph.getNodeByName(type, nameTrim);
+		if (node == -1) {
+			node = graph.addNode(type, nameToAdd);
 		}
 		
 		// Add connection
 		graph.addConnection(selectedMeal, node);
-		document.getElementById("new_" + ingrORdesc).value = ""; // clear entry box
+		document.getElementById("new_" + type).value = ""; // clear entry box
+		document.getElementById("new_" + type).setAttribute("class", "menu_input_box ingredient_box");
 		showSelectedRecipe();
 	}
-	else { // Initial search to see if entered meal matches any currently
-
+	else { 
+		// Initial search to see if entered item matches any currently
+		// Read meal name in box
+		var name = document.getElementById("new_" + type).value;
+		// First check it is valid
+		var nameTrim = name_trim(name);
+		if (nameTrim.length == 0) {return} // if nothing there
+		
+		var node = graph.getNodeByName(type, nameTrim);
+		if (node == -1) {
+			document.getElementById("new_" + type).setAttribute("class", "menu_input_box ingredient_box");
+		}
+		else {
+			document.getElementById("new_" + type).setAttribute("class", "menu_input_box ingredient_box node_selected");
+		}
 	}
 }
 
 // Remove an ingredient or description from a menu
-function removeIngr(name) {
-	var node = graph.getIngrNodeByName(name);
+function remove_NodeT2(type, name) {
+	var node = graph.getNodeByName(type, name);
 	graph.removeConnection(selectedMeal, node);
 	if (node.connections.size == 0) {
-		graph.removeIngr(node);
+		graph.removeNode(node);
 	}
 	showSelectedRecipe()
-	document.getElementById("new_ingredient").focus();
-}
-function removeDesc(name) {
-	var node = graph.getDescNodeByName(name);
-	graph.removeConnection(selectedMeal, node);
-	if (node.connections.size == 0) {
-		graph.removeDesc(node);
-	}
-	showSelectedRecipe()
-	document.getElementById("new_description").focus();
+	document.getElementById("new_" + type).focus();
+		
 }
 
 
@@ -159,7 +156,7 @@ function mealSelect(mealNode) {
 		showSelectedRecipe();
 
 		// Also highlight meal name
-		document.getElementById("meal_name").setAttribute("class", "menu_input_box meal_selected");
+		document.getElementById("meal_name").setAttribute("class", "menu_input_box node_selected");
 	}
 }
 
@@ -180,21 +177,25 @@ function showSelectedRecipe() {
 			boxElements[i].setAttribute("id", "boxElement" + i);
 		}
 		// Also add button to remove the item if need be
-		var rmButton = document.createElement("input");
-		rmButton.setAttribute("type", "button");
+		//var rmButton = document.createElement("input");
+		//rmButton.setAttribute("type", "button");
+		//rmButton.setAttribute("class", "rmItemButton");
+		//rmButton.setAttribute("value", "x");
+		var rmButton = document.createElement("span");
+		rmButton.appendChild(document.createTextNode("\u2716"));
 		rmButton.setAttribute("class", "rmItemButton");
-		rmButton.setAttribute("value", "x");
+		
 		
 		// set class and parent element based on type
 		if (node.type == "ingredient") {
 			boxElements[i].setAttribute("class", "menu_item_box ingredient_box");
 			document.getElementById("ingredient_entry").appendChild(boxElements[i]);
-			rmButton.setAttribute("onclick", "removeIngr('" + node.name + "')");
+			rmButton.setAttribute("onclick", "remove_NodeT2('ingredient', '" + node.name + "')");
 		}
 		else if (node.type == "description") {
 			boxElements[i].setAttribute("class", "menu_item_box description_box");
 			document.getElementById("description_entry").appendChild(boxElements[i]);
-			rmButton.setAttribute("onclick", "removeDesc('" + node.name + "')");
+			rmButton.setAttribute("onclick", "remove_NodeT2('description', '" + node.name + "')");
 		}
 		boxElements[i].style.display = "inline";
 		boxElements[i].innerHTML = node.shownName;

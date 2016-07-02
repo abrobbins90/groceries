@@ -8,64 +8,41 @@ class GraphClass {
 		this.descNodes = new Set(); // List of all description nodes
 	}
 
-	addMeal(mealName) {
-		var mealNode = new MealNode(mealName);
-		this.mealNodes.add(mealNode);
-		return mealNode
-	}
-	addIngr(ingrName) {
-		var ingrNode = new IngrNode(ingrName);
-		this.ingrNodes.add(ingrNode);
-		return ingrNode
-	}
-	addDesc(descName) {
-		var descNode = new DescNode(descName);
-		this.descNodes.add(descNode);
-		return descNode
+	// Add Nodes
+	addNode(type, name) {
+		var nodeList = this.getNodeSet(type);
+		var node
+		if (type == "meal") {node = new MealNode(name);}
+		else if (type == "ingredient") {node = new IngrNode(name);}
+		else if (type == "description") {node = new DescNode(name);}
+		nodeList.add(node);
+		return node
 	}
 	
-	removeMeal(mealNode) {
-		// Remove mealNode from mealNodes
-		// Remove any edges between mealNode and other nodes
-		
-		this.deleteNode(this.mealNodes, mealNode);
-		
-		// Remove its connections
-		for (let node of mealNode.connections) {
-			this.removeConnection(mealNode, node);
-		}
-	}
-	removeIngr(ingrNode) {
-		this.deleteNode(this.ingrNodes, ingrNode);
-	}
-	removeDesc(descNode) {
-		this.deleteNode(this.descNodes, descNode);
-	}
-	// helper method for above removal methods
-	deleteNode(nodeSet, node) {
-		// Delete node
+	// Remove Nodes
+	removeNode(node) {
+		var nodeSet = this.getNodeSet(node.type);
 		if (!nodeSet.delete(node)) {return} // Abort if object doesn't exist
 		
-		// Delete DOM element
-		node.selfDestruct();
+		node.selfDestruct(); // Delete DOM element
+		
+		if (node.type == "meal") {
+			// Remove its connections
+			for (let nodeConnect of node.connections) {
+				this.removeConnection(node, nodeConnect);
+			}	
+		}
 	}
 	
-	// Return a node if it exists in the appropriate list, search by its name
-	getMealNodeByName(mealName) {
-		return this.getNodeByName(this.mealNodes, mealName)
-	}
-	getIngrNodeByName(ingrName) {
-		return this.getNodeByName(this.ingrNodes, ingrName)
-	}
-	getDescNodeByName(descName) {
-		return this.getNodeByName(this.descNodes, descName)
-	}
-	getNodeByName(nodeList, name) {
-		for (let node of nodeList) {
+	// Search a node by name
+	getNodeByName(type = "", name) {
+		var nodeSet = this.getNodeSet(type);
+		for (let node of nodeSet) {
 			if (node.name == name) {return node}
 		}
 		return -1 // not found
 	}
+	
 	
 	
 	// Deal with connections (edges)
@@ -82,6 +59,13 @@ class GraphClass {
 		return false
 	}
 	
+	// Helper methods
+	getNodeSet(type) {
+		if (type == "meal") {return this.mealNodes}
+		else if (type == "ingredient") {return this.ingrNodes}
+		else if (type == "description") {return this.descNodes}
+		else {return new Set()}
+	}
 }
 
 // Define a node
