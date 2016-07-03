@@ -837,7 +837,7 @@ function adamandeve() {
 //adjust for change in window size. Calculate all dimensions
 var hlen
 var vlen
-onresize= function (){resiz()};
+//onresize= function (){resiz()};
 function resiz() {
 	hlen=document.body.clientWidth;
 	vlen=document.body.clientHeight;

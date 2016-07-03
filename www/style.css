@@ -1,9 +1,7 @@
-
-
-input[type="text"] {
+input[type = "text"] {
 	font-family: "Arial";
 }
-span {
+div {
 	font-family: "Arial";
 }
 
@@ -15,14 +13,14 @@ span {
 	display:flex;
 }
 
-/* Meal Entry Panel */
+/* Recipe Entry Panel */
 #recipe_area {
 	flex:0 0 200px;
 	background-color:#FF5555;
 	display:flex;
 	flex-direction:column;
 }
-
+/* Individual Entry Panels*/
 .recipe_entry {
 	display:flex;
 	align-items:center;	
@@ -41,15 +39,38 @@ span {
 	padding-top:10px;
 	border-bottom:10px solid #FF0000;
 }
-#description_entry {
+#tag_entry {
 	flex:2 0 100px;
 	justify-content:flex-start;
 	padding-top:10px;
 }
 
-#meal_name {
+/* Input boxes*/
+.menu_input_box {
+	text-align:center;
+	background-color:#FF9999;
+	border:2px solid #FF9999;
+	border-radius: 4px;
+	outline: none;
+	width:150px;
+	
+	font-size:15px;
+	padding:2px;	
+}
+.node_selected {
+	border-color:#99FF99;
+}
+#meal_input {
 	
 }
+#ingredient_input {
+	order:2;
+}
+#tag_input {
+	order:2;
+}
+
+/* meal entry*/
 #meal_button {
 	height:25px;
 	border:2px solid #FFFFFF;
@@ -64,55 +85,52 @@ span {
 	color:#FFFFFF;
 }
 
-.menu_input_box {
-	text-align:center;
-	background-color:#FF9999;
-	border:2px solid #FF9999;
-	border-radius: 4px;
-	outline: none;
-	width:150px;
-	
-	font-size:15px;
-	padding:2px;	
-}
-.menu_item_box {
-	background-color:#FF9999;
-	border:0px;
-	border-radius: 4px;
-	font-size:15px;
-	padding:4px;
-}
-.rmItemButton {
-	background-color:#FF2222;
-	color:#FFFFFF;
-	font-size:12px;
-	border:0px;
-	border-radius: 4px;
-	display:none;
-	outline:none;
-	margin-left:5px;
-}
-.menu_item_box:hover > .rmItemButton {
-	display:inline;
-}
-
-
-.node_selected {
-	border-color:#99FF99;
-}
+/* ingredient/tag entry*/
 .ingredient_box {
 	margin:3px;
 }
-.description_box {
+.tag_box {
 	margin:3px;
 }
+.menu_item_box { /*Box to hold item names and remove buttons*/
+	background-color:#FF9999;
+	border:0px;
+	border-radius: 4px;
+}
+.box_contents {
+	font-size:15px;
+	padding:4px 16px 4px 16px;
+	display:inline-block;
+	transition:padding .2s;
+}
+.rmItemButton {
+	background-color:#FF9999;
+	color:#FFFFFF;
+	font-size:15px;
+	border:0px;
+	width:0px;
+	padding:0px;
+	outline:none;
+	transition: width .2s;
+}
+.menu_item_box:hover > .rmItemButton {
+	transition: width .2s;
+	width:23px;
+	border-left:1px solid #FF5555;
+}
+.menu_item_box:hover > .box_contents {
+	transition:padding .2s;
+	padding:4px;
+}
 
-#new_ingredient {
-	order:2;
-}
-#new_description {
-	order:2;
-}
+
+
+
+
+
+
+
+
 
 
 /* Search panel to look up meals */

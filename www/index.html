@@ -1,4 +1,4 @@
-<!doctype>
+<!DOCTYPE>
 <html>
 <head>
 <title>Groceries</title>
@@ -10,6 +10,8 @@
 <script type="text/javascript" src="helper.js"></script>
 <script type="text/javascript" src="connection-force.js"></script>
 <script type="text/javascript" src="class.js"></script>
+<script type="text/javascript" src="RecipeClass.js"></script>
+<script type="text/javascript" src="webSocket.js"></script>
 <script type="text/javascript" src="main.js"></script>
 
 </head>
@@ -20,16 +22,16 @@
 <div id="container">
 	<div id="recipe_area">
 		<div id="meal_entry" class="recipe_entry">
-			<input type="text" id="meal_name" class="menu_input_box" placeholder="New Meal"></input>
+			<input type="text" id="meal_input" class="menu_input_box" placeholder="New Meal"></input>
 			<input type="button" id="meal_button" value="Add New Meal"></input>
 		</div>
 
 		<div id="ingredient_entry" class="recipe_entry">
-			<input type="text" id="new_ingredient" class="menu_input_box ingredient_box" placeholder="New Ingredient" style="display:none;"></input>
+			<input type="text" id="ingredient_input" class="menu_input_box ingredient_box" placeholder="New Ingredient" style="display:none;"></input>
 		</div>
 
-		<div id="description_entry" class="recipe_entry">
-			<input type="text" id="new_description" class="menu_input_box description_box" placeholder="New Description" style="display:none;"></input>
+		<div id="tag_entry" class="recipe_entry">
+			<input type="text" id="tag_input" class="menu_input_box tag_box" placeholder="New Tag" style="display:none;"></input>
 		</div>
 	</div>
 
