@@ -9,29 +9,29 @@ class GraphClass {
 	// Add Nodes
 	addNode(type, name) {
 		// First check if node exists already
-		var node = this.getNodeByID(type, name_trim(name));
+		var node = this.getNodeByID(type, nameTrim(name));
 		if (node !== -1) {return node}
-		
+
 		if (type === "meal") {node = new MealNode(name);}
 		else if (type === "ingredient") {node = new IngrNode(name);}
 		else if (type === "description") {node = new DescNode(name);}
 		this.nodes.add(node);
 		return node
 	}
-	
+
 	// Remove Nodes
 	removeNode(node) {
 		if (!this.nodes.delete(node)) {return} // Abort if object doesn't exist
-		
+
 		node.selfDestruct(); // Delete DOM element
 		if (node.type === "meal") {
 			// Remove its edges
 			for (let neighbor of node.edges) {
 				this.removeEdge(node, neighbor);
-			}	
+			}
 		}
 	}
-	
+
 	// Search a node by name
 	getNodeByID(type, name) {
 		for (let node of this.nodes) {
@@ -39,9 +39,9 @@ class GraphClass {
 		}
 		return -1 // not found
 	}
-	
-	
-	
+
+
+
 	// Deal with edges (edges)
 	addEdge(node1, node2) {
 		node1.edges.add(node2);
@@ -63,14 +63,14 @@ class NodeClass {
 	// Define an instance of a node
 	// A node possesses various properties, as well as edges to other nodes
 	// This node is meant to be a superclass
-	constructor(name = '', type) {	
+	constructor(name = '', type) {
 
 		// Default Initializations
 		this.type = type; // Declare node type: "meal", "ingredient", or "description"
 		this.element = document.createElement("div"); // Create an element to be displayed on the page
 		this.shownName = name;
 		this.edges = new Set();
-		
+
 		this.chosen = 0; //track whether this node is selected this.hrad = 0;
 		this.found = 0; // 1 if in current search results. 0 otherwise this.vrad = 0;
 
@@ -78,12 +78,12 @@ class NodeClass {
 		this.ystart = 0;
 		this.xpos = 0;
 		this.ypos = 0;
-	
+
 		this.sendToLimbo();	// store object in limbo (not visible)
 	}
 
 	// Setters
-	
+
 	//method to change name of item
 	set shownName(newName) { //update true name
 		this._shownName = newName;
@@ -99,7 +99,7 @@ class NodeClass {
 		return this.type + '_' + this.name
 	}
 	get name() {
-		return name_trim(this._shownName)
+		return nameTrim(this._shownName)
 	}
 
 
@@ -141,26 +141,26 @@ class MealNode extends NodeClass {
 	constructor(name) {
 		super(name, 'meal');
 		this.element.setAttribute("class", "meal_text word_text");
-		
+
 		this.inMenu = 0; // store whether meal node is in the menu or not
 	}
-	
+
 	// Add meal to menu
 	addToMenu() {
 		this.inMenu = 1;
 		this.chosen = 0;
-		
+
 		document.getElementById("menuField").appendChild(this.element);
 		this.element.setAttribute("class","meal_onMenu_text word_text");
 	}
 	// add meal to search results
 	addToMealResults() {
 		this.inMenu = 0;
-		
+
 		document.getElementById("Results").appendChild(this.element);
 		this.element.setAttribute("class","meal_text word_text");
 	}
-	
+
 }
 
 
@@ -170,18 +170,18 @@ class IngrNode extends NodeClass {
 	constructor(name) {
 		super(name, 'ingredient');
 		this.quantity = 0;
-		
+
 		this.element.setAttribute("class", "ingr_text word_text");
 	}
-	
+
 	// Add ingredient to grocery list
 	addToGroceryList() {
 		this.chosen = 0;
-		
+
 		document.getElementById("groceryField").appendChild(this.element);
 		this.element.setAttribute("class", "ingr_onMenu_text word_text");
 	}
-	
+
 	//update innerHTML and dimensions (overwrite superclass method)
 	updateElement() {
 		if (this.quantity > 1) {
@@ -191,11 +191,11 @@ class IngrNode extends NodeClass {
 		else {
 			this.element.innerHTML = this._shownName;
 		}
-		
+
 		this.hrad = this.element.clientWidth / 2;  //vertical radius
 		this.vrad = this.element.clientHeight / 2;  //horizontal radius
 	}
-	
+
 }
 
 class DescNode extends NodeClass{

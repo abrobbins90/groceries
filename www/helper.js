@@ -1,7 +1,7 @@
 ////////////////////////////// Helper Functions
 
 // Given a node name, ensure it follows various rules
-function name_trim(name) {
+function nameTrim(name) {
 	// name : a string
 	// return the processed name, replacing spaces with '_'. Also make it all lowercase. Remove any special characters as well
 
