@@ -1,7 +1,44 @@
 // This file holds the main functionality of the program
-// additional code is imported for floaty and classes
+$(document).ready(function(){ // jquery wait till dom loaded (see https://avaminzhang.wordpress.com/2013/06/11/document-ready-vs-window-load/ if any issues)
 
+//////////////////// GLOBALS ////////////////////
+let graph = undefined
 
+////////////////////// INIT //////////////////////
+initialize()
+
+//////////////////// TRIGGERS ////////////////////
+$('#meal_name').keyup(meal_keyPress)
+$('#meal_button').click(function(){
+	// createNewMeal or removeMeal, whichever is appropriate
+})
+$('#new_ingredient').keyup(function(event){
+	ingrORdesc_keyPress(event, 'ingredient')
+})
+$('#new_description').keyup(function(event){
+	ingrORdesc_keyPress(event, 'description')
+})
+$('.Tab').click(function(){
+	switchTab(this.id)
+})
+$('#ingredientSearch').keyup(launchSearch)
+$('#mealNumValue').keyup(mealGenNum)
+$('#generate').click(generate)
+$('#mealLookup').keyup(launchSearch)
+$('.menuButtons').click(function(){
+	transferMeal(this.id)
+})
+$('#saveButton').click(printSaveData)
+$('#loadButton').click(loadPrintedData)
+$('#unselectAll').click(choose)
+$('.history').click(function(){
+	historyChange(this.id)
+})
+$('#qmenu').click(qmenu)
+$('#removeMeal').click(function(){
+	let id = graph.getNodeById($(this).value)
+	removeEdge(id)
+})
 
 // Define websocket to be used for server interaction
 /*var myWS = new WebSocket("ws://learnnation.org:8243/mySocket")*/
@@ -9,14 +46,7 @@
 
 
 
-//////////////////////////////
-////////////////////////////// Functions
-//////////////////////////////
-
-////////////////////////////// Setup Function
-
-// Called on page load to perform initial loading of data and node setup
-var graph
+/////////////////// FUNCTIONS ///////////////////
 function initialize() {
 	graph = new GraphClass();
 }
@@ -32,20 +62,20 @@ function createNewMeal() {
 	var mealName = document.getElementById("meal_name").value;
 	// First check it is valid
 	if (name_trim(mealName).length == 0) {return} // nothing there
-	
+
 	// Create meal node
 	var mealNode = graph.addNode("meal", mealName);
-	
+
 	mealSelect(mealNode); // Select newly created meal
 	document.getElementById("new_ingredient").focus();
 }
-	
+
 // [ACTION: Remove Meal Button] Remove a recipe
 function removeRecipe(mealNode = selectedMeal) {
 	// mealNode : node object of meal to be deleted (default meal to delete is current selection)
-	
+
 	graph.removeNode(mealNode); // Delete meal
-		
+
 	// If the deleted meal was the selected meal, change selected meal to nothing
 	if (mealNode == selectedMeal) {
 		mealSelect(-1);
@@ -72,7 +102,7 @@ function meal_keyPress(event) {
 		// First check it is valid
 		var mealNameTrim = name_trim(mealName);
 		if (mealNameTrim.length == 0) {return} // nothing there
-		
+
 		var mealNode = graph.getNodeByName("meal", mealNameTrim);
 		// If such a node doesn't exist, this returns -1
 		mealSelect(mealNode);
@@ -87,27 +117,27 @@ function ingrORdesc_keyPress(event, type) {
 		var nameToAdd = document.getElementById("new_" + type).value;
 		var nameTrim = name_trim(nameToAdd);
 		if (nameTrim == "") {return}
-		
+
 		// If so, see if it already exists. Add it if it doesn't
 		var node = graph.getNodeByName(type, nameTrim);
 		if (node == -1) {
 			node = graph.addNode(type, nameToAdd);
 		}
-		
+
 		// Add connection
 		graph.addConnection(selectedMeal, node);
 		document.getElementById("new_" + type).value = ""; // clear entry box
 		document.getElementById("new_" + type).setAttribute("class", "menu_input_box ingredient_box");
 		showSelectedRecipe();
 	}
-	else { 
+	else {
 		// Initial search to see if entered item matches any currently
 		// Read meal name in box
 		var name = document.getElementById("new_" + type).value;
 		// First check it is valid
 		var nameTrim = name_trim(name);
 		if (nameTrim.length == 0) {return} // if nothing there
-		
+
 		var node = graph.getNodeByName(type, nameTrim);
 		if (node == -1) {
 			document.getElementById("new_" + type).setAttribute("class", "menu_input_box ingredient_box");
@@ -127,7 +157,7 @@ function remove_NodeT2(type, name) {
 	}
 	showSelectedRecipe()
 	document.getElementById("new_" + type).focus();
-		
+
 }
 
 
@@ -135,11 +165,10 @@ function remove_NodeT2(type, name) {
 // list as well as affecting editing
 var selectedMeal = -1; // Keep track of meal selected in recipe area
 function mealSelect(mealNode) {
-	
+
 	if (mealNode == -1) {
 		selectedMeal = -1;
 		document.getElementById("meal_button").value = "Add New Meal";
-		document.getElementById("meal_button").setAttribute("onclick", "createNewMeal()");
 
 		clearRecipeArea();
 
@@ -149,7 +178,6 @@ function mealSelect(mealNode) {
 	else {
 		selectedMeal = mealNode;
 		document.getElementById("meal_button").value = "Remove Meal";
-		document.getElementById("meal_button").setAttribute("onclick", "removeRecipe()");
 
 		// If a meal is successfully selected, show all ingredients and descriptions
 		// associated with it and allow for more to be added
@@ -169,12 +197,12 @@ function showSelectedRecipe() {
 
 	var i = 0; // keep track of which box element we're on
 	for (let node of selectedMeal.connections) {
-		
+
 		// Check to see if there is an available element to show this node
 		// If not, make one
 		if (i + 1 > boxElements.length) {
 			boxElements[i] = document.createElement("span");
-			boxElements[i].setAttribute("id", "boxElement" + i);
+			boxElements[i].setAttribute("id", "boxElement" + i); // will make some sort of ID in BoxElement class if necessary
 		}
 		// Also add button to remove the item if need be
 		//var rmButton = document.createElement("input");
@@ -184,23 +212,21 @@ function showSelectedRecipe() {
 		var rmButton = document.createElement("span");
 		rmButton.appendChild(document.createTextNode("\u2716"));
 		rmButton.setAttribute("class", "rmItemButton");
-		
-		
+
+
 		// set class and parent element based on type
 		if (node.type == "ingredient") {
 			boxElements[i].setAttribute("class", "menu_item_box ingredient_box");
 			document.getElementById("ingredient_entry").appendChild(boxElements[i]);
-			rmButton.setAttribute("onclick", "remove_NodeT2('ingredient', '" + node.name + "')");
 		}
 		else if (node.type == "description") {
 			boxElements[i].setAttribute("class", "menu_item_box description_box");
 			document.getElementById("description_entry").appendChild(boxElements[i]);
-			rmButton.setAttribute("onclick", "remove_NodeT2('description', '" + node.name + "')");
 		}
 		boxElements[i].style.display = "inline";
 		boxElements[i].innerHTML = node.shownName;
 		boxElements[i].appendChild(rmButton);
-		
+
 		i++; // update to be number of box elements gone through
 	}
 	// Ensure the rest of the boxElements that might exist are not displayed
@@ -900,3 +926,5 @@ function switchTab(tabNum) {
 	transferButtons();
 }
 */
+
+}) // end jquery
