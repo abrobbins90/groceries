@@ -6,9 +6,12 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 <link rel="stylesheet" type="text/css" href="connection-force.css">
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript" src="helper.js"></script>
 <script type="text/javascript" src="connection-force.js"></script>
 <script type="text/javascript" src="class.js"></script>
+<script type="text/javascript" src="RecipeClass.js"></script>
+<script type="text/javascript" src="webSocket.js"></script>
 <script type="text/javascript" src="main.js"></script>
 
 </head>
@@ -19,16 +22,16 @@
 <div id="container">
 	<div id="recipe_area">
 		<div id="meal_entry" class="recipe_entry">
-			<input type="text" id="meal_name" class="menu_input_box" placeholder="New Meal" onkeyup="meal_keyPress(event)"></input>
-			<input type="button" id="meal_button" onclick="createNewMeal()" value="Add New Meal"></input>
+			<input type="text" id="meal_input" class="menu_input_box" placeholder="New Meal" onkeyup="recipe_keyPress(event, 'meal')"></input>
+			<input type="button" id="meal_button" onclick="recipe.createNewMeal()" value="Add New Meal"></input>
 		</div>
 
 		<div id="ingredient_entry" class="recipe_entry">
-			<input type="text" id="new_ingredient" class="menu_input_box ingredient_box" placeholder="New Ingredient" onkeyup="ingrORdesc_keyPress(event, 'ingredient')" style="display:none;"></input>
+			<input type="text" id="ingredient_input" class="menu_input_box ingredient_box" placeholder="New Ingredient" onkeyup="recipe_keyPress(event, 'ingredient')" style="display:none;"></input>
 		</div>
 
-		<div id="description_entry" class="recipe_entry">
-			<input type="text" id="new_description" class="menu_input_box description_box" placeholder="New Description" onkeyup="ingrORdesc_keyPress(event, 'description')" style="display:none;"></input>
+		<div id="tag_entry" class="recipe_entry">
+			<input type="text" id="tag_input" class="menu_input_box tag_box" placeholder="New Tag" onkeyup="recipe_keyPress(event, 'tag')" style="display:none;"></input>
 		</div>
 	</div>
 

@@ -8,7 +8,10 @@ class GraphClass {
 
 	// Add Nodes
 	addNode(type, name) {
-		var node
+		// First check if node exists already
+		var node = this.getNodeByID(type, name_trim(name));
+		if (node !== -1) {return node}
+		
 		if (type === "meal") {node = new MealNode(name);}
 		else if (type === "ingredient") {node = new IngrNode(name);}
 		else if (type === "description") {node = new DescNode(name);}
@@ -21,17 +24,16 @@ class GraphClass {
 		if (!this.nodes.delete(node)) {return} // Abort if object doesn't exist
 		
 		node.selfDestruct(); // Delete DOM element
-		
 		if (node.type === "meal") {
-			// Remove its connections
-			for (let neighbor of node.connections) {
-				this.removeConnection(node, neighbor);
+			// Remove its edges
+			for (let neighbor of node.edges) {
+				this.removeEdge(node, neighbor);
 			}	
 		}
 	}
 	
 	// Search a node by name
-	getNodeByID(type = "", name) {
+	getNodeByID(type, name) {
 		for (let node of this.nodes) {
 			if (node.id === type + "_" + name) {return node}
 		}
@@ -40,17 +42,17 @@ class GraphClass {
 	
 	
 	
-	// Deal with connections (edges)
-	addConnection(node1, node2) {
-		node1.connections.add(node2);
-		node2.connections.add(node1);
+	// Deal with edges (edges)
+	addEdge(node1, node2) {
+		node1.edges.add(node2);
+		node2.edges.add(node1);
 	}
-	removeConnection(node1, node2) {
-		node1.connections.delete(node2);
-		node2.connections.delete(node1);
+	removeEdge(node1, node2) {
+		node1.edges.delete(node2);
+		node2.edges.delete(node1);
 	}
 	isConnected(node1, node2) {
-		if (node1.connections.has(node2)) { return true }
+		if (node1.edges.has(node2)) { return true }
 		return false
 	}
 
@@ -59,7 +61,7 @@ class GraphClass {
 // Define a node
 class NodeClass {
 	// Define an instance of a node
-	// A node possesses various properties, as well as connections to other nodes
+	// A node possesses various properties, as well as edges to other nodes
 	// This node is meant to be a superclass
 	constructor(name = '', type) {	
 
@@ -67,7 +69,7 @@ class NodeClass {
 		this.type = type; // Declare node type: "meal", "ingredient", or "description"
 		this.element = document.createElement("div"); // Create an element to be displayed on the page
 		this.shownName = name;
-		this.connections = new Set();
+		this.edges = new Set();
 		
 		this.chosen = 0; //track whether this node is selected this.hrad = 0;
 		this.found = 0; // 1 if in current search results. 0 otherwise this.vrad = 0;
