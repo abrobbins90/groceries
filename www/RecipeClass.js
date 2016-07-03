@@ -24,7 +24,8 @@ class RecipeClass {
 	// control which function is called. You might want to combine these somehow.
 	createNode(type) {
 		// Check to see if there is anything worthy in the box
-		let nameToAdd = this.cleanName(type) || return false
+		let nameToAdd = this.cleanName(type)
+		if( !nameToAdd ) return false
 
 		let node = this.graph.addNode(type, nameToAdd);
 		return node
@@ -34,7 +35,7 @@ class RecipeClass {
 	createMeal() {
 		// On press of the add meal button, read the contents of the text box for the new meal and add
 		// it to the meal nodes
-		this.createNode("meal") || return false
+		if( !this.createNode("meal") ) return false
 
 		this.updateDisplay();
 		// Put focus on new ingredient field, assuming that's next!
@@ -43,7 +44,8 @@ class RecipeClass {
 
 	// the temporary method I made up
 	createNotMeal(type) {
-		let node = this.createNode(type) || return false
+		let node = this.createNode(type)
+		if( !node ) return false
 
 		// Add edge
 		this.graph.addEdge(this.selectedMeal, node);
@@ -77,7 +79,9 @@ class RecipeClass {
 
 	// After pressing a key, check the contents of the box and search for existing nodes to match
 	search(type) {
-		let name = clean_name(type) || return false
+		let name = this.cleanName(type)
+		if( !name ) return false
+
 		if (type === "meal") {
 			// If it's a meal search, update display
 			this.updateDisplay();
