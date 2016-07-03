@@ -12,7 +12,7 @@ initialize()
 //////////////////// TRIGGERS ////////////////////
 $('#meal_name').keyup(meal_keyPress)
 $('#meal_button').click(function(){
-	// createNewMeal or removeMeal, whichever is appropriate
+	// createMeal or removeMeal, whichever is appropriate
 })
 $('#new_ingredient').keyup(function(event){
 	ingrORdesc_keyPress(event, 'ingredient')
@@ -70,13 +70,13 @@ function recipe_keyPress(event, type) {
 	if (key === 13) { // Enter Button
 		if (type === "meal") {
 			// Simulate clicking the Add New Meal Button (if it's available)
-			recipe.createNewMeal();
+			recipe.createMeal();
 		}
 		else {
-			recipe.createNewNotMeal(type);
+			recipe.createNotMeal(type);
 		}
 	}
-	else { 
+	else {
 		recipe.search(type);
 	}
 }

@@ -102,10 +102,28 @@ class RecipeClass {
 
 	////////// Recipe Display Functions
 
+	// Remove all nodes from view
+	clearDisplay() {
+		// Update meal input box
+		this.input.mealButton.value = "Add New Meal";
+		this.input.mealButton.setAttribute("onclick", "createMeal()");
+		// Make meal name unselected
+		this.input.meal.setAttribute("class", "menu_input_box");
+
+		for (let boxEl of this.boxElements) {
+			boxEl.destroy()
+		}
+		this.input.ingredient.style.display = "none";
+		this.input.tag.style.display = "none";
+	}
+
 	// Show all nodes connected to selected meal
 	updateDisplay() {
 		let mealNode = this.selectedMeal;
-		if (mealNode === -1) {this.clearRecipeArea(); return}
+		if( mealNode === -1 ){
+			this.clearDisplay()
+			return
+		}
 
 		// Update meal input box
 		this.input.mealButton.value = "Remove Meal";
@@ -114,66 +132,50 @@ class RecipeClass {
 		$("#" + this.input.meal.id).addClass("node_selected");
 
 		// Show meal recipe
-		let i = 0; // keep track of which box element we're on
-		for (let node of mealNode.edges) {
-
-			// Check to see if there is an available element to show this node
-			// If not, make one
-			if (i + 1 > this.boxElements.length) {
-				this.boxElements[i] = document.createElement("div");
-				this.boxElements[i].setAttribute("id", "boxElement" + i);
-			}
-			else {
-				while (this.boxElements[i].firstChild) {
-				this.boxElements[i].removeChild(this.boxElements[i].firstChild);
-				}
-			}
-			// set class and parent element based on type
-			this.boxElements[i].setAttribute("class", "menu_item_box " + node.type + "_box");
-
-			// Inside the box, put the name to be shown and the delete button for the item
-			let contents = document.createElement("div");
-			contents.appendChild(document.createTextNode(node.shownName));
-			contents.setAttribute("class", "box_contents");
-
-			// Also add button to remove the item if need be
-			let rmButton = document.createElement("input");
-			rmButton.setAttribute("type", "button");
-			rmButton.setAttribute("class", "rmItemButton");
-			rmButton.setAttribute("value", "\u2716");
-			rmButton.setAttribute("onclick", "recipe.removeEdge('" + node.type + "', '" + node.name + "')");
-
-			// Add all elements and show
-			document.getElementById(node.type + "_entry").appendChild(this.boxElements[i]);
-			this.boxElements[i].appendChild(contents);
-			this.boxElements[i].appendChild(rmButton);
-			this.boxElements[i].style.display = "inline";
-
-			i++; // update to be number of box elements gone through
+		for (let boxEl of this.boxElements) {
+			boxEl.destroy()
 		}
-		// Ensure the rest of the boxElements that might exist are not displayed
-		for (i = mealNode.edges.size; i < this.boxElements.length; i++) {
-			this.boxElements[i].style.display = "none";
+		for (let node of mealNode.edges) {
+			new BoxElement(node)
 		}
 
 		// Also show the new ingredient and new tag fields
 		this.input.ingredient.style.display = "inline";
 		this.input.tag.style.display = "inline";
 	}
-	// Remove all nodes from view
-	clearRecipeArea() {
-		// Update meal input box
-		this.input.mealButton.value = "Add New Meal";
-		this.input.mealButton.setAttribute("onclick", "createMeal()");
-		// Make meal name unselected
-		this.input.meal.setAttribute("class", "menu_input_box");
+}
 
-		for (let i in this.boxElements) {
-			this.boxElements[i].style.display = "none";
-		}
-		this.input.ingredient.style.display = "none";
-		this.input.tag.style.display = "none";
+class BoxElement {
+	constructor(node) {
+		this.node = node
+
+		// create jQuery element
+		this.$el = $("<div>" + node.shownName + "</div>")
+		this.$el.append(contents)
+		this.$el.append(createRmButton(node))
+		// this.$el.attr("id", this.id)
+		this.$el.addClass("box_contents")
+		this.$el.addClass("menu_item_box")
+		this.$el.addClass(node.type + "_box")
+		// attach element to DOM
+		$("#" + node.type + "_entry").append(this.$el)
 	}
 
+	// get id() {
+	// 	return "box_el_" + this.node.id
+	// }
 
+	destroy() {
+		this.$el.remove()
+	}
+}
+
+function createRmButton(node) {
+	// Also add button to remove the item if need be
+	let rmButton = document.createElement("input");
+	rmButton.setAttribute("type", "button");
+	rmButton.setAttribute("class", "rmItemButton");
+	rmButton.setAttribute("value", "\u2716");
+	rmButton.setAttribute("onclick", "recipe.removeEdge('" + node.type + "', '" + node.name + "')");
+	return rmButton
 }
