@@ -3,42 +3,37 @@
 // Define graph to deal with all node operations
 class GraphClass {
 	constructor() {
-		this.mealNodes = new Set(); // List of all meal nodes
-		this.ingrNodes = new Set(); // List of all ingredient nodes
-		this.descNodes = new Set(); // List of all description nodes
+		this.nodes = new Set(); // List of all nodes
 	}
 
 	// Add Nodes
 	addNode(type, name) {
-		var nodeList = this.getNodeSet(type);
 		var node
-		if (type == "meal") {node = new MealNode(name);}
-		else if (type == "ingredient") {node = new IngrNode(name);}
-		else if (type == "description") {node = new DescNode(name);}
-		nodeList.add(node);
+		if (type === "meal") {node = new MealNode(name);}
+		else if (type === "ingredient") {node = new IngrNode(name);}
+		else if (type === "description") {node = new DescNode(name);}
+		this.nodes.add(node);
 		return node
 	}
 	
 	// Remove Nodes
 	removeNode(node) {
-		var nodeSet = this.getNodeSet(node.type);
-		if (!nodeSet.delete(node)) {return} // Abort if object doesn't exist
+		if (!this.nodes.delete(node)) {return} // Abort if object doesn't exist
 		
 		node.selfDestruct(); // Delete DOM element
 		
-		if (node.type == "meal") {
+		if (node.type === "meal") {
 			// Remove its connections
-			for (let nodeConnect of node.connections) {
-				this.removeConnection(node, nodeConnect);
+			for (let neighbor of node.connections) {
+				this.removeConnection(node, neighbor);
 			}	
 		}
 	}
 	
 	// Search a node by name
-	getNodeByName(type = "", name) {
-		var nodeSet = this.getNodeSet(type);
-		for (let node of nodeSet) {
-			if (node.name == name) {return node}
+	getNodeByID(type = "", name) {
+		for (let node of this.nodes) {
+			if (node.id === type + "_" + name) {return node}
 		}
 		return -1 // not found
 	}
@@ -58,14 +53,7 @@ class GraphClass {
 		if (node1.connections.has(node2)) { return true }
 		return false
 	}
-	
-	// Helper methods
-	getNodeSet(type) {
-		if (type == "meal") {return this.mealNodes}
-		else if (type == "ingredient") {return this.ingrNodes}
-		else if (type == "description") {return this.descNodes}
-		else {return new Set()}
-	}
+
 }
 
 // Define a node
@@ -106,7 +94,7 @@ class NodeClass {
 		return this._shownName
 	}
 	get id() {
-		return "ID_" + this.type + '_' + this.name
+		return this.type + '_' + this.name
 	}
 	get name() {
 		return name_trim(this._shownName)

@@ -31,7 +31,7 @@ function createNewMeal() {
 	// it to the meal nodes
 	var mealName = document.getElementById("meal_name").value;
 	// First check it is valid
-	if (name_trim(mealName).length == 0) {return} // nothing there
+	if (name_trim(mealName).length === 0 || selectedMeal !== -1) {return} // nothing there
 	
 	// Create meal node
 	var mealNode = graph.addNode("meal", mealName);
@@ -39,17 +39,14 @@ function createNewMeal() {
 	mealSelect(mealNode); // Select newly created meal
 	document.getElementById("new_ingredient").focus();
 }
-	
+
 // [ACTION: Remove Meal Button] Remove a recipe
-function removeRecipe(mealNode = selectedMeal) {
+function removeMeal(mealNode = selectedMeal) {
 	// mealNode : node object of meal to be deleted (default meal to delete is current selection)
-	
 	graph.removeNode(mealNode); // Delete meal
 		
 	// If the deleted meal was the selected meal, change selected meal to nothing
-	if (mealNode == selectedMeal) {
-		mealSelect(-1);
-	}
+	if (mealNode === selectedMeal) {mealSelect(-1);}
 	document.getElementById("meal_name").focus();
 }
 
@@ -62,7 +59,7 @@ function removeRecipe(mealNode = selectedMeal) {
 function meal_keyPress(event) {
 
 	var key = event.keyCode;
-	if (key == 13 && selectedMeal == -1) { // Enter Button
+	if (key === 13) { // Enter Button
 		// Simulate clicking the Add New Meal Button (if it's available)
 		createNewMeal()
 	}
@@ -71,9 +68,9 @@ function meal_keyPress(event) {
 		var mealName = document.getElementById("meal_name").value;
 		// First check it is valid
 		var mealNameTrim = name_trim(mealName);
-		if (mealNameTrim.length == 0) {return} // nothing there
+		if (mealNameTrim.length === 0) {return} // nothing there
 		
-		var mealNode = graph.getNodeByName("meal", mealNameTrim);
+		var mealNode = graph.getNodeByID("meal", mealNameTrim);
 		// If such a node doesn't exist, this returns -1
 		mealSelect(mealNode);
 	}
@@ -82,15 +79,15 @@ function meal_keyPress(event) {
 function ingrORdesc_keyPress(event, type) {
 
 	var key = event.keyCode;
-	if (key == 13) { // Enter Button (Add this ingredient/description)
+	if (key === 13) { // Enter Button (Add this ingredient/description)
 		// First check to see if there is anything in the box
 		var nameToAdd = document.getElementById("new_" + type).value;
 		var nameTrim = name_trim(nameToAdd);
-		if (nameTrim == "") {return}
+		if (nameTrim === "") {return}
 		
 		// If so, see if it already exists. Add it if it doesn't
-		var node = graph.getNodeByName(type, nameTrim);
-		if (node == -1) {
+		var node = graph.getNodeByID(type, nameTrim);
+		if (node === -1) {
 			node = graph.addNode(type, nameToAdd);
 		}
 		
@@ -106,10 +103,10 @@ function ingrORdesc_keyPress(event, type) {
 		var name = document.getElementById("new_" + type).value;
 		// First check it is valid
 		var nameTrim = name_trim(name);
-		if (nameTrim.length == 0) {return} // if nothing there
+		if (nameTrim.length === 0) {return} // if nothing there
 		
-		var node = graph.getNodeByName(type, nameTrim);
-		if (node == -1) {
+		var node = graph.getNodeByID(type, nameTrim);
+		if (node === -1) {
 			document.getElementById("new_" + type).setAttribute("class", "menu_input_box ingredient_box");
 		}
 		else {
@@ -119,15 +116,14 @@ function ingrORdesc_keyPress(event, type) {
 }
 
 // Remove an ingredient or description from a menu
-function remove_NodeT2(type, name) {
-	var node = graph.getNodeByName(type, name);
+function removeEdge(type, name) {
+	var node = graph.getNodeByID(type, name);
 	graph.removeConnection(selectedMeal, node);
-	if (node.connections.size == 0) {
+	if (node.connections.size === 0) {
 		graph.removeNode(node);
 	}
-	showSelectedRecipe()
+	showSelectedRecipe();
 	document.getElementById("new_" + type).focus();
-		
 }
 
 
@@ -136,7 +132,7 @@ function remove_NodeT2(type, name) {
 var selectedMeal = -1; // Keep track of meal selected in recipe area
 function mealSelect(mealNode) {
 	
-	if (mealNode == -1) {
+	if (mealNode === -1) {
 		selectedMeal = -1;
 		document.getElementById("meal_button").value = "Add New Meal";
 		document.getElementById("meal_button").setAttribute("onclick", "createNewMeal()");
@@ -149,7 +145,7 @@ function mealSelect(mealNode) {
 	else {
 		selectedMeal = mealNode;
 		document.getElementById("meal_button").value = "Remove Meal";
-		document.getElementById("meal_button").setAttribute("onclick", "removeRecipe()");
+		document.getElementById("meal_button").setAttribute("onclick", "removeMeal()");
 
 		// If a meal is successfully selected, show all ingredients and descriptions
 		// associated with it and allow for more to be added
@@ -165,7 +161,7 @@ function mealSelect(mealNode) {
 // Show all nodes connected to selected meal
 var boxElements = [];
 function showSelectedRecipe() {
-	if (selectedMeal == -1) {clearRecipeArea();return}
+	if (selectedMeal === -1) {clearRecipeArea();return}
 
 	var i = 0; // keep track of which box element we're on
 	for (let node of selectedMeal.connections) {
@@ -185,17 +181,11 @@ function showSelectedRecipe() {
 		rmButton.appendChild(document.createTextNode("\u2716"));
 		rmButton.setAttribute("class", "rmItemButton");
 		
-		
 		// set class and parent element based on type
-		if (node.type == "ingredient") {
-			boxElements[i].setAttribute("class", "menu_item_box ingredient_box");
-			document.getElementById("ingredient_entry").appendChild(boxElements[i]);
-			rmButton.setAttribute("onclick", "remove_NodeT2('ingredient', '" + node.name + "')");
-		}
-		else if (node.type == "description") {
-			boxElements[i].setAttribute("class", "menu_item_box description_box");
-			document.getElementById("description_entry").appendChild(boxElements[i]);
-			rmButton.setAttribute("onclick", "remove_NodeT2('description', '" + node.name + "')");
+		if (node.type === "ingredient") {
+			boxElements[i].setAttribute("class", "menu_item_box " node.type "_box");
+			document.getElementById(node.type + "_entry").appendChild(boxElements[i]);
+			rmButton.setAttribute("onclick", "removeEdge('" + node.type + "', '" + node.name + "')");
 		}
 		boxElements[i].style.display = "inline";
 		boxElements[i].innerHTML = node.shownName;
