@@ -10,7 +10,8 @@ const babel = require('gulp-babel') // depends on: babel-preset-es2015
 
 
 /////////////////// GLOBALS ///////////////////
-const src_js = 'www/**/*.js'
+// for JS, notice that only TOP LEVEL js files are transpiled.  So js files in any subdirectory are NOT transpiled currently.
+const src_js = 'www/*.js'
 const src_css = 'www/**/*.css'
 const src_html = 'www/**/*.html'
 
