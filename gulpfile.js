@@ -12,11 +12,14 @@ const autoprefixer = require('gulp-autoprefixer')
 
 /////////////////// GLOBALS ///////////////////
 // for JS, notice that only TOP LEVEL js files are transpiled.  So js files in any subdirectory are NOT transpiled currently.
-const src_js = 'www/*.js'
+const src_js = 'www/**/*.js'
+const src_js_6 = 'www/*.js'
+const src_js_5 = 'www/lib/*.js'
 const src_css = 'www/**/*.css'
 const src_html = 'www/**/*.html'
 
 const dest = 'www-built'
+const dest_js_5 = 'www-built/lib'
 
 const log_standard = function(event) {
 	console.log('File ' + event.path + ' was ' + event.type + ', running tasks...')
@@ -25,11 +28,13 @@ const log_standard = function(event) {
 
 ///////////////////// MAIN /////////////////////
 gulp.task('js', function() {
-	gulp.src(src_js)
+	gulp.src(src_js_6)
 		.pipe(babel({
 			presets: ['es2015'], // Specifies which ECMAScript standard to follow.  This is necessary.
 		}))
 		.pipe(gulp.dest(dest))
+	gulp.src(src_js_5)
+		.pipe(gulp.dest(dest_js_5))
 })
 gulp.task('watch.js', function() {
 	var watch_js = gulp.watch(src_js, ['js'])
