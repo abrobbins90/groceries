@@ -79,7 +79,7 @@ div {
 	color: #000000;
 	transition-duration: 0.1s;
 }
-#meal_button: hover {
+#meal_button:hover {
 	border: 2px solid #FFFFFF;
 	background-color: #FF0000;
 	color: #FFFFFF;
@@ -113,12 +113,12 @@ div {
 	outline: none;
 	transition: width .2s;
 }
-.menu_item_box: hover > .rmItemButton {
+.menu_item_box:hover > .rmItemButton {
 	transition: width .2s;
 	width: 23px;
 	border-left: 1px solid #FF5555;
 }
-.menu_item_box: hover > .box_contents {
+.menu_item_box:hover > .box_contents {
 	transition: padding .2s;
 	padding: 4px;
 }

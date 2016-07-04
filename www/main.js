@@ -1,51 +1,55 @@
 // This file holds the main functionality of the program
-$(document).ready(function(){ // jquery wait till dom loaded (see https://avaminzhang.wordpress.com/2013/06/11/document-ready-vs-window-load/ if any issues)
 
 //////////////////// GLOBALS ////////////////////
 let graph = undefined
 let recipe = undefined
-let myWs = undefined
+let ws = undefined
 
-////////////////////// INIT //////////////////////
-initialize()
+$(document).ready(function(){ // jquery wait till dom loaded (see https://avaminzhang.wordpress.com/2013/06/11/document-ready-vs-window-load/ if any issues)
 
-//////////////////// TRIGGERS ////////////////////
-$('#meal_name').keyup(meal_keyPress)
-$('#meal_button').click(function(){
-	// createMeal or removeMeal, whichever is appropriate
-})
-$('#new_ingredient').keyup(function(event){
-	ingrORdesc_keyPress(event, 'ingredient')
-})
-$('#new_description').keyup(function(event){
-	ingrORdesc_keyPress(event, 'description')
-})
-$('.Tab').click(function(){
-	switchTab(this.id)
-})
-$('#ingredientSearch').keyup(launchSearch)
-$('#mealNumValue').keyup(mealGenNum)
-$('#generate').click(generate)
-$('#mealLookup').keyup(launchSearch)
-$('.menuButtons').click(function(){
-	transferMeal(this.id)
-})
-$('#saveButton').click(printSaveData)
-$('#loadButton').click(loadPrintedData)
-$('#unselectAll').click(choose)
-$('.history').click(function(){
-	historyChange(this.id)
-})
-$('#qmenu').click(qmenu)
-$('#removeMeal').click(function(){
-	let id = graph.getNodeById($(this).value)
-	removeEdge(id)
-})
+	////////////////////// INIT //////////////////////
+	initialize()
 
-// Define websocket to be used for server interaction
-/*var myWS = new WebSocket("ws://learnnation.org:8243/mySocket")*/
-
-
+	//////////////////// TRIGGERS ////////////////////
+	$('#meal_button').click(function(){
+		// createMeal or removeMeal, whichever is appropriate
+	})
+	$('#meal_input').keyup(function(event){
+		recipe_keyPress(event, 'meal')
+	})
+	$('#ingredient_input').keyup(function(event){
+		recipe_keyPress(event, 'ingredient')
+	})
+	$('#tag_input').keyup(function(event){
+		recipe_keyPress(event, 'tag')
+	})
+	
+	/*
+	$('.Tab').click(function(){
+		switchTab(this.id)
+	})
+	$('#ingredientSearch').keyup(launchSearch)
+	$('#mealNumValue').keyup(mealGenNum)
+	$('#generate').click(generate)
+	$('#mealLookup').keyup(launchSearch)
+	$('.menuButtons').click(function(){
+		transferMeal(this.id)
+	})
+	$('#saveButton').click(printSaveData)
+	$('#loadButton').click(loadPrintedData)
+	$('#unselectAll').click(choose)
+	$('.history').click(function(){
+		historyChange(this.id)
+	})
+	$('#qmenu').click(qmenu)
+	$('#removeMeal').click(function(){
+		let id = graph.getNodeById($(this).value)
+		removeEdge(id)
+	})
+	*/
+	
+}) // end jquery
+	
 
 
 /////////////////// FUNCTIONS ///////////////////
@@ -53,12 +57,7 @@ function initialize() {
 	// Define global graph to organize all recipes
 	graph = new GraphClass();
 	recipe = new RecipeClass(graph);
-	// Define websocket to be used for server interaction
-	/*myWS = new WebSocket("ws://learnnation.org:8243/mySocket");
-	myWS.onmessage = function(event){
-		inData = JSON.parse(event.data);
-		receiveData(inData);
-	}*/
+	//ws = initWS();
 }
 
 
@@ -742,4 +741,3 @@ function switchTab(tabNum) {
 }
 */
 
-}) // end jquery

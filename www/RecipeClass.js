@@ -106,7 +106,7 @@ class RecipeClass {
 	clearDisplay() {
 		// Update meal input box
 		this.input.mealButton.value = "Add New Meal";
-		this.input.mealButton.setAttribute("onclick", "createMeal()");
+		this.input.mealButton.setAttribute("onclick", "recipe.createMeal()");
 		// Make meal name unselected
 		this.input.meal.setAttribute("class", "menu_input_box");
 
@@ -127,7 +127,7 @@ class RecipeClass {
 
 		// Update meal input box
 		this.input.mealButton.value = "Remove Meal";
-		this.input.mealButton.setAttribute("onclick", "removeMeal()");
+		this.input.mealButton.setAttribute("onclick", "recipe.removeMeal()");
 		// Also highlight meal name
 		$("#" + this.input.meal.id).addClass("node_selected");
 
@@ -142,6 +142,8 @@ class RecipeClass {
 		// Also show the new ingredient and new tag fields
 		this.input.ingredient.style.display = "inline";
 		this.input.tag.style.display = "inline";
+		this.search("ingredient");
+		this.search("tag");
 	}
 }
 
@@ -149,12 +151,15 @@ class BoxElement {
 	constructor(node) {
 		this.node = node
 
+		var contents = document.createElement("div");
+		contents.innerHTML = node.shownName;
+		contents.setAttribute("class", "box_contents");
+		
 		// create jQuery element
-		this.$el = $("<div>" + node.shownName + "</div>")
+		this.$el = $("<div></div>")
 		this.$el.append(contents)
 		this.$el.append(createRmButton(node))
 		// this.$el.attr("id", this.id)
-		this.$el.addClass("box_contents")
 		this.$el.addClass("menu_item_box")
 		this.$el.addClass(node.type + "_box")
 		// attach element to DOM
