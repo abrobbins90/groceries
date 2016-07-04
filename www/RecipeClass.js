@@ -3,7 +3,7 @@
 class RecipeClass {
 	constructor (graph) {
 		this.graph = graph;
-		this.boxElements = []; // TO BE CHANGED BY MATT LATER
+		this.BoxElements = []; // TO BE CHANGED BY MATT LATER
 		this.input = { // make relevant DOM objects easily accessible
 			meal: document.getElementById("meal_input"),
 			ingredient: document.getElementById("ingredient_input"),
@@ -110,8 +110,8 @@ class RecipeClass {
 		// Make meal name unselected
 		this.input.meal.setAttribute("class", "menu_input_box");
 
-		for (let boxEl of this.boxElements) {
-			boxEl.destroy()
+		for (let box of this.Boxes) {
+			box.destroy()
 		}
 		this.input.ingredient.style.display = "none";
 		this.input.tag.style.display = "none";
@@ -132,8 +132,8 @@ class RecipeClass {
 		$("#" + this.input.meal.id).addClass("node_selected");
 
 		// Show meal recipe
-		for (let boxEl of this.boxElements) {
-			boxEl.destroy()
+		for (let box of this.Boxes) {
+			box.destroy()
 		}
 		for (let node of mealNode.edges) {
 			new BoxElement(node)
@@ -147,40 +147,46 @@ class RecipeClass {
 	}
 }
 
-class BoxElement {
+class Box {
 	constructor(node) {
 		this.node = node
-
-		var contents = document.createElement("div");
-		contents.innerHTML = node.shownName;
-		contents.setAttribute("class", "box_contents");
-		
-		// create jQuery element
-		this.$el = $("<div></div>")
-		this.$el.append(contents)
-		this.$el.append(createRmButton(node))
-		// this.$el.attr("id", this.id)
-		this.$el.addClass("menu_item_box")
-		this.$el.addClass(node.type + "_box")
+		this.$el = this.constructElement()
 		// attach element to DOM
-		$("#" + node.type + "_entry").append(this.$el)
+		$("#" + this.node.type + "_entry").append(this.$el)
 	}
 
-	// get id() {
-	// 	return "box_el_" + this.node.id
-	// }
+	constructElement() {
+		return $("<div/>")
+			.attr("id", this.id)
+			.append(this.constructContents())
+			.append(this.constructRemoveButton())
+			.addClass("menu_item_box")
+			.addClass(node.type + "_box")
+	}
+
+	constructContents() {
+		return $('<div/>')
+			.html(this.node.shownName)
+			.addClass("box_contents")
+	}
+
+	constructRemoveButton() {
+		// Add button to remove the item if need be
+		return $("<input/>")
+			.attr("type", "button")
+			.attr("value", "\u2716")
+			.addClass("rmItemButton")
+			.click(function(){
+				recipe.removeEdge(this.node.type, this.node.name)
+			})
+	}
+
+	get id() {
+		return "box_el_" + this.node.id
+	}
 
 	destroy() {
 		this.$el.remove()
 	}
 }
 
-function createRmButton(node) {
-	// Also add button to remove the item if need be
-	let rmButton = document.createElement("input");
-	rmButton.setAttribute("type", "button");
-	rmButton.setAttribute("class", "rmItemButton");
-	rmButton.setAttribute("value", "\u2716");
-	rmButton.setAttribute("onclick", "recipe.removeEdge('" + node.type + "', '" + node.name + "')");
-	return rmButton
-}
