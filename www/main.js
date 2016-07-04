@@ -3,6 +3,7 @@
 //////////////////// GLOBALS ////////////////////
 let graph = undefined
 let recipe = undefined
+let searchWindow = undefined
 let ws = undefined
 
 $(document).ready(function(){ // jquery wait till dom loaded (see https://avaminzhang.wordpress.com/2013/06/11/document-ready-vs-window-load/ if any issues)
@@ -24,10 +25,10 @@ $(document).ready(function(){ // jquery wait till dom loaded (see https://avamin
 		recipe_keyPress(event, 'tag')
 	})
 	
-	/*
 	$('.Tab').click(function(){
-		switchTab(this.id)
+		switchTab(this)
 	})
+	/*
 	$('#ingredientSearch').keyup(launchSearch)
 	$('#mealNumValue').keyup(mealGenNum)
 	$('#generate').click(generate)
@@ -57,6 +58,7 @@ function initialize() {
 	// Define global graph to organize all recipes
 	graph = new GraphClass();
 	recipe = new RecipeClass(graph);
+	searchWindow = new SearchClass(graph);
 	//ws = initWS();
 }
 
@@ -80,10 +82,19 @@ function recipe_keyPress(event, type) {
 	}
 }
 
+/////////////////////////////// Search Area
+
+//switch between search tabs
+function switchTab(el) {
+	if (!searchWindow.switchTab(el)) {return}
+	
+	//launchSearch();
+	//transferButtons();
+}
+
+
 
 /*
-
-
 
 ///////////////////////// Function to search and display items based on searched items /////////////////////////
 
@@ -627,23 +638,6 @@ function mealGenNum() { //when entering the number of meals to generate, ensure 
 	document.getElementById("mealNumValue").value=mealNum;
 }
 
-//switch between search tabs
-var currentTab=0; //iSearch(0), mgSearch(1), or mSearch(2)
-function switchTab(tabNum) {
 
-
-	currentTab=tabNum;
-	var tabs=new Array(document.getElementById("iTab"),document.getElementById("mgTab"),document.getElementById("mTab"));
-	var sAreas=new Array(document.getElementById("iArea"),document.getElementById("mgArea"),document.getElementById("mArea"));
-	for (var i in tabs) {
-		tabs[i].style.zIndex=0;
-		sAreas[i].style.display="none";
-		}
-	tabs[tabNum].style.zIndex=2;
-	sAreas[tabNum].style.display="block";
-
-	launchSearch();
-	transferButtons();
-}
 */
 
