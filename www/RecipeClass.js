@@ -110,7 +110,7 @@ class RecipeClass {
 		// Make meal name unselected
 		this.input.meal.setAttribute("class", "menu_input_box");
 
-		for (let box of this.Boxes) {
+		for (let box of this.BoxElements) {
 			box.destroy()
 		}
 		this.input.ingredient.style.display = "none";
@@ -132,11 +132,11 @@ class RecipeClass {
 		$("#" + this.input.meal.id).addClass("node_selected");
 
 		// Show meal recipe
-		for (let box of this.Boxes) {
+		for (let box of this.BoxElements) {
 			box.destroy()
 		}
 		for (let node of mealNode.edges) {
-			new BoxElement(node)
+			new Box(node)
 		}
 
 		// Also show the new ingredient and new tag fields
@@ -161,7 +161,7 @@ class Box {
 			.append(this.constructContents())
 			.append(this.constructRemoveButton())
 			.addClass("menu_item_box")
-			.addClass(node.type + "_box")
+			.addClass(this.node.type + "_box")
 	}
 
 	constructContents() {
@@ -177,7 +177,7 @@ class Box {
 			.attr("value", "\u2716")
 			.addClass("rmItemButton")
 			.click(function(){
-				recipe.removeEdge(this.node.type, this.node.name)
+				recipe.removeEdge(this.node.type, this.node.name) // From Andrew: this does not work
 			})
 	}
 
@@ -186,7 +186,7 @@ class Box {
 	}
 
 	destroy() {
-		this.$el.remove()
+		this.$el.remove() // From Andrew: this does not work
 	}
 }
 
