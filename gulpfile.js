@@ -7,6 +7,7 @@ syncronous running: http://stackoverflow.com/questions/26715230/gulp-callback-ho
 const gulp = require('gulp')
 
 const babel = require('gulp-babel') // depends on: babel-preset-es2015
+const autoprefixer = require('gulp-autoprefixer')
 
 
 /////////////////// GLOBALS ///////////////////
@@ -37,6 +38,10 @@ gulp.task('watch.js', function() {
 
 gulp.task('css', function() {
 	gulp.src(src_css)
+		.pipe(autoprefixer({
+			browsers: ['last 3 versions'],
+			cascade: false,
+		}))
 		.pipe(gulp.dest('www-built'))
 })
 gulp.task('watch.css', function() {

@@ -57,6 +57,11 @@ div {
 	font-size: 15px;
 	padding: 2px;
 }
+.menu_input_box::placeholder {
+	color: #999;
+}
+
+
 .node_selected {
 	border-color: #99FF99;
 }
