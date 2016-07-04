@@ -56,7 +56,7 @@ class RecipeClass {
 	}
 
 	// [ACTION: Remove Meal Button] Remove a recipe
-	removeMeal(mealNode) {
+	removeMeal(mealNode = this.selectedMeal) {
 		// mealNode : node object of meal to be deleted (default meal to delete is current selection)
 		this.graph.removeNode(mealNode); // Delete meal
 		this.updateDisplay();
@@ -106,7 +106,7 @@ class RecipeClass {
 	clearDisplay() {
 		// Update meal input box
 		this.input.mealButton.value = "Add New Meal";
-		this.input.mealButton.setAttribute("onclick", "recipe.createMeal()");
+		$("#" + this.input.mealButton.id).click(function(){recipe.createMeal()});
 		// Make meal name unselected
 		this.input.meal.setAttribute("class", "menu_input_box");
 
@@ -127,7 +127,7 @@ class RecipeClass {
 
 		// Update meal input box
 		this.input.mealButton.value = "Remove Meal";
-		this.input.mealButton.setAttribute("onclick", "recipe.removeMeal()");
+		$("#" + this.input.mealButton.id).click(function(){recipe.removeMeal()});
 		// Also highlight meal name
 		$("#" + this.input.meal.id).addClass("node_selected");
 

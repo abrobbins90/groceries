@@ -12,7 +12,7 @@ $(document).ready(function(){ // jquery wait till dom loaded (see https://avamin
 
 	//////////////////// TRIGGERS ////////////////////
 	$('#meal_button').click(function(){
-		// createMeal or removeMeal, whichever is appropriate
+		recipe.createNewMeal()
 	})
 	$('#meal_input').keyup(function(event){
 		recipe_keyPress(event, 'meal')
@@ -83,101 +83,7 @@ function recipe_keyPress(event, type) {
 
 /*
 
-/////////////////////////////////////////////////////Function to add more Items/////////////////////////////////////////////////////
 
-//process when user chooses to edit item(s)
-var editing=-1;
-var editType=0;
-function choose(wch) {
-	//if things are being deselected, clear item Entry
-	if (editing!=-1) {document.getElementById("item1").value='';
-		document.getElementById("item2").value='';
-		document.getElementById("item3").value='';}
-
-	editing=-1;
-	document.getElementById("editButton").disabled=true;
-	document.getElementById("submitButton").disabled=false;
-
-	if(wch==-2) { //unselect all items
-		for (var i in itemList) {
-			itemList[i].chosen=0;
-			itemList[i].element.style.opacity=1;
-		}
-	}
-	else if (itemList[itemListStrings.indexOf(wch)].chosen==0) { //select
-		editing=itemListStrings.indexOf(wch);
-		editType=itemList[editing].type; //record which type (meal or ingredient)
-		itemList[editing].chosen=1;
-		itemList[editing].element.style.opacity=.5;
-		document.getElementById("editButton").disabled=false;
-		document.getElementById("submitButton").disabled=true;
-		if (editType==1) { //if editing a meal
-			document.getElementById("item1").value=itemList[editing].name;
-			var connectionNames=new Array(); //for ingredients
-			var connectionNames2=new Array(); //for descriptions
-			for (var i in itemList[editing].connections) {
-				if (itemList[editing].connections[i].type==2) {connectionNames.push(itemList[editing].connections[i].name);}
-				if (itemList[editing].connections[i].type==3) {connectionNames2.push(itemList[editing].connections[i].name);}
-			}
-			document.getElementById("item2").value=connectionNames.join(", ");
-			document.getElementById("item3").value=connectionNames2.join(", ");
-		}
-		else if (editType==2) { //if editing an ingredient
-			document.getElementById("item2").value=itemList[editing].name;
-			var connectionNames=new Array();
-			for (var i in itemList[editing].connections) {
-				connectionNames[i]=itemList[editing].connections[i].name;
-			}
-			document.getElementById("item1").value=connectionNames.join(", ");
-		}
-	}
-	else { //deselect
-		itemList[itemListStrings.indexOf(wch)].chosen=0;
-		itemList[itemListStrings.indexOf(wch)].element.style.opacity=1;
-	}
-
-	//make sure the correct buttons are shown
-	transferButtons();
-}
-
-// delete selected items
-function deleteItems(overRide) {
-	if (overRide==1) {
-		for (var i in itemList) { //delete all items
-			oldObjId=itemList[i].element;
-			if (itemList[i].type==1 && itemList[i].inMenu==0) {document.getElementById("Results").removeChild(oldObjId);}
-			else if (itemList[i].type==1 && itemList[i].inMenu==1) {document.getElementById("mealField").removeChild(oldObjId);}
-			else if (itemList[i].type==2) {document.getElementById("groceryField").removeChild(oldObjId);}
-		}
-		itemList=new Array();
-		itemListStrings=new Array();
-	}
-	else {
-		for (var i=itemList.length-1;i>=0;i--) { //start at end so stored indices don't change
-			if(itemList[i].chosen==1) {
-				oldObjId=itemList[i].element;
-				//delete from appropriate location
-				if (itemList[i].type==1 && itemList[i].inMenu==0) {document.getElementById("Results").removeChild(oldObjId);}
-				else if (itemList[i].type==1 && itemList[i].inMenu==1) {document.getElementById("mealField").removeChild(oldObjId);}
-				else if (itemList[i].type==2) {document.getElementById("groceryField").removeChild(oldObjId);}
-
-
-				for (var j in itemList[i].connections) {//disconnected with each connection before deletion
-					itemList[i].connections[j].connections.splice(itemList[i].connections[j].connections.indexOf(itemList[i]),1);
-				}
-				itemList.splice(i,1);//removes indicated element/object from list of existing items
-				itemListStrings.splice(i,1);//removes indicated element/object from list of existing item strings
-			}
-		}
-		choose(-2);
-		document.getElementById("item1").value='';
-		document.getElementById("item2").value='';
-		document.getElementById("item3").value='';
-		showMenu();
-		launchSearch();
-		saveData();
-	}
-}
 
 ///////////////////////// Function to search and display items based on searched items /////////////////////////
 
