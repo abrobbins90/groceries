@@ -3,7 +3,7 @@
 class RecipeClass {
 	constructor (graph) {
 		this.graph = graph;
-		this.BoxElements = []; // TO BE CHANGED BY MATT LATER
+		this.boxes = new Boxes(this);
 		this.input = { // make relevant DOM objects easily accessible
 			meal: document.getElementById("meal_input"),
 			ingredient: document.getElementById("ingredient_input"),
@@ -67,6 +67,10 @@ class RecipeClass {
 	// [ACTION: Remove node edge] Remove an ingredient or tag from a menu
 	removeEdge(type, name) {
 		let node = this.graph.getNodeByID(type, name);
+		if( node === -1 || this.selectedMeal === -1 ){
+			throw 'No such node.'
+			return false
+		}
 		this.graph.removeEdge(this.selectedMeal, node);
 		if (node.edges.size === 0) {
 			this.graph.removeNode(node);
@@ -89,8 +93,8 @@ class RecipeClass {
 		else {
 			// Otherwise, check to see if the node exists. If so, mark as selected
 			let node = this.graph.getNodeByID(type, name);
-			if (node === -1) {$("#" + this.input[type].id).removeClass("node_selected");}
-			else {$("#" + this.input[type].id).addClass("node_selected");}
+			if( node === -1 ) $("#" + this.input[type].id).removeClass("node_selected")
+			else $("#" + this.input[type].id).addClass("node_selected")
 		}
 	}
 
@@ -110,9 +114,8 @@ class RecipeClass {
 		// Make meal name unselected
 		this.input.meal.setAttribute("class", "menu_input_box");
 
-		for (let box of this.BoxElements) {
-			box.destroy()
-		}
+		this.boxes.destroy()
+
 		this.input.ingredient.style.display = "none";
 		this.input.tag.style.display = "none";
 	}
@@ -132,11 +135,9 @@ class RecipeClass {
 		$("#" + this.input.meal.id).addClass("node_selected");
 
 		// Show meal recipe
-		for (let box of this.BoxElements) {
-			box.destroy()
-		}
+		this.boxes.destroy()
 		for (let node of mealNode.edges) {
-			new Box(node)
+			this.boxes.add(node)
 		}
 
 		// Also show the new ingredient and new tag fields
@@ -147,9 +148,26 @@ class RecipeClass {
 	}
 }
 
+class Boxes {
+	constructor(recipe) {
+		this.recipe = recipe
+		this.boxes = []
+	}
+	add(node) {
+		this.boxes.push(new Box(node, this.recipe))
+	}
+	destroy() {
+		for( let box of this.boxes ){
+			box.destroy()
+		}
+		this.boxes = []
+	}
+}
+
 class Box {
-	constructor(node) {
+	constructor(node, recipe) {
 		this.node = node
+		this.recipe = recipe
 		this.$el = this.constructElement()
 		// attach element to DOM
 		$("#" + this.node.type + "_entry").append(this.$el)
@@ -172,12 +190,14 @@ class Box {
 
 	constructRemoveButton() {
 		// Add button to remove the item if need be
+		let box = this // patch because "this" goes out of scope in function
 		return $("<input/>")
 			.attr("type", "button")
 			.attr("value", "\u2716")
 			.addClass("rmItemButton")
 			.click(function(){
-				recipe.removeEdge(this.node.type, this.node.name) // From Andrew: this does not work
+				box.recipe.removeEdge(box.node.type, box.node.name)
+				box.destroy()
 			})
 	}
 
@@ -186,7 +206,7 @@ class Box {
 	}
 
 	destroy() {
-		this.$el.remove() // From Andrew: this does not work
+		this.$el.remove()
 	}
 }
 
