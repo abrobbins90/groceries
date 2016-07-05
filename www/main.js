@@ -12,7 +12,7 @@ $(document).ready(function(){ // jquery wait till dom loaded (see https://avamin
 
 	//////////////////// TRIGGERS ////////////////////
 	$('#meal_button').click(function(){
-		recipe.createNewMeal()
+		recipe.createMeal()
 	})
 	$('#meal_input').keyup(function(event){
 		recipe_keyPress(event, 'meal')
@@ -23,7 +23,7 @@ $(document).ready(function(){ // jquery wait till dom loaded (see https://avamin
 	$('#tag_input').keyup(function(event){
 		recipe_keyPress(event, 'tag')
 	})
-	
+
 	/*
 	$('.Tab').click(function(){
 		switchTab(this.id)
@@ -47,9 +47,9 @@ $(document).ready(function(){ // jquery wait till dom loaded (see https://avamin
 		removeEdge(id)
 	})
 	*/
-	
+
 }) // end jquery
-	
+
 
 
 /////////////////// FUNCTIONS ///////////////////
