@@ -39,6 +39,19 @@ class GraphClass {
 		}
 		return -1 // not found
 	}
+	// Search a node by partial name
+	getNodesByID_partial(type, str) {
+		var nodeList = []
+		var RE = new RegExp(str);
+		for (let node of this.nodes) {
+			if (node.type !== type) {continue}
+			// test str in node name
+			if (RE.test(node.name)) {
+				nodeList.push(node);
+			}
+		}
+		return nodeList
+	}
 
 
 
@@ -71,8 +84,8 @@ class NodeClass {
 		this.shownName = name;
 		this.edges = new Set();
 
-		this.chosen = 0; //track whether this node is selected this.hrad = 0;
-		this.found = 0; // 1 if in current search results. 0 otherwise this.vrad = 0;
+		this.chosen = false; //track whether this node is selected
+		this.found = false; // 1 if in current search results. 0 otherwise
 
 		this.xstart = 0; //root location
 		this.ystart = 0;
@@ -112,6 +125,8 @@ class NodeClass {
 
 	// put node in limbo (hidden from view)
 	sendToLimbo() {
+		this.chosen = false;
+		this.found = false;
 		document.getElementById("limbo").appendChild(this.element);
 	}
 	// Delete element
@@ -142,25 +157,26 @@ class MealNode extends NodeClass {
 		super(name, 'meal');
 		this.element.setAttribute("class", "meal_text word_text");
 
-		this.inMenu = 0; // store whether meal node is in the menu or not
+		this.inMenu = false; // store whether meal node is in the menu or not
 	}
 
+	// add meal to search results
+	addToMealResults() {
+		this.found = true;
+		this.inMenu = false;
+
+		document.getElementById("search_results").appendChild(this.element);
+		this.element.setAttribute("class","meal_text word_text");
+	}
+	
 	// Add meal to menu
 	addToMenu() {
-		this.inMenu = 1;
-		this.chosen = 0;
+		this.inMenu = true;
+		this.chosen = false;
 
 		document.getElementById("menuField").appendChild(this.element);
 		this.element.setAttribute("class","meal_onMenu_text word_text");
 	}
-	// add meal to search results
-	addToMealResults() {
-		this.inMenu = 0;
-
-		document.getElementById("Results").appendChild(this.element);
-		this.element.setAttribute("class","meal_text word_text");
-	}
-
 }
 
 

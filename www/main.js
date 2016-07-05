@@ -28,11 +28,16 @@ $(document).ready(function(){ // jquery wait till dom loaded (see https://avamin
 	$('.Tab').click(function(){
 		switchTab(this)
 	})
+	$('#mealLookup').keyup(function(){
+		launchSearch('mealLookup')
+	})
+	$('#ingredientSearch').keyup(function(){
+		launchSearch('ingredientSearch')
+	})
+	
 	/*
-	$('#ingredientSearch').keyup(launchSearch)
 	$('#mealNumValue').keyup(mealGenNum)
 	$('#generate').click(generate)
-	$('#mealLookup').keyup(launchSearch)
 	$('.menuButtons').click(function(){
 		transferMeal(this.id)
 	})
@@ -43,10 +48,6 @@ $(document).ready(function(){ // jquery wait till dom loaded (see https://avamin
 		historyChange(this.id)
 	})
 	$('#qmenu').click(qmenu)
-	$('#removeMeal').click(function(){
-		let id = graph.getNodeById($(this).value)
-		removeEdge(id)
-	})
 	*/
 	
 }) // end jquery
@@ -90,6 +91,16 @@ function switchTab(el) {
 	
 	//launchSearch();
 	//transferButtons();
+}
+
+// Commence searching
+function launchSearch(searchType) {
+	if (searchType == "mealLookup") {
+		searchWindow.mealLookup();
+	}
+	else if (searchType == "ingredientSearch") {
+		searchWindow.ingredientSearch();
+	}
 }
 
 

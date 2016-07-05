@@ -13,6 +13,11 @@ class SearchClass {
 			ingredientSearch : $("#sWindow_ingredientSearch"),
 			menuGenerator : $("#sWindow_menuGenerator")
 		};
+		this.searchBox = {
+			mealLookup : $("#mealLookup"),
+			ingredientSearch : $("#ingredientSearch"),
+			menuGenerator : $("#mealSpecifications")
+		};
 	}
 	
 	get selectedTab() {
@@ -45,4 +50,41 @@ class SearchClass {
 		this.sWindow[newTab].removeClass("area_unselected");
 		this.sWindow[newTab].addClass("area_selected");
 	}
+	
+	///// Searches
+	
+	// Search by by name
+	mealLookup() {
+		var searchStr = nameTrim(this.searchBox.mealLookup.val());
+		
+		// If they leave it blank, show all meals
+		var mealNodes = graph.getNodesByID_partial("meal", "")
+		if (searchStr === "") {
+			for (let i in mealNodes) {
+				mealNodes[i].addToMealResults();
+			}
+		}
+		else { // Otherwise, clear all then show search results
+			for (let i in mealNodes) {
+				mealNodes[i].sendToLimbo();
+			}
+			
+			var nodeList = graph.getNodesByID_partial("meal", searchStr)
+			for (let i in nodeList) {
+				nodeList[i].addToMealResults();
+			}	
+		}
+		
+		
+	}
+	// Search by Ingredient
+	ingredientSearch() {
+		
+		
+		
+		
+	}
+	
+	
+	
 }

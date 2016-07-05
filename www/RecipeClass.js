@@ -27,7 +27,7 @@ class RecipeClass {
 		let nameToAdd = this.cleanName(type)
 		if( !nameToAdd ) return false
 
-		let node = this.graph.addNode(type, nameToAdd);
+		let node = this.graph.addNode(type, this.input[type].value);
 		return node
 	}
 
