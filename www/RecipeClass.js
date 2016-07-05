@@ -3,7 +3,7 @@
 class RecipeClass {
 	constructor (graph) {
 		this.graph = graph;
-		this.boxes = [];
+		this.boxes = new Boxes(this);
 		this.input = { // make relevant DOM objects easily accessible
 			meal: document.getElementById("meal_input"),
 			ingredient: document.getElementById("ingredient_input"),
@@ -114,9 +114,8 @@ class RecipeClass {
 		// Make meal name unselected
 		this.input.meal.setAttribute("class", "menu_input_box");
 
-		for (let box of this.boxes) {
-			box.destroy()
-		}
+		this.boxes.destroy()
+
 		this.input.ingredient.style.display = "none";
 		this.input.tag.style.display = "none";
 	}
@@ -136,11 +135,9 @@ class RecipeClass {
 		$("#" + this.input.meal.id).addClass("node_selected");
 
 		// Show meal recipe
-		for (let box of this.boxes) {
-			box.destroy()
-		}
+		this.boxes.destroy()
 		for (let node of mealNode.edges) {
-			new Box(node, this)
+			this.boxes.add(node)
 		}
 
 		// Also show the new ingredient and new tag fields
@@ -148,6 +145,22 @@ class RecipeClass {
 		this.input.tag.style.display = "inline";
 		this.search("ingredient");
 		this.search("tag");
+	}
+}
+
+class Boxes {
+	constructor(recipe) {
+		this.recipe = recipe
+		this.boxes = []
+	}
+	add(node) {
+		this.boxes.push(new Box(node, this.recipe))
+	}
+	destroy() {
+		for( let box of this.boxes ){
+			box.destroy()
+		}
+		this.boxes = []
 	}
 }
 
