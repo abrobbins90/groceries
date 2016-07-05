@@ -14,7 +14,7 @@ class GraphClass {
 
 		if (type === "meal") {node = new MealNode(name);}
 		else if (type === "ingredient") {node = new IngrNode(name);}
-		else if (type === "description") {node = new DescNode(name);}
+		else if (type === "tag") {node = new TagNode(name);}
 		this.nodes.add(node);
 		return node
 	}
@@ -214,10 +214,10 @@ class IngrNode extends NodeClass {
 
 }
 
-class DescNode extends NodeClass{
-	// Define a subclass of node specific to descriptions
+class TagNode extends NodeClass{
+	// Define a subclass of node specific to tag
 	constructor(name) {
-		super( name, 'description');
+		super( name, 'tag');
 		this.element.setAttribute("class", "word_text");
 	}
 }

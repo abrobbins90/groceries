@@ -26,7 +26,7 @@ class RecipeClass {
 		// Check to see if there is anything worthy in the box
 		let nameToAdd = this.cleanName(type)
 		if( !nameToAdd ) return false
-
+		
 		let node = this.graph.addNode(type, this.input[type].value);
 		return node
 	}
@@ -45,7 +45,7 @@ class RecipeClass {
 	// the temporary method I made up
 	createNotMeal(type) {
 		let node = this.createNode(type)
-		if( !node ) return false
+		if( !node ) {return false}
 
 		// Add edge
 		this.graph.addEdge(this.selectedMeal, node);

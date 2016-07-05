@@ -121,6 +121,7 @@ body {
 	width: 0px;
 	padding: 0px;
 	outline: none;
+	cursor: pointer;
 	transition: width .2s;
 }
 .menu_item_box:hover > .rmItemButton {
