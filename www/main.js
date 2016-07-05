@@ -18,8 +18,8 @@ $(document).ready(function(){ // jquery wait till dom loaded (see https://avamin
 	$('#meal_input').keyup(function(event){
 		recipe_keyPress(event, 'meal')
 	})
-	$('#ingredient_input').keyup(function(event){
-		recipe_keyPress(event, 'ingredient')
+	$('#ingr_input').keyup(function(event){
+		recipe_keyPress(event, 'ingr')
 	})
 	$('#tag_input').keyup(function(event){
 		recipe_keyPress(event, 'tag')
@@ -31,10 +31,10 @@ $(document).ready(function(){ // jquery wait till dom loaded (see https://avamin
 	$('#mealLookup').keyup(function(){
 		launchSearch('mealLookup')
 	})
-	$('#ingredientSearch').keyup(function(){
-		launchSearch('ingredientSearch')
+	$('#ingrSearch').keyup(function(){
+		launchSearch('ingrSearch')
 	})
-	
+
 	/*
 	$('#mealNumValue').keyup(mealGenNum)
 	$('#generate').click(generate)
@@ -57,9 +57,9 @@ $(document).ready(function(){ // jquery wait till dom loaded (see https://avamin
 /////////////////// FUNCTIONS ///////////////////
 function initialize() {
 	// Define global graph to organize all recipes
-	graph = new GraphClass();
-	recipe = new RecipeClass(graph);
-	searchWindow = new SearchClass(graph);
+	graph = new Graph();
+	recipe = new RecipeArea(graph);
+	searchWindow = new Search(graph);
 	//ws = initWS();
 }
 
@@ -88,7 +88,7 @@ function recipe_keyPress(event, type) {
 //switch between search tabs
 function switchTab(el) {
 	if (!searchWindow.switchTab(el)) {return}
-	
+
 	//launchSearch();
 	//transferButtons();
 }
@@ -98,8 +98,8 @@ function launchSearch(searchType) {
 	if (searchType == "mealLookup") {
 		searchWindow.mealLookup();
 	}
-	else if (searchType == "ingredientSearch") {
-		searchWindow.ingredientSearch();
+	else if (searchType == "ingrSearch") {
+		searchWindow.ingrSearch();
 	}
 }
 
@@ -110,7 +110,7 @@ function launchSearch(searchType) {
 ///////////////////////// Function to search and display items based on searched items /////////////////////////
 
 var foundItemList=new Array();
-function launchSearch() { // begin ingredient(0) or meal(1) search
+function launchSearch() { // begin ingr(0) or meal(1) search
 
 	foundItemList=new Array();
 	for (var i in itemList){ //reset all items to not found
@@ -141,11 +141,11 @@ function itemSearch(iList,type,spec,posneg) {
 	return newList
 }
 
-//ingredient search
+//ingr search
 function ingrSearchFunc() {
 
 	var searchedItems
-	searchedItems=document.getElementById("ingredientSearch").value;
+	searchedItems=document.getElementById("ingrSearch").value;
 
 	var foundIngrList=new Array(); //list of found items
 	numberFound=0; //number of items found so far
@@ -225,32 +225,32 @@ function generate() {
 	specText=specText.replace(/,\s*,/g,",");//remove empty spots in the middle
 
 	var rawSpecList=specText.split(",");//parse into individual specs
-	var specList=new Array;//specList[i]=[min,max,ingredient,Number added to final menu]
+	var specList=new Array;//specList[i]=[min,max,ingr,Number added to final menu]
 	var form1=/(\d+)\s*\/\s*(\d+)\s+(.+)/;
 	var form2=/(\d+)\s+(.+)/;
-	for (var i in rawSpecList) { //parse individual specs into min/max/ingredient
-		//if "#1/#2 ingredient" is given, assume min#1, max=#2
+	for (var i in rawSpecList) { //parse individual specs into min/max/ingr
+		//if "#1/#2 ingr" is given, assume min#1, max=#2
 		if (form1.test(rawSpecList[i])){
 			specList.push([eval(RegExp.$1),eval(RegExp.$2),RegExp.$3,0])
 		}
-		//if "# ingredient" is given, assume min=max=#
+		//if "# ingr" is given, assume min=max=#
 		else if (form2.test(rawSpecList[i])){
 			specList.push([eval(RegExp.$1),eval(RegExp.$1),RegExp.$2,0])
 		}
-		//if "ingredient" is given, assume min 1, max equal to genNumber
+		//if "ingr" is given, assume min 1, max equal to genNumber
 		else {
 			specList.push([1,genNumber,rawSpecList[i],0])
 		}
 	}
 
-	for (var i in specList) { //first go through and replace all ingredients with their pointer
+	for (var i in specList) { //first go through and replace all ingrs with their pointer
 		//if min>max, switch
 		if (specList[i][0]>specList[i][1]){var temp=specList[i][1];
 			specList[i][1]=specList[i][0];specList[i][0]=temp;}
 
 		if (itemListStrings.indexOf(specList[i][2])!=-1) {
 			var itemKey=itemList[itemListStrings.indexOf(specList[i][2])]; //store pointer
-			if (itemKey.type>=2) {specList[i][2]=itemKey;} //if an ingredient/description
+			if (itemKey.type>=2) {specList[i][2]=itemKey;} //if an ingr/description
 			else {specList.splice(i,1)} //otherwise, remove
 		}
 		else {specList.splice(i,1)} //otherwise, remove
@@ -264,7 +264,7 @@ function generate() {
 	//first round through to meet all minima
 	for (var i in specList) {
 
-		//find all menu options that contain this ingredient
+		//find all menu options that contain this ingr
 		var mealOptions=itemSearch(possibleMenuItems,1,specList[i][2],1);
 		//if we need more menu items, there are still possibilities, the min>0, and this is an actual item
 		while (mealOptions.length>0 && finalMenuSize<genNumber && specList[i][0]>specList[i][3]) {
@@ -279,7 +279,7 @@ function generate() {
 			possibleMenuItems=removeMeal(possibleMenuItems,addedMeal);
 			possibleMenuItems=removeMaxes(possibleMenuItems,specList);
 
-			//find all menu options that contain this ingredient
+			//find all menu options that contain this ingr
 			mealOptions=itemSearch(possibleMenuItems,1,specList[i][2],1);
 		}
 	}
@@ -302,7 +302,7 @@ function generate() {
 }
 
 //////Subfunctions functions//////
-//returns updated specList. adds tally to appropriate ingredient quantities based on newly added menu item
+//returns updated specList. adds tally to appropriate ingr quantities based on newly added menu item
 function tallyIngredients(addedMeal,specList) {
 	for (var i in specList) {
 		if (addedMeal.connections.indexOf(specList[i][2])!=-1) {specList[i][3]++}
@@ -315,10 +315,10 @@ function removeMeal(possibleMenuItems,addedMeal) {
 	possibleMenuItems.splice(mealIndex,1);
 	return possibleMenuItems
 }
-//given list of currently allowed menu items, remove any meal with a maxed out ingredient, then return new list
+//given list of currently allowed menu items, remove any meal with a maxed out ingr, then return new list
 function removeMaxes(possibleMenuItems,specList) {
 	for (var i in specList) {
-		if (specList[i][3]>=specList[i][1]) { //if any ingredient is at its max, remove it
+		if (specList[i][3]>=specList[i][1]) { //if any ingr is at its max, remove it
 			possibleMenuItems=itemSearch(possibleMenuItems,1,specList[i][2],-1);
 		}
 	}
@@ -347,9 +347,9 @@ function positionResults(itemDisplay,section) {
 	var maxRight=0;
 	if (section==1) { //menu item search area
 		var bottom=document.getElementById("Results").clientHeight;}
-	else if (section==2) { //showing ingredients from given menu items
+	else if (section==2) { //showing ingrs from given menu items
 		var bottom=document.getElementById("mealField").clientHeight;}
-	else if (section==3) { //showing ingredients from given menu items
+	else if (section==3) { //showing ingrs from given menu items
 		var bottom=document.getElementById("groceryField").clientHeight;}
 
 	for (var i in itemDisplay) {
@@ -458,14 +458,14 @@ function showGroceryList(currentMenu) {
 	for (var i in currentMenu) {
 		for (var j in currentMenu[i].connections) {
 			var iIndex=groceryList.indexOf(currentMenu[i].connections[j]);
-			if (iIndex==-1 && currentMenu[i].connections[j].type==2) { //if this item is not on our list yet, and is an ingredient, add it:
+			if (iIndex==-1 && currentMenu[i].connections[j].type==2) { //if this item is not on our list yet, and is an ingr, add it:
 				groceryList.push(currentMenu[i].connections[j]);
 				groceryListQuantity.push(1);
 			}
-			else if (currentMenu[i].connections[j].type==2) {groceryListQuantity[iIndex]++;} //else, tally up that ingredient
+			else if (currentMenu[i].connections[j].type==2) {groceryListQuantity[iIndex]++;} //else, tally up that ingr
 		}
 	}
-	for (var i in groceryList) { //update each ingredient to have x# after it (if applicable)
+	for (var i in groceryList) { //update each ingr to have x# after it (if applicable)
 		groceryList[i].quantityChange(groceryListQuantity[i]);
 	}
 
@@ -478,7 +478,7 @@ var savedHistory=[]; //hold history of changes to allow "Undo"
 function saveData() {
 	var itemStore='';
 	for (var i in itemList) {
-		if (itemList[i].type==1) {//only store if this is a menu item (assume no lone ingredients)
+		if (itemList[i].type==1) {//only store if this is a menu item (assume no lone ingrs)
 			if(itemStore!='') {
 				itemStore+="|||";
 			}
@@ -507,7 +507,7 @@ var dataString
 function printSaveData() {
 	var itemStore='';
 	for (var i in itemList) {
-		if (itemList[i].type==1) {//only store if this is a menu item (assume no lone ingredients)
+		if (itemList[i].type==1) {//only store if this is a menu item (assume no lone ingrs)
 			if(itemStore!='') {
 				itemStore+="|||";
 			}
@@ -566,7 +566,7 @@ function processLoadData(systemRead) {
 		var item1Read=systemRead[i][0].split("|");
 		var item2Read=systemRead[i][1].split("|");
 		var item3Read=new Array;
-		for (var j in item2Read) { //go through item2's and split into ingredients and descriptions
+		for (var j in item2Read) { //go through item2's and split into ingrs and descriptions
 			itemType=item2Read[j].charAt(0);
 			itemName=item2Read[j].substr(1);
 			if (itemType=='3') {
@@ -623,7 +623,7 @@ var doublePress=0;
 function actionSubmit(event,whichBox) {
 	var key=event.keyCode;
 	if(key==13) {
-		if (whichBox==2 && doublePress==0){doublePress++} //enter must be pressed twice from the ingredient box to submit
+		if (whichBox==2 && doublePress==0){doublePress++} //enter must be pressed twice from the ingr box to submit
 		else if (editing==-1) {readItem(0);}
 		else {readItem(1);}
 	}

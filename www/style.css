@@ -34,7 +34,7 @@ body {
 	background-color: #FF5555;
 	border-bottom: 10px solid #FF0000;
 }
-#ingredient_entry {
+#ingr_entry {
 	flex: 10 0 250px;
 	justify-content: flex-start;
 	flex-wrap: wrap;
@@ -71,7 +71,7 @@ body {
 #meal_input {
 
 }
-#ingredient_input {
+#ingr_input {
 	order: 2;
 }
 #tag_input {
@@ -94,8 +94,8 @@ body {
 	color: #FFFFFF;
 }
 
-/* ingredient/tag entry*/
-.ingredient_box {
+/* ingr/tag entry*/
+.ingr_box {
 	margin: 3px;
 }
 .tag_box {
@@ -154,7 +154,7 @@ body {
 #tab_mealLookup {
 	flex-grow: 1;
 }
-#tab_ingredientSearch {
+#tab_ingrSearch {
 	flex-grow: 1.3;
 }
 #tab_menuGenerator {
@@ -220,17 +220,17 @@ body {
 	border-radius: 4px;
 }
 
-/* Ingredient Search*/
-#sWindow_ingredientSearch {
+/* ingr Search*/
+#sWindow_ingrSearch {
 	padding: 10px;
 	flex-direction: column;
 	align-items: left;
 	justify-content: center;
 }
-#sWindow_ingredientSearch > * {
+#sWindow_ingrSearch > * {
 	margin: 5px;
 }
-#ingredientSearch {
+#ingrSearch {
 	display: block;
 	border: none;
 	outline: none;
@@ -283,9 +283,9 @@ body {
 
 
 
-/***** Meal/Ingredient List Panel *****/
+/***** Meal/ingr List Panel *****/
 
-/* Menu display area: includes meals and ingredient lists */
+/* Menu display area: includes meals and ingr lists */
 #menu_area {
 	flex: 5 0 300px;
 	flex-basis: 300px;

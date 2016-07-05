@@ -1,7 +1,7 @@
 // This file holds the classes Graph, Node, Menu, Meal, Ingredient, and Description
 
 // Define graph to deal with all node operations
-class GraphClass {
+class Graph {
 	constructor() {
 		this.nodes = new Set(); // List of all nodes
 	}
@@ -13,7 +13,7 @@ class GraphClass {
 		if (node !== -1) {return node}
 
 		if (type === "meal") {node = new MealNode(name);}
-		else if (type === "ingredient") {node = new IngrNode(name);}
+		else if (type === "ingr") {node = new IngrNode(name);}
 		else if (type === "tag") {node = new TagNode(name);}
 		this.nodes.add(node);
 		return node
@@ -72,14 +72,14 @@ class GraphClass {
 }
 
 // Define a node
-class NodeClass {
+class Node {
 	// Define an instance of a node
 	// A node possesses various properties, as well as edges to other nodes
 	// This node is meant to be a superclass
 	constructor(name = '', type) {
 
 		// Default Initializations
-		this.type = type; // Declare node type: "meal", "ingredient", or "description"
+		this.type = type; // Declare node type: "meal", "ingr", or "description"
 		this.element = document.createElement("div"); // Create an element to be displayed on the page
 		this.shownName = name;
 		this.edges = new Set();
@@ -151,7 +151,7 @@ class NodeClass {
 
 }
 
-class MealNode extends NodeClass {
+class MealNode extends Node {
 	// Define a subclass of node specific to meals
 	constructor(name) {
 		super(name, 'meal');
@@ -168,7 +168,7 @@ class MealNode extends NodeClass {
 		document.getElementById("search_results").appendChild(this.element);
 		this.element.setAttribute("class","meal_text word_text");
 	}
-	
+
 	// Add meal to menu
 	addToMenu() {
 		this.inMenu = true;
@@ -181,16 +181,16 @@ class MealNode extends NodeClass {
 
 
 
-class IngrNode extends NodeClass {
-	// Define a subclass of node specific to ingredients
+class IngrNode extends Node {
+	// Define a subclass of node specific to ingrs
 	constructor(name) {
-		super(name, 'ingredient');
+		super(name, 'ingr');
 		this.quantity = 0;
 
 		this.element.setAttribute("class", "ingr_text word_text");
 	}
 
-	// Add ingredient to grocery list
+	// Add ingr to grocery list
 	addToGroceryList() {
 		this.chosen = 0;
 
@@ -214,7 +214,7 @@ class IngrNode extends NodeClass {
 
 }
 
-class TagNode extends NodeClass{
+class TagNode extends Node {
 	// Define a subclass of node specific to tag
 	constructor(name) {
 		super( name, 'tag');

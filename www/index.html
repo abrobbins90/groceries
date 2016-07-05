@@ -27,8 +27,8 @@
 			<input type="button" id="meal_button" value="Add New Meal"></input>
 		</div>
 
-		<div id="ingredient_entry" class="recipe_entry">
-			<input type="text" id="ingredient_input" class="menu_input_box ingredient_box" placeholder="New Ingredient" style="display:none;"></input>
+		<div id="ingr_entry" class="recipe_entry">
+			<input type="text" id="ingr_input" class="menu_input_box ingr_box" placeholder="New Ingredient" style="display:none;"></input>
 		</div>
 
 		<div id="tag_entry" class="recipe_entry">
@@ -39,28 +39,28 @@
 	<div id="search_area">
 		<div id="search_tab">
 			<div id="tab_mealLookup" class="Tab tab_selected">Meal Lookup</div>
-			<div id="tab_ingredientSearch" class="Tab tab_unselected">Ingredient Search</div>
+			<div id="tab_ingrSearch" class="Tab tab_unselected">Ingredient Search</div>
 			<div id="tab_menuGenerator" class="Tab tab_unselected">Menu Generator</div>
 		</div>
-		
+
 		<div id="search_window">
 			<div id="sWindow_mealLookup" class="SearchArea area_selected">
 				<div>Search for Meals:</div>
 				<input type="text" id="mealLookup" placeholder="Search Meals..."></input>
 			</div>
-			<div id="sWindow_ingredientSearch" class="SearchArea area_unselected">
+			<div id="sWindow_ingrSearch" class="SearchArea area_unselected">
 				<div>Search Meals by Ingredients:</div>
-				<input type="text" id="ingredientSearch" placeholder="Search By Ingredient..."></textarea>
+				<input type="text" id="ingrSearch" placeholder="Search By Ingredient..."></textarea>
 			</div>
 			<div id="sWindow_menuGenerator" class="SearchArea area_unselected">
 				<div>
 					<div>
-						# of Meals: 
+						# of Meals:
 						<input type="text" id="mealNumValue" value="7"></input>
 					</div>
 					<input id="generate" type="button" value="Generate">
 				</div>
-				<textarea id="mealSpecifications" rows="4" cols="25" placeholder="min/max ingredient&#13;&#10ex: 0/2 chicken" style="resize:none;"></textarea>
+				<textarea id="mealSpecifications" rows="4" cols="25" placeholder="min/max ingr&#13;&#10ex: 0/2 chicken" style="resize:none;"></textarea>
 			</div>
 		</div>
 

@@ -1,20 +1,30 @@
 //Class for all recipe handling in groceries
 
-class RecipeClass {
+class Input {
+	get meal() {
+		return $("#meal_input")
+	}
+	get ingr() {
+		return $("#ingr_input")
+	}
+	get tag() {
+		return $("#tag_input")
+	}
+	get mealButton() {
+		return $("#meal_button")
+	}
+}
+
+class RecipeArea {
 	constructor (graph) {
 		this.graph = graph;
 		this.boxes = new Boxes(this);
-		this.input = { // make relevant DOM objects easily accessible
-			meal: document.getElementById("meal_input"),
-			ingredient: document.getElementById("ingredient_input"),
-			tag: document.getElementById("tag_input"),
-			mealButton: document.getElementById("meal_button"),
-		};
+		this.input = new Input();
 	}
 
 	/////////////////// HELPERS ///////////////////
 	cleanName(type) {
-		let cleanName = nameTrim(this.input[type].value)
+		let cleanName = nameTrim(this.input[type].val())
 		if( cleanName === "" ) return false
 		return cleanName
 	}
@@ -26,8 +36,8 @@ class RecipeClass {
 		// Check to see if there is anything worthy in the box
 		let nameToAdd = this.cleanName(type)
 		if( !nameToAdd ) return false
-		
-		let node = this.graph.addNode(type, this.input[type].value);
+
+		let node = this.graph.addNode(type, this.input[type].val());
 		return node
 	}
 
@@ -39,7 +49,7 @@ class RecipeClass {
 
 		this.updateDisplay();
 		// Put focus on new ingredient field, assuming that's next!
-		this.input.ingredient.focus();
+		this.input.ingr.focus();
 	}
 
 	// the temporary method I made up
@@ -49,8 +59,8 @@ class RecipeClass {
 
 		// Add edge
 		this.graph.addEdge(this.selectedMeal, node);
-		this.input[type].value = ""; // clear entry box
-		this.input[type].setAttribute("class", "menu_input_box " + type + "_box");
+		this.input[type].val(""); // clear entry box
+		this.input[type].addClass("menu_input_box " + type + "_box");
 
 		this.updateDisplay();
 	}
@@ -64,7 +74,7 @@ class RecipeClass {
 	}
 
 
-	// [ACTION: Remove node edge] Remove an ingredient or tag from a menu
+	// [ACTION: Remove node edge] Remove an ingr or tag from a menu
 	removeEdge(type, name) {
 		let node = this.graph.getNodeByID(type, name);
 		if( node === -1 || this.selectedMeal === -1 ){
@@ -93,8 +103,8 @@ class RecipeClass {
 		else {
 			// Otherwise, check to see if the node exists. If so, mark as selected
 			let node = this.graph.getNodeByID(type, name);
-			if( node === -1 ) $("#" + this.input[type].id).removeClass("node_selected")
-			else $("#" + this.input[type].id).addClass("node_selected")
+			if( node === -1 ) this.input[type].removeClass("node_selected")
+			else this.input[type].addClass("node_selected")
 		}
 	}
 
@@ -109,15 +119,15 @@ class RecipeClass {
 	// Remove all nodes from view
 	clearDisplay() {
 		// Update meal input box
-		this.input.mealButton.value = "Add New Meal";
-		$("#" + this.input.mealButton.id).click(function(){recipe.createMeal()});
+		this.input.mealButton.val("Add New Meal");
+		this.input.mealButton.click(recipe.createMeal);
 		// Make meal name unselected
-		this.input.meal.setAttribute("class", "menu_input_box");
+		this.input.meal.addClass("menu_input_box");
 
 		this.boxes.destroy()
 
-		this.input.ingredient.style.display = "none";
-		this.input.tag.style.display = "none";
+		this.input.ingr.css("display", "none");
+		this.input.tag.css("display", "none");
 	}
 
 	// Show all nodes connected to selected meal
@@ -130,9 +140,9 @@ class RecipeClass {
 
 		// Update meal input box
 		this.input.mealButton.value = "Remove Meal";
-		$("#" + this.input.mealButton.id).click(function(){recipe.removeMeal()});
+		this.input.mealButton.click(recipe.removeMeal);
 		// Also highlight meal name
-		$("#" + this.input.meal.id).addClass("node_selected");
+		this.input.meal.addClass("node_selected");
 
 		// Show meal recipe
 		this.boxes.destroy()
@@ -140,10 +150,10 @@ class RecipeClass {
 			this.boxes.add(node)
 		}
 
-		// Also show the new ingredient and new tag fields
-		this.input.ingredient.style.display = "inline";
-		this.input.tag.style.display = "inline";
-		this.search("ingredient");
+		// Also show the new ingr and new tag fields
+		this.input.ingr.css("display", "inline");
+		this.input.tag.css("display", "inline");
+		this.search("ingr");
 		this.search("tag");
 	}
 }
