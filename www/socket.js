@@ -1,16 +1,17 @@
-
 // Define websocket to be used for server interaction
-function initWS() {
-	var newWS = new WebSocket("ws://learnnation.org:8243/mySocket");
-	newWS.onmessage = function(event){
-		inData = JSON.parse(event.data);
-		receiveData(inData);
+
+class Socket { // manually extend WebSocket, because WebSocket didn't want to use "super"
+	constructor(receiveData) {
+		this.ws = new WebSocket("ws://localhost:8243/mySocket")
+		this.receiveData = receiveData
+		this.ws.onmessage = function(event) {
+			let inData = JSON.parse(event.data)
+			this.receiveData(inData)
+		}
 	}
-	return newWS
-}
-	
-function WSsend(outData) {
-	outDataStr = JSON.stringify(outData);
-	ws.send(outDataStr);
+	send(outData) {
+		let outDataStr = JSON.stringify(outData)
+		this.ws.send(outDataStr)
+	}
 }
 

@@ -60,7 +60,7 @@ function initialize() {
 	graph = new Graph();
 	recipe = new RecipeArea(graph);
 	searchWindow = new Search(graph);
-	//ws = initWS();
+	ws = new Socket(function(){}) // input your receiveData function here
 }
 
 

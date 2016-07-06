@@ -47,7 +47,7 @@ class SocketHandler (WebSocketHandler):
 			elif message["command"] == "remove meal":
 				print 'remove me'
 				# send a message back
-				self.write_message('ten four')
+				self.write_message({'command': 'ten four'})
 
 		def on_close(self):
 			print 'websocket closed'
