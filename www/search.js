@@ -1,22 +1,22 @@
 //Class to handle searches
 
 class Search {
-	constructor (graph) {
+	constructor(graph) {
 		this.graph = graph;
 		this.tab = {
-			mealLookup : $("#tab_mealLookup"),
-			ingrSearch : $("#tab_ingrSearch"),
-			menuGenerator : $("#tab_menuGenerator"),
+			mealLookup: $("#tab_mealLookup"),
+			ingrSearch: $("#tab_ingrSearch"),
+			menuGenerator: $("#tab_menuGenerator"),
 		};
 		this.sWindow = {
-			mealLookup : $("#sWindow_mealLookup"),
-			ingrSearch : $("#sWindow_ingrSearch"),
-			menuGenerator : $("#sWindow_menuGenerator"),
+			mealLookup: $("#sWindow_mealLookup"),
+			ingrSearch: $("#sWindow_ingrSearch"),
+			menuGenerator: $("#sWindow_menuGenerator"),
 		};
 		this.searchBox = {
-			mealLookup : $("#mealLookup"),
-			ingrSearch : $("#ingrSearch"),
-			menuGenerator : $("#mealSpecifications"),
+			mealLookup: $("#mealLookup"),
+			ingrSearch: $("#ingrSearch"),
+			menuGenerator: $("#mealSpecifications"),
 		};
 	}
 
@@ -37,7 +37,7 @@ class Search {
 		// If clicked tab is already selected, do nothing
 		var oldTab = this.selectedTab;
 		var newTab = this.getElName(newTabEl);
-		if (oldTab === newTab) {return false}
+		if (oldTab === newTab) return false;
 
 		// unselect old tab
 		this.tab[oldTab].removeClass("tab_selected");
