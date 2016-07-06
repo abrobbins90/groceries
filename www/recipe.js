@@ -193,7 +193,7 @@ class Box {
 	}
 
 	constructContents() {
-		return $('<div/>')
+		return $("<div/>")
 			.html(this.node.shownName)
 			.addClass("box_contents")
 	}
@@ -201,9 +201,9 @@ class Box {
 	constructRemoveButton() {
 		// Add button to remove the item if need be
 		let box = this // patch because "this" goes out of scope in function
-		return $("<input/>")
+		return $("<div/>")
 			.attr("type", "button")
-			.attr("value", "\u2716")
+			.html("&times;")
 			.addClass("rmItemButton")
 			.click(function(){
 				box.recipe.removeEdge(box.node.type, box.node.name)

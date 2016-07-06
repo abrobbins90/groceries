@@ -105,6 +105,7 @@ body {
 	background-color: #FF9999;
 	border: 0px;
 	border-radius: 4px;
+	overflow: hidden;
 }
 .box_contents {
 	font-family: "Arial";
@@ -114,15 +115,16 @@ body {
 	transition: padding .2s;
 }
 .rmItemButton {
-	background-color: #FF9999;
-	color: #FFFFFF;
-	font-size: 15px;
+	display: inline-block;
 	border: 0px;
 	width: 0px;
 	padding: 0px;
 	outline: none;
 	cursor: pointer;
 	transition: width .2s;
+	background-color: #FF9999;
+	color: #FFFFFF;
+	font-size: 15px;
 }
 .menu_item_box:hover > .rmItemButton {
 	transition: width .2s;
