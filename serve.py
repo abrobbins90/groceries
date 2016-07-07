@@ -1,17 +1,21 @@
-from tornado.ioloop import IOLoop
-from tornado.web import url #constructs a URLSpec for you
-
 from tornado.web import RequestHandler
 from tornado.web import StaticFileHandler
-from tornado.web import Application
 from tornado.websocket import WebSocketHandler
-
+from tornado.web import Application
+from tornado.web import url
+from tornado.ioloop import IOLoop
 from tornado.log import enable_pretty_logging
+
+import data
 
 class SocketHandler (WebSocketHandler):
 	""" The WebSocket protocol is still in development. This module currently implements the hixie-76 and hybi-10 versions of the protocol. See this browser compatibility table on Wikipedia: http://en.wikipedia.org/wiki/WebSockets#Browser_support """
 	def open(self):
 		print 'websocket opened!'
+		self.write({
+			'command': 'populate-nodes',
+			'data': data.load()
+		})
 
 	def on_message(self, message):
 		print 'got message: ' + message
@@ -26,8 +30,12 @@ class SocketHandler (WebSocketHandler):
 			print 'edit me'
 		elif message["command"] == "remove meal":
 			print 'remove me'
-			# send a message back
 			self.write_message({'command': 'ten four'})
+		elif message["command"] == "update-data":
+			self.write({
+				'command': 'populate-nodes',
+				'data': data.load()
+			})
 
 	def on_close(self):
 		print 'websocket closed'
