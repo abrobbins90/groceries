@@ -35,14 +35,14 @@ class SocketHandler (WebSocketHandler):
 class JSSocketHandler (RequestHandler):
 	""" This is to render socket.js, passing in the host url """
 	def get(self):
-		self.render("../www-built/socket.js", host=self.request.host)
+		self.render("www-built/socket.js", host=self.request.host)
 
 def make_app():
 	return Application(
 		[
 			url('/mySocket', SocketHandler, {} , name = "a"),
 			url('/socket.js', JSSocketHandler, {}, name = "b"),
-			url(r'/(.*)', StaticFileHandler, { "path": "../www-built/" }) # captures anything at all, and serves it as a static file. simple!
+			url(r'/(.*)', StaticFileHandler, { "path": "www-built/" }) # captures anything at all, and serves it as a static file. simple!
 		],
 		#settings
 		debug = True,
