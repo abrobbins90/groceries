@@ -2,7 +2,7 @@
 
 class Socket { // manually extend WebSocket, because WebSocket didn't want to use "super"
 	constructor(receiveData) {
-		this.ws = new WebSocket("ws://localhost:8243/mySocket")
+		this.ws = new WebSocket("ws://{{host}}/mySocket")
 		this.receiveData = receiveData
 		this.ws.onmessage = function(event) {
 			let inData = JSON.parse(event.data)
