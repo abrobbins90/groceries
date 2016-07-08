@@ -1,0 +1,14 @@
+The following is not immediately relevant, but I was thinking of what this program could turn into, and so I thought I'd collect ideas here:
+
+Recipe details:
+instead of just a list of ingredients, maybe we could allow it to include recipe details, including quantities as well as directions
+This would be the same thing except we'd need a more details attached to a meal, such as quantities. But then the directions would be simple.
+-NOTE: this would likely mean quite an overhaul of the display, both for input and output.
+
+Usernames / groups:
+I think it would be useful if people could have usernames to store their own recipes. And some could be shared with a group.
+At least personally, this would be useful because I could put recipes for myself in one convenient location.
+Recipes could have other things associated with them of course, like a rating, etc. 
+So there could be some kind of organization based on whether a recipe is attached to you, a group, both, sharing and importing recipes into your personal recipe book.
+Then the server could store username information. This could be quite basic, since I'm not anticipating more than a couple people using this.
+We'd need a password or something as well. Don't think this would need to be too crazily secure...
