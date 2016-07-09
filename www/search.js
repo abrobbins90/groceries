@@ -1,6 +1,6 @@
 //Class to handle searches
 
-class Search {
+class SearchArea {
 	constructor(graph) {
 		this.graph = graph;
 		this.tab = {
