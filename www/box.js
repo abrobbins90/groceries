@@ -3,14 +3,25 @@ class Boxes {
 		this.removeAction = removeAction
 		this.boxes = []
 	}
+
 	add(node) {
 		this.boxes.push(new Box(node, this.removeAction))
 	}
+
 	destroy() {
 		for( let box of this.boxes ){
 			box.destroy()
 		}
 		this.boxes = []
+	}
+
+	toPrintableString() {
+		// We will populate a blank HTML page with this string and then print it
+		let stringArray = []
+		for( let box of this.boxes ){
+			stringArray.push(box.toPrintableString())
+		}
+		return stringArray.join("<br /><br />")
 	}
 }
 
@@ -45,6 +56,11 @@ class Box {
 			.html("&times;")
 			.addClass("rmItemButton")
 			.click(this.remove.bind(this))
+	}
+
+	toPrintableString() {
+		// any modifications for printing can go here
+		return this.node.shownName
 	}
 
 	get id() {
