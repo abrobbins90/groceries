@@ -1,11 +1,10 @@
 class Boxes {
-	constructor(removeAction=function(){}, bindee=null) {
+	constructor(removeAction=function(){}) {
 		this.removeAction = removeAction
-		this.bindee = bindee
 		this.boxes = []
 	}
 	add(node) {
-		this.boxes.push(new Box(node, this.removeAction, this.bindee))
+		this.boxes.push(new Box(node, this.removeAction))
 	}
 	destroy() {
 		for( let box of this.boxes ){
@@ -16,12 +15,9 @@ class Boxes {
 }
 
 class Box {
-	constructor(node, removeAction, bindee) {
+	constructor(node, removeAction) {
 		this.node = node
 		this.removeAction = removeAction // a function to perform on removeButton.click
-		if( bindee ){ // an object to be 'this' when running removeAction
-			this.removeAction = this.removeAction.bind(bindee)
-		}
 		this.$el = this.constructElement()
 		// attach element to DOM
 		$("#" + this.node.type + "_entry").append(this.$el)

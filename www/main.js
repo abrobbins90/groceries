@@ -8,7 +8,6 @@ let ws = undefined
 /////////////////// FUNCTIONS ///////////////////
 function initGlobals() {
 	graph = new Graph();
-	console.log('graph initted')
 	recipe = new RecipeArea(graph);
 	searchWindow = new SearchArea(graph);
 	ws = new Socket(function(){}) // input your receiveData function here

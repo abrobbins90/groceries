@@ -18,7 +18,7 @@ class Input {
 class RecipeArea {
 	constructor (graph) {
 		this.graph = graph;
-		this.boxes = new Boxes(this.removeEdge, this);
+		this.boxes = new Boxes(this.removeEdge.bind(this));
 		this.input = new Input();
 	}
 
