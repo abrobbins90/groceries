@@ -1,0 +1,7 @@
+July 9, 2016 Tasks:
+
+1) data.py (Andrew)
+2) Node needs to be represented unambiguously as a dictionary (to be saved later) (Matt)
+3) save graph (Andrew)
+4) client side initiation of recipe changes (Matt)
+5) server side receipt and proper handling of recipe changes (Andrew)
