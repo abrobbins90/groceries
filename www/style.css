@@ -105,9 +105,12 @@
 .box_contents {
 	font-family: "Arial";
 	font-size: 15px;
-	padding: 4px 16px 4px 16px;
 	display: inline-block;
-	transition: padding .2s;
+	padding: 4px 16px 4px 16px;
+	transition: all .2s;
+}
+.menu_item_box:hover > .box_contents {
+	padding: 4px;
 }
 .rmItemButton {
 	display: inline-block;
@@ -115,19 +118,15 @@
 	padding: 0px;
 	outline: none;
 	cursor: pointer;
-	transition: width .2s;
 	background-color: #FF9999;
 	color: #FFFFFF;
 	font-size: 15px;
+	text-align: center;
+	transition: all .2s; /* was only 'width' before */
 }
 .menu_item_box:hover > .rmItemButton {
-	transition: width .2s;
 	width: 23px;
 	border-left: 1px solid #FF5555;
-}
-.menu_item_box:hover > .box_contents {
-	transition: padding .2s;
-	padding: 4px;
 }
 
 
@@ -303,6 +302,21 @@
 	text-align: center;
 }
 
+/* print button */
+#print_button {
+	height: 25px;
+	border: 2px solid #FFFFFF;
+	border-radius: 4px;
+	background-color: #FFFFFF;
+	color: #000000;
+	cursor: pointer;
+	transition-duration: 0.1s;
+}
+#print_button:hover {
+	border: 2px solid #FFFFFF;
+	background-color: #0F0;
+	color: #FFFFFF;
+}
 
 
 

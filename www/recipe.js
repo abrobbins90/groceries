@@ -18,7 +18,7 @@ class Input {
 class RecipeArea {
 	constructor (graph) {
 		this.graph = graph;
-		this.boxes = new Boxes(this);
+		this.boxes = new Boxes(this.removeEdge.bind(this));
 		this.input = new Input();
 	}
 
@@ -72,7 +72,6 @@ class RecipeArea {
 		this.updateDisplay();
 		this.input.meal.focus();
 	}
-
 
 	// [ACTION: Remove node edge] Remove an ingr or tag from a menu
 	removeEdge(type, name) {
@@ -157,66 +156,3 @@ class RecipeArea {
 		this.search("tag");
 	}
 }
-
-class Boxes {
-	constructor(recipe) {
-		this.recipe = recipe
-		this.boxes = []
-	}
-	add(node) {
-		this.boxes.push(new Box(node, this.recipe))
-	}
-	destroy() {
-		for( let box of this.boxes ){
-			box.destroy()
-		}
-		this.boxes = []
-	}
-}
-
-class Box {
-	constructor(node, recipe) {
-		this.node = node
-		this.recipe = recipe
-		this.$el = this.constructElement()
-		// attach element to DOM
-		$("#" + this.node.type + "_entry").append(this.$el)
-	}
-
-	constructElement() {
-		return $("<div/>")
-			.attr("id", this.id)
-			.append(this.constructContents())
-			.append(this.constructRemoveButton())
-			.addClass("menu_item_box")
-			.addClass(this.node.type + "_box")
-	}
-
-	constructContents() {
-		return $("<div/>")
-			.html(this.node.shownName)
-			.addClass("box_contents")
-	}
-
-	constructRemoveButton() {
-		// Add button to remove the item if need be
-		let box = this // patch because "this" goes out of scope in function
-		return $("<div/>")
-			.attr("type", "button")
-			.html("&times;")
-			.addClass("rmItemButton")
-			.click(function(){
-				box.recipe.removeEdge(box.node.type, box.node.name)
-				box.destroy()
-			})
-	}
-
-	get id() {
-		return "box_el_" + this.node.id
-	}
-
-	destroy() {
-		this.$el.remove()
-	}
-}
-
