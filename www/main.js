@@ -1,17 +1,19 @@
-// This file holds the main functionality of the program
-
 //////////////////// GLOBALS ////////////////////
 let graph = undefined
 let recipe = undefined
 let searchWindow = undefined
 let ws = undefined
 
-$(document).ready(function(){ // jquery wait till dom loaded (see https://avaminzhang.wordpress.com/2013/06/11/document-ready-vs-window-load/ if any issues)
 
-	////////////////////// INIT //////////////////////
-	initialize()
+/////////////////// FUNCTIONS ///////////////////
+function initGlobals() {
+	graph = new Graph();
+	recipe = new RecipeArea(graph);
+	searchWindow = new Search(graph);
+	ws = new Socket(function(){}) // input your receiveData function here
+}
 
-	//////////////////// TRIGGERS ////////////////////
+function initTriggers() {
 	$('#meal_button').click(function(){
 		recipe.createMeal()
 	})
@@ -49,20 +51,7 @@ $(document).ready(function(){ // jquery wait till dom loaded (see https://avamin
 	})
 	$('#qmenu').click(qmenu)
 	*/
-
-}) // end jquery
-
-
-
-/////////////////// FUNCTIONS ///////////////////
-function initialize() {
-	// Define global graph to organize all recipes
-	graph = new Graph();
-	recipe = new RecipeArea(graph);
-	searchWindow = new Search(graph);
-	ws = new Socket(function(){}) // input your receiveData function here
 }
-
 
 ////////////////////////////// Key / Typing Automatic Response & Searching Functions
 
@@ -652,3 +641,10 @@ function mealGenNum() { //when entering the number of meals to generate, ensure 
 
 */
 
+
+////////////////////// MAIN //////////////////////
+$(document).ready(function(){
+	// jquery wait till dom loaded (see https://avaminzhang.wordpress.com/2013/06/11/document-ready-vs-window-load/ if any issues)
+	initGlobals()
+	initTriggers()
+})
