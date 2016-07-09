@@ -302,6 +302,21 @@
 	text-align: center;
 }
 
+/* print button */
+#print_button {
+	height: 25px;
+	border: 2px solid #FFFFFF;
+	border-radius: 4px;
+	background-color: #FFFFFF;
+	color: #000000;
+	cursor: pointer;
+	transition-duration: 0.1s;
+}
+#print_button:hover {
+	border: 2px solid #FFFFFF;
+	background-color: #0F0;
+	color: #FFFFFF;
+}
 
 
 

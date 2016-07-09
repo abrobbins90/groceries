@@ -23,6 +23,12 @@ class Boxes {
 		}
 		return stringArray.join("<br /><br />")
 	}
+
+	print() {
+		let win = window.open()
+		win.document.write(this.toPrintableString())
+		win.print()
+	}
 }
 
 class Box {

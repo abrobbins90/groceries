@@ -1,7 +1,8 @@
 //////////////////// GLOBALS ////////////////////
 let graph = undefined
 let recipe = undefined
-let searchWindow = undefined
+let searchArea = undefined
+let groceryArea = undefined
 let ws = undefined
 
 
@@ -9,11 +10,13 @@ let ws = undefined
 function initGlobals() {
 	graph = new Graph();
 	recipe = new RecipeArea(graph);
-	searchWindow = new SearchArea(graph);
+	searchArea = new SearchArea(graph);
+	groceryArea = new GroceryListArea();
 	ws = new Socket(function(){}) // input your receiveData function here
 }
 
 function initTriggers() {
+	/* recipe area */
 	$('#meal_button').click(function(){
 		recipe.createMeal()
 	})
@@ -27,6 +30,7 @@ function initTriggers() {
 		recipe_keyPress(event, 'tag')
 	})
 
+	/* search area */
 	$('.Tab').click(function(){
 		switchTab(this)
 	})
@@ -35,6 +39,11 @@ function initTriggers() {
 	})
 	$('#ingrSearch').keyup(function(){
 		launchSearch('ingrSearch')
+	})
+
+	/* grocery area */
+	$('#print_button').click(function(){
+		groceryArea.print()
 	})
 
 	/*
@@ -76,7 +85,7 @@ function recipe_keyPress(event, type) {
 
 //switch between search tabs
 function switchTab(el) {
-	if (!searchWindow.switchTab(el)) {return}
+	if (!searchArea.switchTab(el)) {return}
 
 	//launchSearch();
 	//transferButtons();
@@ -85,10 +94,10 @@ function switchTab(el) {
 // Commence searching
 function launchSearch(searchType) {
 	if (searchType == "mealLookup") {
-		searchWindow.mealLookup();
+		searchArea.mealLookup();
 	}
 	else if (searchType == "ingrSearch") {
-		searchWindow.ingrSearch();
+		searchArea.ingrSearch();
 	}
 }
 
