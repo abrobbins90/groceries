@@ -30,39 +30,29 @@ class RecipeArea {
 	}
 
 	////////////////////////////// Node/Edge Creation/Deletion Functions
-	// Note I also combined the keypress function to make one, but I have an if statement to
-	// control which function is called. You might want to combine these somehow.
+	// [ACTION] Add a new node
 	createNode(type) {
 		// Check to see if there is anything worthy in the box
 		let nameToAdd = this.cleanName(type)
 		if( !nameToAdd ) return false
 
-		let node = this.graph.addNode(type, this.input[type].val());
+		let node = this.graph.addNode(type, this.input[type].val())
+
+		if( type !== 'meal' ){
+			// Add edge
+			this.graph.addEdge(this.selectedMeal, node)
+			this.input[type].val("") // clear entry box
+			this.input[type].addClass("menu_input_box " + type + "_box")
+		}
+
+		this.updateDisplay();
+
+		if( type === 'meal' ){
+			// Put focus on new ingredient field, assuming that's next!
+			this.input.ingr.focus()
+		}
+
 		return node
-	}
-
-	// [ACTION: Add Meal Button] Add a new meal node
-	createMeal() {
-		// On press of the add meal button, read the contents of the text box for the new meal and add
-		// it to the meal nodes
-		if( !this.createNode("meal") ) return false
-
-		this.updateDisplay();
-		// Put focus on new ingredient field, assuming that's next!
-		this.input.ingr.focus();
-	}
-
-	// the temporary method I made up
-	createNotMeal(type) {
-		let node = this.createNode(type)
-		if( !node ) {return false}
-
-		// Add edge
-		this.graph.addEdge(this.selectedMeal, node);
-		this.input[type].val(""); // clear entry box
-		this.input[type].addClass("menu_input_box " + type + "_box");
-
-		this.updateDisplay();
 	}
 
 	// [ACTION: Remove Meal Button] Remove a recipe

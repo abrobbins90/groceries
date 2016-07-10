@@ -62,22 +62,22 @@ function initTriggers() {
 	*/
 }
 
+function createNode(type) {
+	let node = recipe.createNode(type)
+	if( !node ) return false
+	ws.send({command: 'add-node', node: node.as_dict()})
+}
+
 ////////////////////////////// Key / Typing Automatic Response & Searching Functions
 
 // Handle key presses in recipe input boxes
 function recipe_keyPress(event, type) {
 	var key = event.keyCode;
 	if (key === 13) { // Enter Button
-		if (type === "meal") {
-			// Simulate clicking the Add New Meal Button (if it's available)
-			recipe.createMeal();
-		}
-		else {
-			recipe.createNotMeal(type);
-		}
+		createNode(type)
 	}
 	else {
-		recipe.search(type);
+		recipe.search(type)
 	}
 }
 
