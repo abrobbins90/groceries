@@ -18,11 +18,14 @@ function initGlobals() {
 function initTriggers() {
 	/* recipe area */
 	$('#meal_button').click(function(){
-		recipe.createMeal()
+		let shownName = $('#meal_input').val()
+		recipe.createNode('meal', shownName)
 	})
 	$('.node_input').keyup(function(event){
 		let type = $(this).attr("data-type")
-		recipe_keyPress(event, type)
+		let shownName = $(this).val()
+		let key = event.keyCode;
+		recipe.keyPress(key, type, shownName)
 	})
 
 	/* search area */
@@ -57,24 +60,6 @@ function initTriggers() {
 	*/
 }
 
-function createNode(type) {
-	let node = recipe.createNode(type)
-	if( !node ) return false
-	ws.send({command: 'add-node', node: node.as_dict()})
-}
-
-////////////////////////////// Key / Typing Automatic Response & Searching Functions
-
-// Handle key presses in recipe input boxes
-function recipe_keyPress(event, type) {
-	var key = event.keyCode;
-	if (key === 13) { // Enter Button
-		createNode(type)
-	}
-	else {
-		recipe.search(type)
-	}
-}
 
 /////////////////////////////// Search Area
 

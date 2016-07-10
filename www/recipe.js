@@ -16,27 +16,27 @@ class Input {
 }
 
 class RecipeArea {
-	constructor (graph) {
+	constructor(graph) {
 		this.graph = graph;
 		this.boxes = new Boxes(this.removeEdge.bind(this));
 		this.input = new Input();
 	}
 
-	/////////////////// HELPERS ///////////////////
-	cleanName(type) {
-		let cleanName = nameTrim(this.input[type].val())
-		if( cleanName === "" ) return false
-		return cleanName
+	keyPress(key, type, shownName) {
+		if (key === 13) { // Enter Button
+			this.createNode(type, shownName)
+		}
+		else {
+			this.search(type, shownName)
+		}
 	}
 
 	////////////////////////////// Node/Edge Creation/Deletion Functions
 	// [ACTION] Add a new node
-	createNode(type) {
-		// Check to see if there is anything worthy in the box
-		let nameToAdd = this.cleanName(type)
-		if( !nameToAdd ) return false
+	createNode(type, shownName) {
+		if( !nameTrim(shownName) ) return false
 
-		let node = this.graph.addNode(type, this.input[type].val())
+		let node = this.graph.addNode(type, shownName)
 
 		if( type !== 'meal' ){
 			// Add edge
@@ -45,13 +45,14 @@ class RecipeArea {
 			/*this.input[type].addClass("node_input " + type + "_box") if this comment causes no issues, delete this line */
 		}
 
-		this.updateDisplay();
+		this.updateDisplay(shownName);
 
 		if( type === 'meal' ){
 			// Put focus on new ingredient field, assuming that's next!
 			this.input.ingr.focus()
 		}
 
+		ws.send({command: 'add-node', node: node.as_dict()})
 		return node
 	}
 
@@ -59,7 +60,7 @@ class RecipeArea {
 	removeMeal(mealNode = this.selectedMeal) {
 		// mealNode : node object of meal to be deleted (default meal to delete is current selection)
 		this.graph.removeNode(mealNode); // Delete meal
-		this.updateDisplay();
+		this.updateDisplay("");
 		this.input.meal.focus();
 	}
 
@@ -74,20 +75,20 @@ class RecipeArea {
 		if (node.edges.size === 0) {
 			this.graph.removeNode(node);
 		}
-		this.updateDisplay();
+		this.updateDisplay(name);
 		this.input[type].focus();
 	}
 
 	/////////////////////////
 
-	// After pressing a key, check the contents of the box and search for existing nodes to match
-	search(type) {
-		let name = this.cleanName(type)
+	// search for existing nodes to match shownName
+	search(type, shownName) {
+		let name = nameTrim(shownName)
 		if( !name ) return false
 
 		if (type === "meal") {
 			// If it's a meal search, update display
-			this.updateDisplay();
+			this.updateDisplay(shownName);
 		}
 		else {
 			// Otherwise, check to see if the node exists. If so, mark as selected
@@ -99,8 +100,12 @@ class RecipeArea {
 
 	// Figure out what meal is selected, or if there is none
 	get selectedMeal() {
+		let shownName = $('#meal_input').val()
+		let name = nameTrim(shownName)
+		if( !name ) return -1
+
 		// Check what meal node is referenced in the meal input box
-		return this.graph.getNodeByID("meal", this.cleanName("meal"));
+		return this.graph.getNodeByID("meal", name)
 	}
 
 	////////// Recipe Display Functions
@@ -109,7 +114,7 @@ class RecipeArea {
 	clearDisplay() {
 		// Update meal input box
 		this.input.mealButton.val("Add New Meal");
-		this.input.mealButton.click(recipe.createMeal);
+		/*this.input.mealButton.click(recipe.createMeal); also delete if no probs */
 		// Make meal name unselected
 		this.input.meal.addClass("node_input");
 
@@ -120,7 +125,7 @@ class RecipeArea {
 	}
 
 	// Show all nodes connected to selected meal
-	updateDisplay() {
+	updateDisplay(shownName) {
 		let mealNode = this.selectedMeal;
 		if( mealNode === -1 ){
 			this.clearDisplay()
@@ -142,7 +147,7 @@ class RecipeArea {
 		// Also show the new ingr and new tag fields
 		this.input.ingr.css("display", "inline");
 		this.input.tag.css("display", "inline");
-		this.search("ingr");
-		this.search("tag");
+		this.search("ingr", shownName);
+		this.search("tag", shownName);
 	}
 }

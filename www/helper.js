@@ -12,5 +12,3 @@ function nameTrim(name) {
 
 	return name
 }
-
-

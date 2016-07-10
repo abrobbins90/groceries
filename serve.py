@@ -1,3 +1,5 @@
+import json
+
 from tornado.web import RequestHandler
 from tornado.web import StaticFileHandler
 from tornado.websocket import WebSocketHandler
@@ -12,23 +14,24 @@ class SocketHandler (WebSocketHandler):
 	""" The WebSocket protocol is still in development. This module currently implements the hixie-76 and hybi-10 versions of the protocol. See this browser compatibility table on Wikipedia: http://en.wikipedia.org/wiki/WebSockets#Browser_support """
 	def open(self):
 		print 'websocket opened!'
-		self.write({
+		self.write_message({
 			'command': 'populate-nodes',
 			'data': data.load()
 		})
 
 	def on_message(self, message):
-		print 'got message: ' + message
+		print 'got message: {}'.format(message)
+		message = json.loads(message)
 
 		# Check to ensure a command is received
 		if "command" not in message:
 			raise KeyError("Key 'command' is missing. Way to suck...")
 		# Check the command received and proceed accordingly
-		if message["command"] == "add meal":
+		if message["command"] == "add-node":
 			print 'add me'
-		elif message["command"] == "edit meal":
+		elif message["command"] == "edit-node":
 			print 'edit me'
-		elif message["command"] == "remove meal":
+		elif message["command"] == "remove-node":
 			print 'remove me'
 			self.write_message({'command': 'ten four'})
 		elif message["command"] == "update-data":

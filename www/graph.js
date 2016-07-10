@@ -7,15 +7,15 @@ class Graph {
 	}
 
 	// Add Nodes
-	addNode(type, name) {
+	addNode(type, shownName) {
 		// First check if node exists already
-		var node = this.getNodeByID(type, nameTrim(name));
-		if (node !== -1) {return node}
+		var node = this.getNodeByID(type, nameTrim(shownName))
+		if (node !== -1) return node
 
-		if (type === "meal") {node = new MealNode(name);}
-		else if (type === "ingr") {node = new IngrNode(name);}
-		else if (type === "tag") {node = new TagNode(name);}
-		this.nodes.add(node);
+		if (type === "meal") node = new MealNode(shownName)
+		else if (type === "ingr") node = new IngrNode(shownName)
+		else if (type === "tag") node = new TagNode(shownName)
+		this.nodes.add(node)
 		return node
 	}
 
@@ -76,12 +76,12 @@ class Node {
 	// Define an instance of a node
 	// A node possesses various properties, as well as edges to other nodes
 	// This node is meant to be a superclass
-	constructor(name = '', type) {
+	constructor(shownName = '', type) {
 
 		// Default Initializations
 		this.type = type; // Declare node type: "meal", "ingr", or "description"
 		this.element = document.createElement("div"); // Create an element to be displayed on the page
-		this.shownName = name;
+		this.shownName = shownName;
 		this.edges = new Set();
 
 		this.chosen = false; //track whether this node is selected
@@ -108,11 +108,11 @@ class Node {
 	get shownName() {
 		return this._shownName
 	}
+	get name() {
+		return nameTrim(this.shownName)
+	}
 	get id() {
 		return this.type + '_' + this.name
-	}
-	get name() {
-		return nameTrim(this._shownName)
 	}
 
 
@@ -153,8 +153,8 @@ class Node {
 
 class MealNode extends Node {
 	// Define a subclass of node specific to meals
-	constructor(name) {
-		super(name, 'meal');
+	constructor(shownName) {
+		super(shownName, 'meal');
 		this.element.setAttribute("class", "meal_text word_text");
 
 		this.inMenu = false; // store whether meal node is in the menu or not
@@ -183,8 +183,8 @@ class MealNode extends Node {
 
 class IngrNode extends Node {
 	// Define a subclass of node specific to ingrs
-	constructor(name) {
-		super(name, 'ingr');
+	constructor(shownName) {
+		super(shownName, 'ingr');
 		this.quantity = 0;
 
 		this.element.setAttribute("class", "ingr_text word_text");
@@ -216,8 +216,8 @@ class IngrNode extends Node {
 
 class TagNode extends Node {
 	// Define a subclass of node specific to tag
-	constructor(name) {
-		super( name, 'tag');
+	constructor(shownName) {
+		super(shownName, 'tag');
 		this.element.setAttribute("class", "word_text");
 	}
 }
