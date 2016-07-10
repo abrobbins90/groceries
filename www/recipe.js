@@ -42,7 +42,7 @@ class RecipeArea {
 			// Add edge
 			this.graph.addEdge(this.selectedMeal, node)
 			this.input[type].val("") // clear entry box
-			this.input[type].addClass("menu_input_box " + type + "_box")
+			/*this.input[type].addClass("node_input " + type + "_box") if this comment causes no issues, delete this line */
 		}
 
 		this.updateDisplay();
@@ -111,7 +111,7 @@ class RecipeArea {
 		this.input.mealButton.val("Add New Meal");
 		this.input.mealButton.click(recipe.createMeal);
 		// Make meal name unselected
-		this.input.meal.addClass("menu_input_box");
+		this.input.meal.addClass("node_input");
 
 		this.boxes.destroy()
 

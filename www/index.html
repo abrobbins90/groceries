@@ -25,16 +25,16 @@
 <div id="container">
 	<div id="recipe_area">
 		<div id="meal_entry" class="recipe_entry">
-			<input type="text" id="meal_input" class="menu_input_box" placeholder="New Meal"></input>
-			<input type="button" id="meal_button" value="Add New Meal"></input>
+			<input type="text" id="meal_input" class="node_input" placeholder="New Meal"></input>
+			<input type="button" id="meal_button" value="Add New Meal" data-type="meal"></input>
 		</div>
 
 		<div id="ingr_entry" class="recipe_entry">
-			<input type="text" id="ingr_input" class="menu_input_box ingr_box" placeholder="New Ingredient" style="display:none;"></input>
+			<input type="text" id="ingr_input" class="node_input ingr_box" data-type="ingr" placeholder="New Ingredient"></input>
 		</div>
 
 		<div id="tag_entry" class="recipe_entry">
-			<input type="text" id="tag_input" class="menu_input_box tag_box" placeholder="New Tag" style="display:none;"></input>
+			<input type="text" id="tag_input" class="node_input tag_box" data-type="tag" placeholder="New Tag"></input>
 		</div>
 	</div>
 
@@ -62,7 +62,7 @@
 					</div>
 					<input id="generate" type="button" value="Generate">
 				</div>
-				<textarea id="mealSpecifications" rows="4" cols="25" placeholder="min/max ingr&#13;&#10ex: 0/2 chicken" style="resize:none;"></textarea>
+				<textarea id="mealSpecifications" rows="4" cols="25" placeholder="min/max ingr&#13;&#10ex: 0/2 chicken"></textarea>
 			</div>
 		</div>
 
@@ -96,7 +96,7 @@
 
 </div>
 
-<div id = "limbo" style = "display: none;"></div>
+<div id="limbo"></div>
 
 <div id="extraMenu">
 	<input type="button" id="saveButton" value="Save"></input>

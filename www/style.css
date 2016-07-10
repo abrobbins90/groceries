@@ -43,7 +43,7 @@
 }
 
 /* Input boxes*/
-.menu_input_box {
+.node_input {
 	text-align: center;
 	background-color: #FF9999;
 	border: 2px solid #FF9999;
@@ -55,7 +55,7 @@
 	font-size: 15px;
 	padding: 2px;
 }
-.menu_input_box::-webkit-input-placeholder {
+.node_input::-webkit-input-placeholder {
 	color: #555555;
 }
 

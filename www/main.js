@@ -20,14 +20,9 @@ function initTriggers() {
 	$('#meal_button').click(function(){
 		recipe.createMeal()
 	})
-	$('#meal_input').keyup(function(event){
-		recipe_keyPress(event, 'meal')
-	})
-	$('#ingr_input').keyup(function(event){
-		recipe_keyPress(event, 'ingr')
-	})
-	$('#tag_input').keyup(function(event){
-		recipe_keyPress(event, 'tag')
+	$('.node_input').keyup(function(event){
+		let type = $(this).attr("data-type")
+		recipe_keyPress(event, type)
 	})
 
 	/* search area */
