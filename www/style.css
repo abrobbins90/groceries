@@ -67,9 +67,11 @@
 
 }
 #ingr_input {
+	display: none;
 	order: 2;
 }
 #tag_input {
+	display: none;
 	order: 2;
 }
 
@@ -210,6 +212,11 @@
 	padding: 4px;
 	border-radius: 4px;
 }
+
+#mealSpecifications {
+	resize: none;
+}
+
 
 /* ingr Search*/
 #sWindow_ingrSearch {
