@@ -1,4 +1,4 @@
-// This file holds the classes Graph, Node, Menu, Meal, Ingredient, and Description
+// This file holds the classes Graph, Node, and subclasses of Node: MealNode, IngrNode, and TagNode
 
 // Define graph to deal with all node operations
 class Graph {
