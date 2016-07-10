@@ -2,7 +2,7 @@ Assigning tasks to matt
 -------------------------
 
 
-2 --> matt
+convert to JS6 syntax for classes, etc --> matt
 JS6 --> JS5 automatic conversion -->matt
 floaty mode -->matt
 
