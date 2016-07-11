@@ -17,9 +17,9 @@ class Input {
 
 class RecipeArea {
 	constructor(graph) {
-		this.graph = graph;
-		this.boxes = new Boxes(this.removeEdge.bind(this));
-		this.input = new Input();
+		this.graph = graph
+		this.boxes = new Boxes(this.removeEdge.bind(this))
+		this.input = new Input()
 	}
 
 	keyPress(key, type, shownName) {
@@ -42,41 +42,42 @@ class RecipeArea {
 			// Add edge
 			this.graph.addEdge(this.selectedMeal, node)
 			this.input[type].val("") // clear entry box
-			/*this.input[type].addClass("node_input " + type + "_box") if this comment causes no issues, delete this line */
+			this.input[type].addClass("node_input " + type + "_box")
 		}
-
-		this.updateDisplay(shownName);
-
 		if( type === 'meal' ){
 			// Put focus on new ingredient field, assuming that's next!
+			this.writeDisplay(shownName)
 			this.input.ingr.focus()
 		}
 
-		ws.send({command: 'add-node', node: node.as_dict()})
+		ws.send({command: 'add-node', node: node.asDict()})
 		return node
+	}
+	createMeal() {
+		return this.createNode('meal')
 	}
 
 	// [ACTION: Remove Meal Button] Remove a recipe
 	removeMeal(mealNode = this.selectedMeal) {
 		// mealNode : node object of meal to be deleted (default meal to delete is current selection)
-		this.graph.removeNode(mealNode); // Delete meal
-		this.updateDisplay("");
-		this.input.meal.focus();
+		this.graph.removeNode(mealNode) // Delete meal
+		this.clearDisplay()
+		this.input.meal.focus()
 	}
 
 	// [ACTION: Remove node edge] Remove an ingr or tag from a menu
 	removeEdge(type, name) {
-		let node = this.graph.getNodeByID(type, name);
+		let node = this.graph.getNodeByID(type, name)
 		if( node === -1 || this.selectedMeal === -1 ){
 			throw 'No such node.'
 			return false
 		}
-		this.graph.removeEdge(this.selectedMeal, node);
+		this.graph.removeEdge(this.selectedMeal, node)
 		if (node.edges.size === 0) {
-			this.graph.removeNode(node);
+			this.graph.removeNode(node)
 		}
-		this.updateDisplay(name);
-		this.input[type].focus();
+		this.writeDisplay(this.selectedMeal)
+		this.input[type].focus()
 	}
 
 	/////////////////////////
@@ -88,11 +89,11 @@ class RecipeArea {
 
 		if (type === "meal") {
 			// If it's a meal search, update display
-			this.updateDisplay(shownName);
+			// this.updateDisplay(shownName)
 		}
 		else {
 			// Otherwise, check to see if the node exists. If so, mark as selected
-			let node = this.graph.getNodeByID(type, name);
+			let node = this.graph.getNodeByID(type, name)
 			if( node === -1 ) this.input[type].removeClass("node_selected")
 			else this.input[type].addClass("node_selected")
 		}
@@ -110,44 +111,36 @@ class RecipeArea {
 
 	////////// Recipe Display Functions
 
-	// Remove all nodes from view
-	clearDisplay() {
-		// Update meal input box
-		this.input.mealButton.val("Add New Meal");
-		/*this.input.mealButton.click(recipe.createMeal); also delete if no probs */
-		// Make meal name unselected
-		this.input.meal.addClass("node_input");
-
-		this.boxes.destroy()
-
-		this.input.ingr.css("display", "none");
-		this.input.tag.css("display", "none");
+	get open() {
+		return this.selectedMeal !== -1
 	}
 
-	// Show all nodes connected to selected meal
-	updateDisplay(shownName) {
-		let mealNode = this.selectedMeal;
-		if( mealNode === -1 ){
-			this.clearDisplay()
-			return
-		}
 
-		// Update meal input box
-		this.input.mealButton.value = "Remove Meal";
-		this.input.mealButton.click(recipe.removeMeal);
-		// Also highlight meal name
-		this.input.meal.addClass("node_selected");
-
-		// Show meal recipe
+	writeDisplay(shownName) {
 		this.boxes.destroy()
-		for (let node of mealNode.edges) {
+		// show neighbors
+		for (let node of this.selectedMeal.edges) {
 			this.boxes.add(node)
 		}
+		this.search("ingr", shownName)
+		this.search("tag", shownName)
+	}
 
-		// Also show the new ingr and new tag fields
-		this.input.ingr.css("display", "inline");
-		this.input.tag.css("display", "inline");
-		this.search("ingr", shownName);
-		this.search("tag", shownName);
+	clearDisplay() {
+		this.boxes.destroy()
+	}
+
+
+	// updateDisplay(mode) {
+	// 	this.repopulateDisplay()
+	// 	if( this.modeChange ) this.toggleDisplay()
+	// }
+
+	toggleDisplay() {
+		$('#meal_input').toggleClass("node_selected")
+		$('#create_meal_button').toggle()
+		$('#remove_meal_button').toggle()
+		this.input.ingr.toggle()
+		this.input.tag.toggle()
 	}
 }

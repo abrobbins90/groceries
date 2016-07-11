@@ -95,6 +95,14 @@ class Node {
 		this.sendToLimbo();	// store object in limbo (not visible)
 	}
 
+	asDict() {
+		return {
+			shownName: this.shownName,
+			type: this.type,
+			_id: this.id,
+		}
+	}
+
 	// Setters
 
 	//method to change name of item

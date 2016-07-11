@@ -17,9 +17,12 @@ function initGlobals() {
 
 function initTriggers() {
 	/* recipe area */
-	$('#meal_button').click(function(){
+	$('#create_meal_button').click(function(){
 		let shownName = $('#meal_input').val()
 		recipe.createNode('meal', shownName)
+	})
+	$('#remove_meal_button').click(function(){
+		recipe.removeMeal()
 	})
 	$('.node_input').keyup(function(event){
 		let type = $(this).attr("data-type")
