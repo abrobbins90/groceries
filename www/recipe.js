@@ -32,6 +32,22 @@ class RecipeArea {
 	}
 
 	////////////////////////////// Node/Edge Creation/Deletion Functions
+
+	// search for existing nodes connected to this.selectedMeal
+	search(type, shownName) {
+		if (type === "meal") {
+			if( this.selectedMeal ) this.writeDisplay()
+			else this.clearDisplay()
+		}
+		else {
+			// Otherwise, check to see if the node exists. If so, mark as selected
+			let name = nameTrim(shownName)
+			let node = this.graph.getNodeByID(type, name)
+			if( node ) this.input[type].addClass("node_selected")
+			else this.input[type].removeClass("node_selected")
+		}
+	}
+
 	// [ACTION] Add a new node
 	createNode(type, shownName) {
 		if( !nameTrim(shownName) ) return false
@@ -39,22 +55,18 @@ class RecipeArea {
 		let node = this.graph.addNode(type, shownName)
 
 		if( type !== 'meal' ){
-			// Add edge
 			this.graph.addEdge(this.selectedMeal, node)
-			this.input[type].val("") // clear entry box
-			this.input[type].addClass("node_input " + type + "_box")
 		}
+
+		this.writeDisplay()
+
 		if( type === 'meal' ){
 			// Put focus on new ingredient field, assuming that's next!
-			this.writeDisplay(shownName)
 			this.input.ingr.focus()
 		}
 
 		ws.send({command: 'add-node', node: node.asDict()})
 		return node
-	}
-	createMeal() {
-		return this.createNode('meal')
 	}
 
 	// [ACTION: Remove Meal Button] Remove a recipe
@@ -68,7 +80,7 @@ class RecipeArea {
 	// [ACTION: Remove node edge] Remove an ingr or tag from a menu
 	removeEdge(type, name) {
 		let node = this.graph.getNodeByID(type, name)
-		if( node === -1 || this.selectedMeal === -1 ){
+		if( !node || !this.selectedMeal ){
 			throw 'No such node.'
 			return false
 		}
@@ -76,34 +88,16 @@ class RecipeArea {
 		if (node.edges.size === 0) {
 			this.graph.removeNode(node)
 		}
-		this.writeDisplay(this.selectedMeal)
 		this.input[type].focus()
 	}
 
 	/////////////////////////
 
-	// search for existing nodes to match shownName
-	search(type, shownName) {
-		let name = nameTrim(shownName)
-		if( !name ) return false
-
-		if (type === "meal") {
-			// If it's a meal search, update display
-			// this.updateDisplay(shownName)
-		}
-		else {
-			// Otherwise, check to see if the node exists. If so, mark as selected
-			let node = this.graph.getNodeByID(type, name)
-			if( node === -1 ) this.input[type].removeClass("node_selected")
-			else this.input[type].addClass("node_selected")
-		}
-	}
-
 	// Figure out what meal is selected, or if there is none
 	get selectedMeal() {
 		let shownName = $('#meal_input').val()
 		let name = nameTrim(shownName)
-		if( !name ) return -1
+		if( !name ) return false
 
 		// Check what meal node is referenced in the meal input box
 		return this.graph.getNodeByID("meal", name)
@@ -111,36 +105,31 @@ class RecipeArea {
 
 	////////// Recipe Display Functions
 
-	get open() {
-		return this.selectedMeal !== -1
+	clearDisplay() {
+		this.boxes.destroy()
+
+		$('#meal_input').removeClass("node_selected")
+		$('#create_meal_button').show()
+		$('#remove_meal_button').hide()
+		this.input.ingr.hide()
+		this.input.tag.hide()
 	}
 
-
-	writeDisplay(shownName) {
+	writeDisplay() {
 		this.boxes.destroy()
-		// show neighbors
+
+		this.writeNeighbors()
+
+		$('#meal_input').addClass("node_selected")
+		$('#create_meal_button').hide()
+		$('#remove_meal_button').show()
+		this.input.ingr.show().removeClass("node_selected").val("")
+		this.input.tag.show().removeClass("node_selected").val("")
+	}
+
+	writeNeighbors() {
 		for (let node of this.selectedMeal.edges) {
 			this.boxes.add(node)
 		}
-		this.search("ingr", shownName)
-		this.search("tag", shownName)
-	}
-
-	clearDisplay() {
-		this.boxes.destroy()
-	}
-
-
-	// updateDisplay(mode) {
-	// 	this.repopulateDisplay()
-	// 	if( this.modeChange ) this.toggleDisplay()
-	// }
-
-	toggleDisplay() {
-		$('#meal_input').toggleClass("node_selected")
-		$('#create_meal_button').toggle()
-		$('#remove_meal_button').toggle()
-		this.input.ingr.toggle()
-		this.input.tag.toggle()
 	}
 }

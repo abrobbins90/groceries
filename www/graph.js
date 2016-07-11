@@ -10,7 +10,7 @@ class Graph {
 	addNode(type, shownName) {
 		// First check if node exists already
 		var node = this.getNodeByID(type, nameTrim(shownName))
-		if (node !== -1) return node
+		if( node ) return node
 
 		if (type === "meal") node = new MealNode(shownName)
 		else if (type === "ingr") node = new IngrNode(shownName)
@@ -35,9 +35,9 @@ class Graph {
 	// Search a node by name
 	getNodeByID(type, name) {
 		for (let node of this.nodes) {
-			if (node.id === type + "_" + name) {return node}
+			if( node.id === type + "_" + name ) return node
 		}
-		return -1 // not found
+		return false // not found
 	}
 	// Search a node by partial name
 	getNodesByID_partial(type, str) {
