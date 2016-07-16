@@ -96,7 +96,7 @@ class RecipeArea {
 
 	// Figure out what meal is selected, or if there is none
 	get selectedMeal() {
-		let shownName = $('#meal_input').val()
+		let shownName = $('#meal_input').val() // we want something static (for robustness) we can have the event update the jquery el (static jquery el)
 		let name = nameTrim(shownName)
 		if( !name ) return false
 
@@ -129,7 +129,7 @@ class RecipeArea {
 	}
 
 	_clearBoxes() {
-		this.boxes.destroy()
+		this.boxes.destructElements()
 		this.input.ingr.removeClass("node_selected").val("")
 		this.input.tag.removeClass("node_selected").val("")
 	}
