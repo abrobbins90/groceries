@@ -13,6 +13,9 @@ function initGlobals() {
 	searchArea = new SearchArea(graph);
 	groceryArea = new GroceryListArea();
 	ws = new Socket(function(){}) // input your receiveData function here
+	
+	// Login information
+	// Fow now, use default login information
 }
 
 function initTriggers() {
