@@ -20,6 +20,7 @@ class RecipeArea {
 		this.graph = graph
 		this.boxes = new Boxes(this.removeEdge.bind(this))
 		this.input = new Input()
+		this.mode = "closed"
 	}
 
 	keyPress(key, type, shownName) {
@@ -95,7 +96,7 @@ class RecipeArea {
 
 	// Figure out what meal is selected, or if there is none
 	get selectedMeal() {
-		let shownName = $('#meal_input').val()
+		let shownName = $('#meal_input').val() // we want something static (for robustness) we can have the event update the jquery el (static jquery el)
 		let name = nameTrim(shownName)
 		if( !name ) return false
 
@@ -106,28 +107,34 @@ class RecipeArea {
 	////////// Recipe Display Functions
 
 	clearDisplay() {
-		this.boxes.destroy()
-
-		$('#meal_input').removeClass("node_selected")
-		$('#create_meal_button').show()
-		$('#remove_meal_button').hide()
-		this.input.ingr.hide()
-		this.input.tag.hide()
+		this._clearBoxes()
+		if( this.mode === "open" ) this._toggleDisplay()
+		this.mode = "closed"
 	}
 
 	writeDisplay() {
-		this.boxes.destroy()
+		this._clearBoxes()
+		if( this.mode === "closed" ) this._toggleDisplay()
+		this.mode = "open"
 
-		this.writeNeighbors()
-
-		$('#meal_input').addClass("node_selected")
-		$('#create_meal_button').hide()
-		$('#remove_meal_button').show()
-		this.input.ingr.show().removeClass("node_selected").val("")
-		this.input.tag.show().removeClass("node_selected").val("")
+		this._writeNeighbors()
 	}
 
-	writeNeighbors() {
+	_toggleDisplay() {
+		$('#meal_input').toggleClass("node_selected")
+		$('#create_meal_button').toggle()
+		$('#remove_meal_button').toggle()
+		this.input.ingr.toggle()
+		this.input.tag.toggle()
+	}
+
+	_clearBoxes() {
+		this.boxes.destructElements()
+		this.input.ingr.removeClass("node_selected").val("")
+		this.input.tag.removeClass("node_selected").val("")
+	}
+
+	_writeNeighbors() {
 		for (let node of this.selectedMeal.edges) {
 			this.boxes.add(node)
 		}

@@ -1,18 +1,11 @@
 class Boxes {
-	constructor(removeAction=function(){}) {
-		this.removeAction = removeAction
+	constructor(destructAction=function(){}) {
+		this.destructAction = destructAction
 		this.boxes = []
 	}
 
 	add(node) {
-		this.boxes.push(new Box(node, this.removeAction))
-	}
-
-	destroy() {
-		for( let box of this.boxes ){
-			box.destroy()
-		}
-		this.boxes = []
+		this.boxes.push(new Box(node, this.destructAction))
 	}
 
 	toPrintableString() {
@@ -29,12 +22,19 @@ class Boxes {
 		win.document.write(this.toPrintableString())
 		win.print()
 	}
+
+	destructElements() {
+		for( let box of this.boxes ){
+			box.destructElement()
+		}
+		this.boxes = []
+	}
 }
 
 class Box {
-	constructor(node, removeAction) {
+	constructor(node, destructAction) {
 		this.node = node
-		this.removeAction = removeAction // a function to perform on removeButton.click
+		this.destructAction = destructAction // a function to perform on removeButton.click
 		this.$el = this.constructElement()
 		// attach element to DOM
 		$("#" + this.node.type + "_entry").append(this.$el)
@@ -56,12 +56,12 @@ class Box {
 	}
 
 	constructRemoveButton() {
-		// Add button to removeAction the item if need be
+		// Add button to destructAction the item if need be
 		return $("<div/>")
 			.attr("type", "button")
 			.html("&times;")
 			.addClass("rmItemButton")
-			.click(this.remove.bind(this))
+			.click(this.destruct.bind(this))
 	}
 
 	toPrintableString() {
@@ -73,13 +73,13 @@ class Box {
 		return "box_el_" + this.node.id
 	}
 
-	remove() {
-		this.removeAction(this.node.type, this.node.name)
-		this.destroy()
+	destructElement() {
+		this.$el.remove()
 	}
 
-	destroy() {
-		this.$el.remove()
+	destruct() {
+		this.destructAction(this.node.type, this.node.name)
+		this.destructElement()
 	}
 }
 

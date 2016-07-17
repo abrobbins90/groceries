@@ -38,11 +38,9 @@ function initTriggers() {
 	$('.Tab').click(function(){
 		switchTab(this)
 	})
-	$('#mealLookup').keyup(function(){
-		launchSearch('mealLookup')
-	})
-	$('#ingrSearch').keyup(function(){
-		launchSearch('ingrSearch')
+	$('#mealLookup, #ingrSearch').keyup(function(){
+		let id = $(this).attr('id')
+		launchSearch(id)
 	})
 
 	/* grocery area */
@@ -60,7 +58,8 @@ function initTriggers() {
 	$('#loadButton').click(loadPrintedData)
 	$('#unselectAll').click(choose)
 	$('.history').click(function(){
-		historyChange(this.id)
+		let id = $(this).attr('id')
+		historyChange(id)
 	})
 	$('#qmenu').click(qmenu)
 	*/
