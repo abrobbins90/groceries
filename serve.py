@@ -8,6 +8,8 @@ from tornado.web import url
 from tornado.ioloop import IOLoop
 from tornado.log import enable_pretty_logging
 
+import sys
+sys.path.append('./serverSide')
 import database
 
 class SocketHandler (WebSocketHandler):

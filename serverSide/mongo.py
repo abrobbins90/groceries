@@ -31,7 +31,7 @@ class Mongo:
     def find(self, collection, dict_fields=None, projection=None):
         return self.client[self.database][collection].find(dict_fields, projection)
 		
-	def findOne(self, collection, dict_fields=None, projection=None):
+    def findOne(self, collection, dict_fields=None, projection=None):
         return self.client[self.database][collection].findOne(dict_fields, projection)
 
     def deleteMany(self, collection, dict_fields):
