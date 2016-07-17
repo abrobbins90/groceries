@@ -90,25 +90,46 @@ class recipe_database:
 	
 	###
 	
-	def load():
-		""" read the data """
-		return ''
-		with open("meals.csv", "r") as file:
-			data = file.read()
-		return data
+	def load(self):
+		""" read data for user and send back as a dictionary """
+		
 
-	def add_recipe(meal):
-		""" append a recipe to the data """
-		return ''
-		meal_csv = convert_to_string(meal)
-		with open("meals.csv", "w+") as file:
-			file.write(meal_csv)
+	def add_node(self, userData):
+		""" add a node to the database """
+		# userData should be a dictionary with the following fields:
+		#	- name : shown name for the node
+		#	- type : what type of node this is
+		#	- id   : unique id for the node (generally <type>_<trimmed name>)
+		
+		dictAdd = {"_id": "id_" + userData["id"], "name": userData["name"],
+			"type": userData["type"], "edges": []}
+		self.mongo.insertOne("u_" + self.username, dictAdd)
+		
+		return True
+	
+	def add_edge(self, userData)
+		""" add an edge between two nodes based on their IDs """
+		# userData should be a dictionary with the following fields:
+		#	- id1 : id for node 1
+		#	- id2 : id for node 2
+		id1 = "id_" + userData["id1"]
+		id2 = "id_" + userData["id2"]
+		self.mongo.update("u_" + self.username, {"_id": id1},
+			{ "$addToSet": {"edges": userData["id2"]}})
+		self.mongo.update("u_" + self.username, {"_id": id2},
+			{ "$addToSet": {"edges": userData["id1"]}})
+		
+		return True
+		
+	def remove_node(self, userData):
+		""" remove the specified node """
+		# userData should be a dictionary with the following fields:
+		#	- id : id for the node to be deleted
+		
+		self.mongo.deleteMany("u_" + self.username, {"_id": "id_" + userData["id"]})
+		return True
 
-	def remove_recipe(meal):
-		return ''
-
-	def edit_recipe(meal):
-		return ''
+	
 
 
 

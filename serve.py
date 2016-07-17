@@ -38,7 +38,7 @@ class SocketHandler (WebSocketHandler):
 			if success:
 				print 'Successful login: ' + self.database.user
 				self.send_message('status', 'login:true')
-				self.send_message('populate-nodes', self.database.load())
+				self.send_message('download:full', self.database.load())
 			else:
 				print 'Unsuccessful login attempt from: ' + message['data']['username']
 				self.send_message('status', 'login:false')
@@ -62,17 +62,31 @@ class SocketHandler (WebSocketHandler):
 				self.send_message('status', 'add-user:false')
 		
 		if message["command"] == "add-node":
-			print 'add me'
-			self.database.add_recipe(message['data'])
-		elif message["command"] == "edit-node":
-			print 'edit me'
-			self.database.edit_recipe(message['data'])
+			success = self.database.add_node(message['data'])
+			if success:
+				print 'added node'
+			else:
+				print 'failed to add node'
+				
+		elif message["command"] == "add-edge":
+			success = self.database.add_edge(message['data'])
+			if success:
+				print 'added edge'
+			else:
+				print 'failed to add edge'
+				
 		elif message["command"] == "remove-node":
-			print 'remove me'
-			self.database.remove_recipe(message['data'])
-			self.write_message({'command': 'ten four'})
+			success = self.database.remove_node(message['data'])
+			if success:
+				print 'removed node'
+				self.write_message({'command': 'remove-node:true'})
+			else:
+				print 'failed to remove node'
+				self.write_message({'command': 'remove-node:false'})
+			
 		elif message["command"] == "update-data":
-			self.send_message('populate-nodes', self.database.load())
+			# Request data is updated
+			self.send_message('download:full', self.database.load())
 
 	def send_message(self, command, data):
 		self.write({
