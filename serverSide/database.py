@@ -101,8 +101,13 @@ class DB:
 		#	- type : what type of node this is
 		#	- id   : unique id for the node (generally <type>_<trimmed name>)
 
-		dictAdd = {"_id": "id_" + userData["id"], "name": userData["name"],
-			"type": userData["type"], "edges": []}
+		dictAdd = {
+			# what is the usefulness of the "id_" as part of the id string?
+			"_id": "id_" + userData["id"],
+			"name": userData["showName"],
+			"type": userData["type"],
+			"edges": [],
+		}
 		self.mongo.insertOne("u_" + self.username, dictAdd)
 
 		return True
@@ -126,6 +131,7 @@ class DB:
 		# userData should be a dictionary with the following fields:
 		#	- id : id for the node to be deleted
 
+		# is the purpose of this method to remove one node or more than one node?
 		self.mongo.deleteMany("u_" + self.username, {"_id": "id_" + userData["id"]})
 		return True
 
