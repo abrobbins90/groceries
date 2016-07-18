@@ -16,13 +16,13 @@ class Socket { // manually extend WebSocket, because WebSocket didn't want to us
 				command : "login",
 				data : {
 					username : "default",
-					password : "password"
-				};
+					password : "password",
+				},
 			};
 			this.send(data)
 		}
 	}
-	
+
 	// Send data through websocket
 	send(outData) {
 		// outData : object to be translated into a string for websocket transfer
