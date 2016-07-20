@@ -106,6 +106,15 @@ class recipe_database:
 		self.mongo.insertOne("u_" + self.username, dictAdd)
 		
 		return True
+		
+	def remove_node(self, userData):
+		""" remove the specified node """
+		# userData should be a dictionary with the following fields:
+		#	- id : id for the node to be deleted
+		
+		self.mongo.deleteMany("u_" + self.username, {"_id": "id_" + userData["id"]})
+		return True
+
 	
 	def add_edge(self, userData)
 		""" add an edge between two nodes based on their IDs """
@@ -119,17 +128,21 @@ class recipe_database:
 		self.mongo.update("u_" + self.username, {"_id": id2},
 			{ "$addToSet": {"edges": userData["id1"]}})
 		
-		return True
-		
-	def remove_node(self, userData):
-		""" remove the specified node """
-		# userData should be a dictionary with the following fields:
-		#	- id : id for the node to be deleted
-		
-		self.mongo.deleteMany("u_" + self.username, {"_id": "id_" + userData["id"]})
-		return True
+		return True	
 
-	
+	def remove_edge(self, userData)
+		""" remove an edge between two nodes based on their IDs """
+		# userData should be a dictionary with the following fields:
+		#	- id1 : id for node 1
+		#	- id2 : id for node 2
+		id1 = "id_" + userData["id1"]
+		id2 = "id_" + userData["id2"]
+		self.mongo.update("u_" + self.username, {"_id": id1},
+			{ "$pull": {"edges": userData["id2"]}})
+		self.mongo.update("u_" + self.username, {"_id": id2},
+			{ "$pull": {"edges": userData["id1"]}})
+		
+		return True	
 
 
 
