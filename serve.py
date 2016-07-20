@@ -23,8 +23,10 @@ class SocketHandler (WebSocketHandler):
 		self.db = DB()
 
 	def on_message(self, message):
+		assert type(message) in [str, unicode]
 		print 'got message: {0}'.format(message)
 		message = json.loads(message)
+		assert type(message) == dict
 
 		# Check to ensure a command is received
 		if "command" not in message:
@@ -89,7 +91,7 @@ class SocketHandler (WebSocketHandler):
 			self.send_message('download:full', self.db.load())
 
 	def send_message(self, command, data):
-		self.write({
+		self.write_message({
 			'command': command,
 			'data': data
 		})

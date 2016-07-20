@@ -7,7 +7,7 @@ class Socket { // manually extend WebSocket, because WebSocket didn't want to us
 		this.receiveData = receiveData
 		this.ws.onmessage = function(event) {
 			let inData = JSON.parse(event.data)
-			this.receiveData(inData)
+			this.socket.receiveData(inData)
 		}
 		// Once the socket is successfully open, try to login
 		this.ws.onopen = function(event) {
@@ -19,7 +19,7 @@ class Socket { // manually extend WebSocket, because WebSocket didn't want to us
 					password : "password",
 				},
 			};
-			this.send(data)
+			this.socket.send(data)
 		}
 	}
 
