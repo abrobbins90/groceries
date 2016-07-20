@@ -7,12 +7,12 @@ class Socket { // manually extend WebSocket, because WebSocket didn't want to us
 		this.receiveData = receiveData
 		this.ws.onmessage = function(event) {
 			let inData = JSON.parse(event.data)
-			this.socket.receiveData(inData)
+			this.receiveData(inData)
 		}
 		// Once the socket is successfully open, try to login
 		this.ws.onopen = function(event) {
 			// For now, just try to do a default login
-			data = {
+			let data = {
 				command : "login",
 				data : {
 					username : "default",

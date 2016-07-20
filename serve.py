@@ -23,7 +23,7 @@ class SocketHandler (WebSocketHandler):
 		self.db = DB()
 
 	def on_message(self, message):
-		print 'got message: {}'.format(message)
+		print 'got message: {0}'.format(message)
 		message = json.loads(message)
 
 		# Check to ensure a command is received

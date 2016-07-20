@@ -92,7 +92,7 @@ class DB:
 
 	def load(self):
 		""" read data for user and send back as a dictionary """
-
+		pass
 
 	def add_node(self, userData):
 		""" add a node to the database """
@@ -121,7 +121,7 @@ class DB:
 		return True
 
 	
-	def add_edge(self, userData)
+	def add_edge(self, userData):
 		""" add an edge between two nodes based on their IDs """
 		# userData should be a dictionary with the following fields:
 		#	- id1 : id for node 1
@@ -135,7 +135,7 @@ class DB:
 		
 		return True	
 
-	def remove_edge(self, userData)
+	def remove_edge(self, userData):
 		""" remove an edge between two nodes based on their IDs """
 		# userData should be a dictionary with the following fields:
 		#	- id1 : id for node 1
