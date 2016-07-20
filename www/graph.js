@@ -99,7 +99,7 @@ class Node {
 		return {
 			shownName: this.shownName,
 			type: this.type,
-			_id: this.id,
+			id: this.id,
 		}
 	}
 
