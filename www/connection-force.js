@@ -2,128 +2,27 @@
 
 /////////////////////////////////////////////////////Function to add more Items/////////////////////////////////////////////////////
 
-var itemList = [] //itemList[i] is the pointer to the ith item object (itemObject)
-var itemListStrings = [] //parallel array of itemList for easier searching
+//editItem should be here
+// item class; stores item name, associated keywords, and representative object (aka itemBox aka ibox)
+var itemList = []
+function itemObject(node) {
+	this.node = node
 
- //removes extra \n and extra spaces between items, from input and returns shortened string
-function removeExtra(stringInput) {
-	stringInput=stringInput.replace(/\n/g,"");
-	stringInput=stringInput.replace(/,\s+/g,",");
-	return stringInput
-}
- //Input processing: called by submitting items
-function readItem(addOrEdit) {//add(0) or edit(1) an item
-	//Read items and process strings
-
-	var item1Value=document.getElementById("item1").value;
-	var item2Value=document.getElementById("item2").value;
-
-	if (item1Value!='' || item2Value!='') { //if they aren't both empty
-		document.getElementById("item1").value='';
-		document.getElementById("item2").value='';
-		item1Value=removeExtra(item1Value.trim());
-		item2Value=removeExtra(item2Value.trim());
-
-		item1Value=item1Value.split(","); //convert to arrays
-		item2Value=item2Value.split(",");
-
-		//pass arrays to addItem or editItem
-		if (addOrEdit==0) {
-			addItem(item1Value,item2Value);
-		}
-		else {}
-
-	}
-}
- //takes in an array representing the item1's and an array for item2's
-function addItem(item1Value, item2Value) {
-	if( Object.prototype.toString.call(item1Value) !== '[object Array]' ){
-		alert('item1Value not array')
-		alert(item1Value)
-	}
-	if( Object.prototype.toString.call(item2Value) !== '[object Array]' ) alert('item2Value not array')
-
-	var item1Objects=new Array();
-	var item2Objects=new Array(); //pointers of all entered items
-	for (var i in item1Value) { //loop through item1 strings
-		var itemIndex = itemListStrings.indexOf(item1Value[i].toLowerCase()); //find in existing items
-		if (itemIndex==-1) { //if nonexistent, create and add to existing items
-			var newItem=new itemObject(item1Value[i])
-			itemList.push(newItem);
-			itemListStrings.push(item1Value[i].toLowerCase());
-			item1Objects.push(newItem); //add to list of entered item pointers
-		}
-		else {
-			item1Objects.push(itemList[itemIndex]);
-		}
-	}
-	for (var i in item2Value) { //loop through item2 strings
-		var itemIndex=itemListStrings.indexOf(item2Value[i].toLowerCase()); //find in existing items
-		if (itemIndex==-1) { //if nonexistent, create and add to existing items
-			var newItem=new itemObject(item2Value[i])
-			itemList.push(newItem);
-			itemListStrings.push(item2Value[i].toLowerCase());
-			item2Objects.push(newItem); //add to list of entered item pointers
-		}
-		else {
-			item2Objects.push(itemList[itemIndex]);
-		}
+	this.name = function(){
+		return this.node.shownName
 	}
 
-	// add connections
-	for (var i in item1Objects) {
-		for (var j in item2Objects) {
-			if (item1Objects[i].connections.indexOf(item2Objects[j])==-1) {
-				item1Objects[i].connections.push(item2Objects[j]);
-				item2Objects[j].connections.push(item1Objects[i]);
-				item1Objects[i].obj.mass=defaultMass*Math.pow((item1Objects[i].connections.length),1)
-				item2Objects[j].obj.mass=defaultMass*Math.pow((item2Objects[j].connections.length),1)
-			}
-		}
-	}
-
-	saveData();
-	search();
-}
-function editItem(item1Value,item2Value) {alert("DONT COME HERE!!!")
-
-		itemIdNum[editing].name=itemVal; //simply update name and keywords
-		itemIdNum[editing].keywords=keywords;
-		itemIdNum[editing].obj.ID.innerHTML=itemVal;
-		itemIdNum[editing].obj.hrad=itemIdNum[editing].obj.ID.clientWidth/2;
-		itemIdNum[editing].obj.vrad=itemIdNum[editing].obj.ID.clientHeight/2;
-
-		for (var kk in keywords) { //cycle through keywords to add new ones to list
-			if (keyList[0].lastIndexOf(keywords[kk])==-1) {
-				keyNum=keyList[0].push(keywords[kk]); //add keyword to list and return new length
-				keyList[1].push(L2Set.shift()); //store pointer for object
-
-				keyList[1][keyNum-1].ID.innerHTML=keywords[kk]; //write the name in
-				keyList[1][keyNum-1].hrad=keyList[1][keyNum-1].ID.clientWidth/2; //update value of width
-				keyList[1][keyNum-1].vrad=keyList[1][keyNum-1].ID.clientHeight/2; //update value of height
-			}
-		}
-		choose(editing)
-	saveData();
-	search();
-}
-
-// item class; stores item name, associated keywords, and representative object
-function itemObject(name) {
-	this.name=name;
 	this.connections=new Array();
+
+
 	this.chosen=0;
 	this.found=0;
-	this.obj=new itemBox(name);
-
-	this.obj.ID.innerHTML=name;
-	this.obj.hrad=this.obj.ID.clientWidth/2; //update value of width
-	this.obj.vrad=this.obj.ID.clientHeight/2; //update value of height
+	this.ibox=new itemBox(this.node); // for the ANIMATION
 }
 
 ///////////////////////// Function to search and display items based on searched items /////////////////////////
-var foundItemList
-function search() { // search stored data (called after every keystroke)
+var foundItemList = []
+function cf_namespace_search() { // search stored data (called after every keystroke)
 
 	foundItemList=new Array();
 	var numberFound=0; //number of items found so far
@@ -138,7 +37,7 @@ function search() { // search stored data (called after every keystroke)
 	searchedItems=searchedItems.replace(/\|\|(\s*(&&|\|\|))+/ig,"||");
 	searchedItems=searchedItems.replace(/&&\s*$/ig,"and");
 	searchedItems=searchedItems.replace(/\|\|\s*$/ig,"or");
-	searchedItems=searchedItems.replace(/(^|\&&|\|\||\()((?:[^(](?!$|\)|&&|\|\|))*.(?=$|\)|&&|\|\|))/g,"$1isConnected(\"$2\",temp)");
+	searchedItems=searchedItems.replace(/(^|\&&|\|\||\()((?:[^(](?!$|\)|&&|\|\|))*.(?=$|\)|&&|\|\|))/g,"$1cf_namespace_isConnected((\"$2\",temp)");
 
 	//cycle through all items and compare to search criteria
 	for (var i in itemList) {
@@ -153,30 +52,31 @@ function search() { // search stored data (called after every keystroke)
 
 	clearInterval(t1); //halt animation while connections are redefined
 	// loop through all items to find what other found items they are connected to
+	// TO DELETE.  We should just take the subgraph consisting of the found items, and use that for the connections.
 	for (var i=0;i<foundItemList.length-1;i++) {
-		foundItemList[i].obj.connectedObjects=new Array();
-		foundItemList[i].obj.unconnectedObjects=new Array();
+		foundItemList[i].ibox.connectedObjects=new Array();
+		foundItemList[i].ibox.unconnectedObjects=new Array();
 		for (var j=i+1;j<foundItemList.length;j++) {//only record one side of connection
 			if (foundItemList[i].connections.indexOf(foundItemList[j])!=-1) {
-				foundItemList[i].obj.connectedObjects.push(foundItemList[j].obj);}
-			else {foundItemList[i].obj.unconnectedObjects.push(foundItemList[j].obj);}
+				foundItemList[i].ibox.connectedObjects.push(foundItemList[j].ibox);}
+			else {foundItemList[i].ibox.unconnectedObjects.push(foundItemList[j].ibox);}
 		}
 	}
 	if (numberFound>0) {
-		foundItemList[numberFound-1].obj.connectedObjects=new Array();
-		foundItemList[numberFound-1].obj.unconnectedObjects=new Array();
+		foundItemList[numberFound-1].ibox.connectedObjects=new Array();
+		foundItemList[numberFound-1].ibox.unconnectedObjects=new Array();
 	}
 
 	for(var i in foundItemList){ //if item is removed from search, chosen=0
 		foundItemList[i].chosen*=foundItemList[i].found;
-		foundItemList[i].obj.ID.style.opacity=1-foundItemList[i].chosen*.5;
+		foundItemList[i].ibox.ID.style.opacity=1-foundItemList[i].chosen*.5;
 	}
 
 	adamandeve();//restart animation
 }
 
 // is searchWord within order of connection of item
-function isConnected(searchWord,item) {
+function cf_namespace_isConnected(searchWord,item) {
 	searchWord=searchWord.trim();
 	searchWord=searchWord.toLowerCase();
 	if(itemListStrings.indexOf(searchWord)==-1) {return false}
@@ -211,45 +111,45 @@ function orderExpand(item) {
 
 //process when user chooses to edit item(s)
 var editing=-1;
-function choose(wch) {
+function cf_namespace_choose(wch) {
 	editing=-1;
 	document.getElementById("editButton").disabled=true;
 
 	if(wch==-1) { //select all items
 		for(var i in foundItemList) {
 			foundItemList[i].chosen=1;
-			foundItemList[i].obj.ID.style.opacity=.5;
+			foundItemList[i].ibox.ID.style.opacity=.5;
 		}
 	}
 	else if(wch==-2) { //unselect all items
 		for(var i in foundItemList) {
 			foundItemList[i].chosen=0;
-			foundItemList[i].obj.ID.style.opacity=1;
+			foundItemList[i].ibox.ID.style.opacity=1;
 		}
 	}
 	else if (itemList[itemListStrings.indexOf(wch)].chosen==0) { //select
 		editing=itemListStrings.indexOf(wch);
 		itemList[editing].chosen=1;
-		itemList[editing].obj.ID.style.opacity=.5;
+		itemList[editing].ibox.ID.style.opacity=.5;
 		document.getElementById("editButton").disabled=false;
-		document.getElementById("item1").value=itemList[editing].name;
+		document.getElementById("item1").value=itemList[editing].name();
 		var connectionNames=new Array();
 		for (var i in itemList[editing].connections) {
-			connectionNames[i]=itemList[editing].connections[i].name;
+			connectionNames[i]=itemList[editing].connections[i].name();
 		}
 		document.getElementById("item2").value=connectionNames.join(", ");
 	}
 	else { //deselect
 		itemList[itemListStrings.indexOf(wch)].chosen=0;
-		itemList[itemListStrings.indexOf(wch)].obj.ID.style.opacity=1;
+		itemList[itemListStrings.indexOf(wch)].ibox.ID.style.opacity=1;
 	}
 }
 
 // delete selected items
-function deleteItems() {
+function cf_namespace_deleteItems() {
 	for(var i=itemList.length-1;i>=0;i--) { //start at end so stored indices don't change
 		if(system[i].chosen==1) {
-			oldObj=system[i].obj;
+			oldObj=system[i].ibox;
 			oldObj.ID.innerHTML="";
 			oldObj.xstart=-50;
 			oldObj.ystart=-50;
@@ -259,206 +159,27 @@ function deleteItems() {
 			system.splice(i,1);//removes indicated element/object from list of existing items
 		}
 	}
-	choose(-2)
-	search();
-	saveData();
+	cf_namespace_choose(-2)
+	cf_namespace_search();
+	cf_namespace_saveData();
 }
 
-////////////////////////////////////////////////Save all Data////////////////////////////////////////////////
-//store data in cookie by combining into string
-function saveData() {
-	var itemStore='';
-	for (var i in itemList) {
-		if(itemStore!='') {
-			itemStore+="|||";
-		}
-		itemStore+=itemList[i].name;
-		itemStore+="||";
-		for (var j in itemList[i].connections) {
-			if (j>0) {itemStore+="|";}
-			itemStore+=itemList[i].connections[j].name;
-		}
-	}
-	setCookie("itemStore", itemStore)
-	setCookie("colors", colors.join("|"))
-}
-//make string representing saved data
-var dataString
-function printSaveData() {
-	var itemStore='';
-	for (var i in itemList) {
-		if(itemStore!='') {
-			itemStore+="|||";
-		}
-		itemStore+=itemList[i].name;
-		itemStore+="||";
-		for (var j in itemList[i].connections) {
-			if (j>0) {itemStore+="|";}
-			itemStore+=itemList[i].connections[j].name;
-		}
-	}
-	dataString="itemStore"+"|||||"+itemStore+"|||||";
-	dataString+="colors"+"|||||"+colors.join("|");
 
-	dataString=encrypt(dataString);
-	document.getElementById("saveOrLoadRecord").value=dataString;
-}
-//data encyption
-function encrypt(strInput) {
-	var strOut="";
-	for (var ch=0;ch<strInput.length;ch++) {
-		charNum=strInput.charCodeAt(ch);//Unicode of character at ch
-		if (charNum>=97 && charNum<=122) {charNum=((charNum-97)*7)%26+97;}
-		strOut+=String.fromCharCode(charNum);
-	}
-	return strInput
-}
-//data decryption
-function decrypt(strInput) {
-var strOut="";
-	for (var ch=0;ch<strInput.length;ch++) {
-		charNum=strInput.charCodeAt(ch);//Unicode of character at ch
-		if (charNum>=97 && charNum<=122) {charNum=((charNum-97)*15)%26+97;}
-		strOut+=String.fromCharCode(charNum);
-	}
-	return strInput
-}
 
 /////////////////////////////////////////////Access, load, & set cookies and variables////////////////////////////////////////////
 
 var colors = []
 var colorReset=new Array("#EAEBD5","#0037F0","#60FF60","#FF3030");
 //load cookie data or default values if no cookies
-function loadData() {
+function ___loadUserData() {
 
-	//Check if there are any cookies first
-	var color_string=getCookie("colors");
-
-	if(color_string!="") { //there is data on record
-		var systemRead=getCookie("itemStore");
-		systemRead=systemRead.split("|||");
-		for(var i in systemRead) {
-			systemRead[i]=systemRead[i].split("||");
-			var item1Read=systemRead[i][0].split("|");
-			var item2Read=systemRead[i][1].split("|");
-			addItem(item1Read,item2Read);
-		}
-		colors=color_string.split("|");
-	}
-	else {
-		itemList=new Array();
-		itemListStrings=new Array();
-		colors=new Array(colorReset[0],colorReset[1],colorReset[2],colorReset[3]);
-	}
-	setColorAreas();
-}
-//Load data from string provided by user
-function loadPrintedData() {
-	dataString=document.getElementById("saveOrLoadRecord").value;
-	dataString=decrypt(dataString);
-	dataString=dataString.split("|||||");
-	if(dataString.length==4) { //proper data format is present
-		var systemRead=dataString[1];
-		systemRead=systemRead.split("|||");
-		for(var i in systemRead) {
-			systemRead[i]=systemRead[i].split("||");
-			var item1Read=systemRead[i][0].split("|");
-			var item2Read=systemRead[i][1].split("|");
-			addItem(item1Read,item2Read);
-		}
-
-		color_string=dataString[3];
-		colors=color_string.split("|");
-		document.getElementById("saveOrLoadRecord").value='';
-	}
-	setColorAreas();
-}
-
-function setCookie(cname,value) {
-	var exdays=36500;
-	var exdate=new Date();
-	exdate.setTime(exdate.getTime() + exdays*24*60*60*1000);
-	var cvalue=value + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-	document.cookie=cname + "=" + cvalue;
-}
-function getCookie(cname) {
-
-	var name = cname + "=";
-	var ca = document.cookie.split(';');
-	for (var i=0; i<ca.length; i++) {
-		var c = ca[i].trim();
-		if (c.indexOf(name)==0) return c.substring(name.length,c.length);
-	}
-	return "";
-}
-
-///////////////////////////////////////////////////////change colors////////////////////////////////////////////////////////
-
-//change to new random color for either background or display areas
-// 0 is background; 1 is "conarea"; 2 is "displayarea"
-function randColorChange(areaID) {
-	if (colorChange==1) {
-		colors[areaID]=randColor();
-		setColorAreas()
-		saveData();
-		if (areaID!=0) {colorChange=2;}
-	}
-	else if(colorChange>1) {colorChange--;}
-}
-//Set background anad display areas using global variable colors (also calculate contrasting text colors and set)
-function setColorAreas() {
-	document.body.style.backgroundColor=colors[0];
-	document.getElementById("conarea").style.backgroundColor=colors[1];
-	document.getElementById("conarea").style.color=colorContrast(colors[1]);
-	document.getElementById("conareaTable").style.color=colorContrast(colors[1]);
-	document.getElementById("displayarea").style.backgroundColor=colors[2];
-	document.getElementById("displayarea").style.color=colorContrast(colors[2]);
-	document.getElementById("displayareaTable").style.color=colorContrast(colors[2]);
-	document.getElementById("options").style.backgroundColor=colors[3];
-	document.getElementById("options").style.color=colorContrast(colors[3]);
-}
-//return finalColor with good contrast to startingColor
-function colorContrast(startingColor) {
-	var cp1=startingColor.substr(1,2);
-	var cp2=startingColor.substr(3,2);
-	var cp3=startingColor.substr(5,2);
-	cp1=parseInt(cp1,16);
-	cp2=parseInt(cp2,16);
-	cp3=parseInt(cp3,16);
-	var grayscale=(.85*cp1+1.35*cp2+.8*cp3)/3;
-	var finalColor
-	if (grayscale>128) {
-		//finalColor='#'+convert(Math.max(cp1-128,0))+convert(Math.max(cp2-128,0))+convert(Math.max(cp3-128,0));
-		finalColor='#000000'
-	}
-	else {
-		//finalColor='#'+convert(Math.min(cp1+128,255))+convert(Math.min(cp2+128,255))+convert(Math.min(cp3+128,255));
-		finalColor='#FFFFFF'
-	}
-	return finalColor
-}
-
-//Helper function to generate a random color (a hexidecimal string)
-function randColor() {
-	var nR=Math.floor(Math.random()*256)
-	var nG=Math.floor(Math.random()*256)
-	var nB=Math.floor(Math.random()*256)
-	var newColor='#'+nR.toString(16)+nG.toString(16)+nB.toString(16);
-	return newColor
-}
-//Toggle color change ability
-var colorChange=0;
-function colorEffectToggle() {
-	if (con.colorOpt.checked==true) {colorChange=3;}
-	else {colorChange=0;}
-}
-//Reset Colors
-function resetColors() {
-	con.colorOpt.checked=false;
-	colorChange=0;
+	// load items and colors somehow
+	itemList=new Array();
+	itemListStrings=new Array();
 	colors=new Array(colorReset[0],colorReset[1],colorReset[2],colorReset[3]);
-	setColorAreas();
+
 }
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -559,9 +280,29 @@ function setWalls () {
 }
 
 ////////////////////////////////// itemBox object constructor //////////////////////////////////
-function itemBox(itemName) {
-	//set object properties
-	this.mass=defaultMass;
+function editItem(item1Value,item2Value) {alert("DONT COME HERE!!!")
+// this may be needed when the itemBox gets UPDATED with some new name or window resize, etc
+		itemIdNum[editing].ibox.ID.innerHTML=itemVal;
+		itemIdNum[editing].ibox.hrad=itemIdNum[editing].ibox.ID.clientWidth/2;
+		itemIdNum[editing].ibox.vrad=itemIdNum[editing].ibox.ID.clientHeight/2;
+
+		for (var kk in keywords) { //cycle through keywords to add new ones to list
+			if (keyList[0].lastIndexOf(keywords[kk])==-1) {
+				keyNum=keyList[0].push(keywords[kk]); //add keyword to list and return new length
+				keyList[1].push(L2Set.shift()); //store pointer for object
+
+				keyList[1][keyNum-1].ID.innerHTML=keywords[kk]; //write the name in
+				keyList[1][keyNum-1].hrad=keyList[1][keyNum-1].ID.clientWidth/2; //update value of width
+				keyList[1][keyNum-1].vrad=keyList[1][keyNum-1].ID.clientHeight/2; //update value of height
+			}
+		}
+		cf_namespace_choose(editing)
+	cf_namespace_saveData();
+	cf_namespace_search();
+}
+function itemBox(node) {
+	this.node = node
+	let itemName = this.node.shownName
 	//initialize coor, vel, and acc
 	this.xstart=-50; //root location
 	this.ystart=-50;
@@ -575,16 +316,18 @@ function itemBox(itemName) {
 	this.centerrooted=centerrooted; // object rooted to center?
 	this.rooted=rooted; // is this object rooted to start?
 
+	// TO REPLACE WITH node.neighbors (edges) if that makes sense:
 	this.connectedObjects=new Array(); //list of objects this object is connected to
 	this.unconnectedObjects=new Array(); //list of objects this object is not connected to
 
 	this.level=1; //Level of object (all are level 1 for now)
-	this.vrad=0; //vertical radius (dummy variable for now)
-	this.hrad=0; //horizontal radius
+	this.hrad=this.ibox.ID.clientWidth/2; //initial width
+	this.vrad=this.ibox.ID.clientHeight/2;
 
 	this.ID=document.createElement("div"); //create a new div element
+	this.ID.innerHTML = itemName;
 	this.ID.setAttribute("id","ID"+itemName);
-	this.ID.setAttribute("onclick","choose('"+itemName.toLowerCase()+"')");
+	this.ID.setAttribute("onclick","cf_namespace_choose('"+itemName.toLowerCase()+"')");
 	this.ID.setAttribute("class","wordObjectItem");
 	this.ID.setAttribute("STYLE","left:-50px; top:-50px;");
 	document.body.appendChild(this.ID);
@@ -592,6 +335,10 @@ function itemBox(itemName) {
 	//////////////////////////////////////////////
 	///////////////////methods////////////////////
 	//////////////////////////////////////////////
+
+	this.mass = function() {
+		return defaultMass * Math.max(1, Math.pow((this.connections.length), 1))
+	}
 
 	this.toStart = function() { //updates object coordinates
 		this.xpos=this.xstart;
@@ -613,7 +360,7 @@ function itemBox(itemName) {
 		var tempangle=Math.atan2(tempy,tempx);
 		var tempx=Math.max(Math.abs(tempx)-(this.hrad+other.hrad)*displace,0)
 		var tempy=Math.max(Math.abs(tempy)-(this.vrad+other.vrad)*displace,0)
-		var tempdist=quad(tempx,tempy);
+		var tempdist=pythag(tempx,tempy);
 		return new Array(tempdist,tempangle)
 	};
 
@@ -661,15 +408,15 @@ function itemBox(itemName) {
 				//calculate distance and angle
 				var tempx=x-this.xpos;
 				var tempy=y-this.ypos;
-				var mousedist=quad(tempx,tempy);
+				var mousedist=pythag(tempx,tempy);
 				var mouseangle=Math.atan2(tempy,tempx);
 
-				force=(baseg.attrep*baseg.gconst*mousemass*this.mass)/Math.pow(mousedist,baseg.forcePower); //force is a temporary variable
+				force=(baseg.attrep*baseg.gconst*mousemass*this.mass())/Math.pow(mousedist,baseg.forcePower); //force is a temporary variable
 				if(baseg.forcePower2>0 && baseg.attrep==1) {
-					force-=(baseg.gconst*Math.pow(baseg.forceradius,baseg.forcePower2-baseg.forcePower)*mousemass*this.mass)/Math.pow(mousedist,baseg.forcePower2)
+					force-=(baseg.gconst*Math.pow(baseg.forceradius,baseg.forcePower2-baseg.forcePower)*mousemass*this.mass())/Math.pow(mousedist,baseg.forcePower2)
 				}
-				this.xacc+=force*Math.cos(mouseangle)/this.mass;
-				this.yacc+=force*Math.sin(mouseangle)/this.mass;
+				this.xacc+=force*Math.cos(mouseangle)/this.mass();
+				this.yacc+=force*Math.sin(mouseangle)/this.mass();
 			}
 
 			//connected item forces
@@ -678,15 +425,15 @@ function itemBox(itemName) {
 				var tempvals=this.calcDist(this.connectedObjects[i],0)
 				var currdist=tempvals[0];
 				var currangle=tempvals[1];
-				force=(baseg.attrep*baseg.gconst*this.connectedObjects[i].mass*this.mass)/Math.pow(currdist,baseg.forcePower);
+				force=(baseg.attrep*baseg.gconst*this.connectedObjects[i].mass()*this.mass())/Math.pow(currdist,baseg.forcePower);
 				if(baseg.forcePower2>0 && baseg.attrep==1) {
-					force-=(baseg.gconst*Math.pow(baseg.forceradius,baseg.forcePower2-baseg.forcePower)*this.connectedObjects[i].mass*this.mass)/Math.pow(currdist,baseg.forcePower2)
+					force-=(baseg.gconst*Math.pow(baseg.forceradius,baseg.forcePower2-baseg.forcePower)*this.connectedObjects[i].mass()*this.mass())/Math.pow(currdist,baseg.forcePower2)
 				}
-				this.xacc+=force*Math.cos(currangle)/this.mass;
-				this.yacc+=force*Math.sin(currangle)/this.mass;
+				this.xacc+=force*Math.cos(currangle)/this.mass();
+				this.yacc+=force*Math.sin(currangle)/this.mass();
 				//equal and opposite force on the other object:
-				this.connectedObjects[i].xacc-=force*Math.cos(currangle)/this.connectedObjects[i].mass;
-				this.connectedObjects[i].yacc-=force*Math.sin(currangle)/this.connectedObjects[i].mass;
+				this.connectedObjects[i].xacc-=force*Math.cos(currangle)/this.connectedObjects[i].mass();
+				this.connectedObjects[i].yacc-=force*Math.sin(currangle)/this.connectedObjects[i].mass();
 			}
 
 			//unconnected item forces
@@ -695,13 +442,13 @@ function itemBox(itemName) {
 				var tempvals=this.calcDist(this.unconnectedObjects[i],1)
 				currdist=tempvals[0];
 				currangle=tempvals[1];
-				force=(-baseg.gconst1*this.unconnectedObjects[i].mass*this.mass)/Math.pow(currdist,baseg.forcePower1);
-				force+=(-baseg.gconst2*this.unconnectedObjects[i].mass*this.mass)/Math.pow(currdist,baseg.forcePower2);
-				this.xacc+=force*Math.cos(currangle)/this.mass;
-				this.yacc+=force*Math.sin(currangle)/this.mass;
+				force=(-baseg.gconst1*this.unconnectedObjects[i].mass()*this.mass())/Math.pow(currdist,baseg.forcePower1);
+				force+=(-baseg.gconst2*this.unconnectedObjects[i].mass()*this.mass())/Math.pow(currdist,baseg.forcePower2);
+				this.xacc+=force*Math.cos(currangle)/this.mass();
+				this.yacc+=force*Math.sin(currangle)/this.mass();
 				//equal and opposite force on the other object:
-				this.unconnectedObjects[i].xacc-=force*Math.cos(currangle)/this.unconnectedObjects[i].mass;
-				this.unconnectedObjects[i].yacc-=force*Math.sin(currangle)/this.unconnectedObjects[i].mass;
+				this.unconnectedObjects[i].xacc-=force*Math.cos(currangle)/this.unconnectedObjects[i].mass();
+				this.unconnectedObjects[i].yacc-=force*Math.sin(currangle)/this.unconnectedObjects[i].mass();
 			}
 		}
 	}
@@ -709,7 +456,7 @@ function itemBox(itemName) {
 	this.applyForces = function () { // add individual forces and apply to velocity and distance
 
 		// apply acceleration to velocity
-		var totalAcc=quad(this.xacc,this.yacc)
+		var totalAcc=pythag(this.xacc,this.yacc)
 		if (totalAcc>maxAcc) {this.xacc*=maxAcc/totalAcc;this.yacc*=maxAcc/totalAcc}
 		this.xvel+=this.xacc*sp;
 		this.yvel+=this.yacc*sp;
@@ -720,11 +467,11 @@ function itemBox(itemName) {
 		else {this.xvel*=airresist;
 			this.yvel*=airresist;}
 
-		if (quad(this.xvel,this.yvel)>=maxvel) {
+		if (pythag(this.xvel,this.yvel)>=maxvel) {
 			this.xvel*=velresist;
 			this.yvel*=velresist;
 		}
-		if (quad(this.xvel,this.yvel)>=maxvel*maxmax) {
+		if (pythag(this.xvel,this.yvel)>=maxvel*maxmax) {
 			this.xvel/=maxmax;
 			this.yvel/=maxmax;
 		}
@@ -810,8 +557,8 @@ function itemBox(itemName) {
 	};
 }
 
-//quadratic formula, with a minimum return value of minrad
-function quad(qa,qb) {
+//length of hypotenuse, with a minimum return value of minrad
+function pythag(qa,qb) {
 	return Math.max(Math.sqrt(qa*qa+qb*qb),minrad);
 }
 
@@ -827,8 +574,8 @@ function adamandeve() {
 	resiz(); //ensure all window variables are set correctly
 
 	for(var i in itemList) { //
-		if (itemList[i].obj.xstart==-50 || itemList[i].obj.xpos==-50) {
-			itemList[i].obj.toStart();
+		if (itemList[i].ibox.xstart==-50 || itemList[i].ibox.xpos==-50) {
+			itemList[i].ibox.toStart();
 		}
 	}
 	launch();
@@ -845,8 +592,8 @@ function resiz() {
 
 	//reset all objects first to offscreen
 	for (var i in itemList) {
-		itemList[i].obj.xstart=-50;
-		itemList[i].obj.ystart=-50;
+		itemList[i].ibox.xstart=-50;
+		itemList[i].ibox.ystart=-50;
 	}
 
 	//update start position of all found objects
@@ -854,10 +601,10 @@ function resiz() {
 	var ptop=hWall[1].yLine+5
 	var newTop=ptop;
 	for(var i in foundItemList) {
-		foundItemList[i].obj.xstart=pleft+foundItemList[i].obj.hrad;
-		foundItemList[i].obj.ystart=newTop+foundItemList[i].obj.vrad;
-		//alert("xstart: "+foundItemList[i].obj.newTop+"  ;  ystart: "+foundItemList[i].obj.ystart)
-		newTop+=2*foundItemList[i].obj.vrad+2;
+		foundItemList[i].ibox.xstart=pleft+foundItemList[i].ibox.hrad;
+		foundItemList[i].ibox.ystart=newTop+foundItemList[i].ibox.vrad;
+		//alert("xstart: "+foundItemList[i].ibox.newTop+"  ;  ystart: "+foundItemList[i].ibox.ystart)
+		newTop+=2*foundItemList[i].ibox.vrad+2;
 	}
 }
 
@@ -869,42 +616,30 @@ function launch() {
 //one instance of ball movement, taking into consideration all forces
 function beginp() {
 	for(var i in foundItemList) { // calculate forces
-		foundItemList[i].obj.xacc=0;
-		foundItemList[i].obj.yacc=0;
+		foundItemList[i].ibox.xacc=0;
+		foundItemList[i].ibox.yacc=0;
 	}
 	for(var i in foundItemList) { // calculate forces
-		foundItemList[i].obj.sumForces();
+		foundItemList[i].ibox.sumForces();
 	}
 	for(var i in foundItemList) { // apply forces
-		foundItemList[i].obj.applyForces();
+		foundItemList[i].ibox.applyForces();
 	}
 }
 
 ////////////////////////////////////////////////Options & Key and Mouse Effects////////////////////////////////////////////////
 
-//pressing "Enter" in item box substitutse for pressing "Submit"
-function actionSubmit(event) {
-	var key=event.keyCode;
-	if(key==13) {
-		readItem(0);
-	}
-}
 // switch between list(1) and floating(2) display
 // default is floating(2)
 var displaymethod=2;
-function changeopt(whichopt) {
-	if (whichopt==1) {
-		displaymethod=1;
-	}
-	else if (whichopt==2) {
-		displaymethod=2;
-	}
+function changeopt(opt) {
+	displaymethod = opt
 }
 // change order of linking when searching
 var searchLinkOrder=2;
 function linkOrder(whichopt) {
 	searchLinkOrder=whichopt;
-	search();
+	cf_namespace_search();
 }
 //update mouse location
 var x=0;
@@ -940,14 +675,14 @@ function presed(event) {
 			else if(cont==0) {launch();}}
 		else if (event.keyCode==16) { //'shift' will return all balls to their original locations
 			for(var i in foundItemList) {
-				foundItemList[i].obj.toStart();
+				foundItemList[i].ibox.toStart();
 			}}
 		else if (event.keyCode==17) { //'ctrl' will run through instance of time when frozen
 			if (cont==0) {beginp();}}
 		else if (event.keyCode==13) { //'enter' will stop all balls
 			for(var i in foundItemList) {
-				foundItemList[i].obj.xvel=0;
-				foundItemList[i].obj.yvel=0;
+				foundItemList[i].ibox.xvel=0;
+				foundItemList[i].ibox.yvel=0;
 			}}
 		else if (event.keyCode==80) { //'p' prompts for command
 			clearInterval(t1);

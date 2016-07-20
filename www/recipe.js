@@ -66,7 +66,7 @@ class RecipeArea {
 			this.input.ingr.focus()
 		}
 
-		ws.send({command: 'add-node', node: node.asDict()})
+		ws.send({command: 'add-node', data: node.asDict()})
 		return node
 	}
 
