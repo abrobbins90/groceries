@@ -81,10 +81,10 @@ class SocketHandler (WebSocketHandler):
 			success = self.db.remove_node(message['data'])
 			if success:
 				print 'removed node'
-				self.write_message({'command': 'remove-node:true'})
+				self.write_message({'status': 'remove-node:true'})
 			else:
 				print 'failed to remove node'
-				self.write_message({'command': 'remove-node:false'})
+				self.write_message({'status': 'remove-node:false'})
 
 		elif message["command"] == "update-data":
 			# Request data is updated

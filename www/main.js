@@ -3,6 +3,7 @@ let graph = undefined
 let recipe = undefined
 let searchArea = undefined
 let groceryArea = undefined
+let server = undefined
 let ws = undefined
 
 
@@ -12,7 +13,8 @@ function initGlobals() {
 	recipe = new RecipeArea(graph);
 	searchArea = new SearchArea(graph);
 	groceryArea = new GroceryListArea();
-	ws = new Socket(function(){}) // input your receiveData function here
+	server = new serverTalk();
+	ws = new Socket(server.receiveData)
 }
 
 function initTriggers() {

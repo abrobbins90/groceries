@@ -19,11 +19,12 @@ class DB:
 		# Check if username in userdata is valid
 		if not self.user_query(userData):
 			return False
-
+		
 		# Check if passwords match
-		userList = self.mongo.findOne("admin", { "_id", "users"})
+		username = userData["username"]
+		userList = self.mongo.find_one("admin", { "_id": "users"})
 		userPassTry = userData["password"]
-		userPass = userList[username]
+		userPass = userList["u_" + username]
 		if userPassTry == userPass:
 			self.user = username
 			return True
@@ -71,7 +72,7 @@ class DB:
 	# Internal helper functions
 	def is_valid_username(self, username):
 		""" Determine if username string is valid """
-		if not isinstance(username, str):
+		if not type(username) in [str, unicode]:
 			return False
 		if username == "":
 			return False
@@ -82,7 +83,8 @@ class DB:
 
 	def is_user(self, username):
 		""" Determine if user name is in database """
-		userList = self.mongo.findOne("admin", { "_id", "users"})
+		userList = self.mongo.find_one("admin", {"_id": "users"})
+		username = "u_" + username
 		if username in userList:
 			return True
 		else:
@@ -108,7 +110,7 @@ class DB:
 			"type": userData["type"],
 			"edges": [],
 		}
-		self.mongo.insertOne("u_" + self.username, dictAdd)
+		self.mongo.insert_one("u_" + self.username, dictAdd)
 
 		return True
 		
@@ -117,7 +119,7 @@ class DB:
 		# userData should be a dictionary with the following fields:
 		#	- id : id for the node to be deleted
 		
-		self.mongo.deleteMany("u_" + self.username, {"_id": "id_" + userData["id"]})
+		self.mongo.delete_many("u_" + self.username, {"_id": "id_" + userData["id"]})
 		return True
 
 	
