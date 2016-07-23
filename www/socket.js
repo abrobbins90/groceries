@@ -1,25 +1,17 @@
 // Define websocket to be used for server interaction
 
 class Socket { // manually extend WebSocket, because WebSocket didn't want to use "super"
-	constructor(receiveData) {
+	constructor(serverClass) {
 		this.ws = new WebSocket("ws://{{host}}/mySocket")
 		this.ws.socket = this
-		this.receiveData = receiveData
+		this.serverClass = serverClass
 		this.ws.onmessage = function(event) {
 			let inData = JSON.parse(event.data)
-			this.socket.receiveData(inData)
+			this.socket.serverClass.receiveData(inData)
 		}
 		// Once the socket is successfully open, try to login
 		this.ws.onopen = function(event) {
-			// For now, just try to do a default login
-			let data = {
-				command : "login",
-				data : {
-					username : "default",
-					password : "password",
-				},
-			};
-			this.socket.send(data)
+			this.socket.serverClass.onopen(this.socket)
 		}
 	}
 

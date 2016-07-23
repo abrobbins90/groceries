@@ -14,7 +14,7 @@ function initGlobals() {
 	searchArea = new SearchArea(graph);
 	groceryArea = new GroceryListArea();
 	server = new serverTalk();
-	ws = new Socket(server.receiveData)
+	ws = new Socket(server)
 }
 
 function initTriggers() {

@@ -37,31 +37,40 @@ class SocketHandler (WebSocketHandler):
 		if message["command"] == "login":
 			# Query the database for this user. If successful, assign username and return user info
 			success = self.db.user_login(message['data'])
+			response = {};
 			if success:
 				print 'Successful login: ' + self.db.user
-				self.send_message('status', 'login:true')
-				self.send_message('download:full', self.db.load())
+				response["status"] = True
+				response["username"] = self.db.user
+				response["data"] = self.db.load()
 			else:
 				print 'Unsuccessful login attempt from: ' + message['data']['username']
-				self.send_message('status', 'login:false')
+				response["status"] = False
+			# Send response to login request
+			response["token"] = message["token"]
+			self.send_message('response', response)
 
 		elif message["command"] == "user-query":
 			# Check if username already exists
 			exist = self.db.user_query(message['data'])
-			if not exist:
-				self.send_message('status', 'user-query:true')
-			else:
-				self.send_message('status', 'user-query:false')
+			response = {};
+			# Send response to user query
+			response["token"] = message["token"]
+			response["status"] = exist
+			self.send_message('response', response)
 
 		elif message["command"] == "add-user":
 			# Add a new user.
 			success = self.db.add_user(message['data'])
+			response = {};
 			if success:
 				print 'Added user: ' + self.db.user
-				self.send_message('status', 'add-user:true')
 			else:
 				print 'Failed to add user: ' + message['data']['username']
-				self.send_message('status', 'add-user:false')
+			# Send response to user query
+			response["token"] = message["token"]
+			response["status"] = success
+			self.send_message('response', response)
 
 		if message["command"] == "add-node":
 			success = self.db.add_node(message['data'])
