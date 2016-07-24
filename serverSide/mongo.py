@@ -22,8 +22,8 @@ class Mongo:
         # Will complain if you attempt to insert duplicates
         self.client[self.database][collection].insert_many(list_of_dicts)
 
-    def update(self, collection, query, update, options):
-        self.client[self.database][collection].update_one(query, update, options)
+    def update(self, collection, query, update):
+        self.client[self.database][collection].update_one(query, update, upsert=False)
 
     def upsert(self, collection, query, update):
         self.client[self.database][collection].update_one(query, update, upsert=True)

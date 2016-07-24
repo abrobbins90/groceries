@@ -39,9 +39,9 @@ class SocketHandler (WebSocketHandler):
 			success = self.db.user_login(message['data'])
 			response = {};
 			if success:
-				print 'Successful login: ' + self.db.user
+				print 'Successful login: ' + self.db.username
 				response["status"] = True
-				response["username"] = self.db.user
+				response["username"] = self.db.username
 				response["data"] = self.db.load()
 			else:
 				print 'Unsuccessful login attempt from: ' + message['data']['username']
@@ -64,7 +64,7 @@ class SocketHandler (WebSocketHandler):
 			success = self.db.add_user(message['data'])
 			response = {};
 			if success:
-				print 'Added user: ' + self.db.user
+				print 'Added user: ' + message['data']['username']
 			else:
 				print 'Failed to add user: ' + message['data']['username']
 			# Send response to user query
@@ -78,22 +78,28 @@ class SocketHandler (WebSocketHandler):
 				print 'added node'
 			else:
 				print 'failed to add node'
-
+		
+		elif message["command"] == "remove-node":
+			success = self.db.remove_node(message['data'])
+			if success:
+				print 'removed node'
+			else:
+				print 'failed to remove node'
+		
 		elif message["command"] == "add-edge":
 			success = self.db.add_edge(message['data'])
 			if success:
 				print 'added edge'
 			else:
 				print 'failed to add edge'
-
-		elif message["command"] == "remove-node":
-			success = self.db.remove_node(message['data'])
+		
+		elif message["command"] == "remove-edge":
+			success = self.db.remove_edge(message['data'])
 			if success:
-				print 'removed node'
-				self.write_message({'status': 'remove-node:true'})
+				print 'removed edge'
 			else:
-				print 'failed to remove node'
-				self.write_message({'status': 'remove-node:false'})
+				print 'failed to remove edge'
+
 
 		elif message["command"] == "update-data":
 			# Request data is updated

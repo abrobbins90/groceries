@@ -16,6 +16,10 @@ class Graph {
 		else if (type === "ingr") node = new IngrNode(shownName)
 		else if (type === "tag") node = new TagNode(shownName)
 		this.nodes.add(node)
+	
+		// Update server
+		server.send('add-node', node.asDict())
+	
 		return node
 	}
 
@@ -30,6 +34,8 @@ class Graph {
 				this.removeEdge(node, neighbor);
 			}
 		}
+		// Update server
+		server.send('remove-node', {id: node.id})
 	}
 
 	// Search a node by name
@@ -59,10 +65,14 @@ class Graph {
 	addEdge(node1, node2) {
 		node1.edges.add(node2);
 		node2.edges.add(node1);
+		// Update server
+		server.send('add-edge', {id1: node1.id, id2: node2.id})
 	}
 	removeEdge(node1, node2) {
 		node1.edges.delete(node2);
 		node2.edges.delete(node1);
+		// Update server
+		server.send('remove-edge', {id1: node1.id, id2: node2.id})
 	}
 	isConnected(node1, node2) {
 		if (node1.edges.has(node2)) { return true }

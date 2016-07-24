@@ -9,7 +9,7 @@ class DB:
 
 	def __init__(self):
 		self.mongo = Mongo("groceries")
-		self.user = "" # Note, before any operations can continue, a user must be specified
+		self.username = "" # Note, before any operations can continue, a user must be specified
 
 
 	### User Operations
@@ -26,7 +26,7 @@ class DB:
 		userPassTry = userData["password"]
 		userPass = userList["u_" + username]
 		if userPassTry == userPass:
-			self.user = username
+			self.username = username
 			return True
 		else:
 			return False
@@ -47,25 +47,25 @@ class DB:
 		""" Add a new user and password """
 		# First ensure username is available
 		# Check if username in userdata is valid
-		if not self.user_query(userData):
+		if self.user_query(userData):
 			return False
-
+		
 		# Add username and password
 		username = userData["username"]
 		userPass = userData["password"]
-		self.mongo.update("admin", { "_id", "users"}, {"$set", {"u_" + username: userPass}})
+		self.mongo.update("admin", { "_id" : "users"}, {"$set": {"u_" + username: userPass}})
 
 		# Now must also add a new collection to the database for this user
 		accountInfo = {}
-		accountInfo["_id"] = "account_info"
+		accountInfo["_id"] = "u_" + username
 		accountInfo["username"] = username
 		# Add time account was created
 		now = (datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)).total_seconds() # seconds since epoch
 		accountInfo["account-created"] = now
 		accountInfo["groups"] = []
+		accountInfo["nodes"] = []
 
-		collection = "u_" + username
-		self.mongo.insertOne(collection, accountInfo)
+		self.mongo.insert_one("users", accountInfo)
 
 		return True
 
@@ -94,24 +94,58 @@ class DB:
 
 	def load(self):
 		""" read data for user and send back as a dictionary """
-		pass
+		# The returned data will be a dictionary whose keys are the ids of the nodes
+		# In each field will be another dictionary with the following keys:
+		#	type
+		#	shownName
+		#	edges
+		# 	<any additional fields relevant to that node>
+		
+		data = {}
+		
+		# First, ensure the user has already been set
+		if not self.username:
+			return data
+			
+		nodes = self.mongo.find_one("users", { "_id" : "u_" + self.username})["nodes"]
+		for node in nodes:
+			nodeDict = self.mongo.find_one("nodes", {"_id": self.getNodeId(node)})
+			nodeDict["shownName"] = nodeDict.pop("name") # change key to shownName
+			nodeDict.pop("_id") # don't need to include this
+			data[node] = nodeDict
+		
+		return data
 
 	def add_node(self, userData):
 		""" add a node to the database """
 		# userData should be a dictionary with the following fields:
-		#	- name : shown name for the node
-		#	- type : what type of node this is
-		#	- id   : unique id for the node (generally <type>_<trimmed name>)
-
+		#	- shownName : shown name for the node
+		#	- type 		: what type of node this is
+		#	- id   		: unique id for the node (generally <type>_<trimmed name>)
+		
+		# First, ensure the user has already been set
+		if not self.username:
+			return False		
+		
+		# Add node to user's list
+		self.mongo.update("users", { "_id" : "u_" + self.username},
+			{"$addToSet": {"nodes": userData["id"]}})
+		
+		# To avoid error, ensure this node doesn't exist yet before creating
+		# Might want to send an error to the client if this comes up...
+		if self.mongo.find("nodes", {"_id": self.getNodeId(userData["id"])}).count() > 0:
+			return True
+		
+		# Add node
 		dictAdd = {
 			# what is the usefulness of the "id_" as part of the id string?
-			"_id": "id_" + userData["id"],
-			"name": userData["showName"],
+			"_id": self.getNodeId(userData["id"]),
+			"name": userData["shownName"],
 			"type": userData["type"],
 			"edges": [],
 		}
-		self.mongo.insert_one("u_" + self.username, dictAdd)
-
+		self.mongo.insert_one("nodes", dictAdd)
+		
 		return True
 		
 	def remove_node(self, userData):
@@ -119,7 +153,15 @@ class DB:
 		# userData should be a dictionary with the following fields:
 		#	- id : id for the node to be deleted
 		
-		self.mongo.delete_many("u_" + self.username, {"_id": "id_" + userData["id"]})
+		# First, ensure the user has already been set
+		if not self.username:
+			return False	
+			
+		# Remove node
+		self.mongo.delete_many("nodes", {"_id": self.getNodeId(userData["id"])})
+		# Remove node from user's list
+		self.mongo.update("users", { "_id" : "u_" + self.username},
+			{"$pull": {"nodes": userData["id"]}})
 		return True
 
 	
@@ -128,11 +170,16 @@ class DB:
 		# userData should be a dictionary with the following fields:
 		#	- id1 : id for node 1
 		#	- id2 : id for node 2
-		id1 = "id_" + userData["id1"]
-		id2 = "id_" + userData["id2"]
-		self.mongo.update("u_" + self.username, {"_id": id1},
+		
+		# First, ensure the user has already been set
+		if not self.username:
+			return False	
+			
+		id1 = self.getNodeId(userData["id1"])
+		id2 = self.getNodeId(userData["id2"])
+		self.mongo.update("nodes", {"_id": id1},
 			{ "$addToSet": {"edges": userData["id2"]}})
-		self.mongo.update("u_" + self.username, {"_id": id2},
+		self.mongo.update("nodes", {"_id": id2},
 			{ "$addToSet": {"edges": userData["id1"]}})
 		
 		return True	
@@ -142,14 +189,21 @@ class DB:
 		# userData should be a dictionary with the following fields:
 		#	- id1 : id for node 1
 		#	- id2 : id for node 2
-		id1 = "id_" + userData["id1"]
-		id2 = "id_" + userData["id2"]
-		self.mongo.update("u_" + self.username, {"_id": id1},
+		
+		# First, ensure the user has already been set
+		if not self.username:
+			return False	
+		
+		id1 = self.getNodeId(userData["id1"])
+		id2 = self.getNodeId(userData["id2"])
+		self.mongo.update("nodes", {"_id": id1},
 			{ "$pull": {"edges": userData["id2"]}})
-		self.mongo.update("u_" + self.username, {"_id": id2},
+		self.mongo.update("nodes", {"_id": id2},
 			{ "$pull": {"edges": userData["id1"]}})
 		
 		return True	
 
-
+	# Shortcut to generate the "_id" for a node based on its normal id
+	def getNodeId(self, id):
+		return "id_" + self.username + "_" + id
 
