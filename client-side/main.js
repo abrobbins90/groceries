@@ -4,7 +4,7 @@ let recipe = undefined
 let searchArea = undefined
 let groceryArea = undefined
 let server = undefined
-let ws = undefined
+let socket = undefined
 
 
 /////////////////// FUNCTIONS ///////////////////
@@ -13,8 +13,8 @@ function initGlobals() {
 	recipe = new RecipeArea(graph);
 	searchArea = new SearchArea(graph);
 	groceryArea = new GroceryListArea();
-	server = new serverTalk();
-	ws = new Socket(server)
+	server = new ServerTalk();
+	socket = new Socket(server)
 }
 
 function initTriggers() {

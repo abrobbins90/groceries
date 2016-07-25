@@ -1,4 +1,5 @@
 import json
+from os import path
 
 from tornado.web import RequestHandler
 from tornado.web import StaticFileHandler
@@ -12,10 +13,14 @@ import sys
 sys.path.append('./serverSide')
 from database import DB
 
+CLIENT_SIDE_DIRECTORY_PATH = "../client-side-built/"
+
+
 class SocketHandler (WebSocketHandler):
 	""" The WebSocket protocol is still in development. This module currently implements
 	the hixie-76 and hybi-10 versions of the protocol. See this browser	compatibility
 	table on Wikipedia: http://en.wikipedia.org/wiki/WebSockets#Browser_support """
+
 
 	def open(self):
 		print 'websocket opened!'
@@ -23,20 +28,21 @@ class SocketHandler (WebSocketHandler):
 		self.db = DB()
 
 	def on_message(self, message):
+		# Convert things to be more friendly.  Check for good input.
 		assert type(message) in [str, unicode]
 		print 'got message: {0}'.format(message)
-		message = json.loads(message)
-		assert type(message) == dict
-
+		message_dict = json.loads(message)
+		assert type(message_dict) == dict
 		# Check to ensure a command is received
-		if "command" not in message:
+		if "command" not in message_dict:
 			raise KeyError("Key 'command' is missing. Way to suck...")
+		command, data, token = message_dict["command"], message_dict["data"], message_dict["token"]
 
 		### Check the command received and proceed accordingly
 		# user commands
-		if message["command"] == "login":
+		if command == "login":
 			# Query the database for this user. If successful, assign username and return user info
-			success = self.db.user_login(message['data'])
+			success = self.db.user_login(data)
 			response = {};
 			if success:
 				print 'Successful login: ' + self.db.username
@@ -44,87 +50,91 @@ class SocketHandler (WebSocketHandler):
 				response["username"] = self.db.username
 				response["data"] = self.db.load()
 			else:
-				print 'Unsuccessful login attempt from: ' + message['data']['username']
+				print 'Unsuccessful login attempt from: ' + data['username']
 				response["status"] = False
 			# Send response to login request
-			response["token"] = message["token"]
+			response["token"] = token
 			self.send_message('response', response)
 
-		elif message["command"] == "user-query":
+		elif command == "user-query":
 			# Check if username already exists
-			exist = self.db.user_query(message['data'])
+			exist = self.db.user_query(data)
 			response = {};
 			# Send response to user query
-			response["token"] = message["token"]
+			response["token"] = token
 			response["status"] = exist
 			self.send_message('response', response)
 
-		elif message["command"] == "add-user":
+		elif command == "add-user":
 			# Add a new user.
-			success = self.db.add_user(message['data'])
+			success = self.db.add_user(data)
 			response = {};
 			if success:
-				print 'Added user: ' + message['data']['username']
+				print 'Added user: ' + data['username']
 			else:
-				print 'Failed to add user: ' + message['data']['username']
+				print 'Failed to add user: ' + data['username']
 			# Send response to user query
-			response["token"] = message["token"]
+			response["token"] = token
 			response["status"] = success
 			self.send_message('response', response)
 
-		if message["command"] == "add-node":
-			success = self.db.add_node(message['data'])
+		if command == "add-node":
+			success = self.db.add_node(data)
 			if success:
 				print 'added node'
 			else:
 				print 'failed to add node'
-		
-		elif message["command"] == "remove-node":
-			success = self.db.remove_node(message['data'])
+
+		elif command == "remove-node":
+			success = self.db.remove_node(data)
 			if success:
 				print 'removed node'
 			else:
 				print 'failed to remove node'
-		
-		elif message["command"] == "add-edge":
-			success = self.db.add_edge(message['data'])
+
+		elif command == "add-edge":
+			success = self.db.add_edge(data)
 			if success:
 				print 'added edge'
 			else:
 				print 'failed to add edge'
-		
-		elif message["command"] == "remove-edge":
-			success = self.db.remove_edge(message['data'])
+
+		elif command == "remove-edge":
+			success = self.db.remove_edge(data)
 			if success:
 				print 'removed edge'
 			else:
 				print 'failed to remove edge'
 
 
-		elif message["command"] == "update-data":
+		elif command == "update-data":
 			# Request data is updated
 			self.send_message('download:full', self.db.load())
 
 	def send_message(self, command, data):
 		self.write_message({
 			'command': command,
-			'data': data
+			'data': data,
 		})
 
 	def on_close(self):
 		print 'websocket closed'
 
+
 class JSSocketHandler (RequestHandler):
 	""" This is to render socket.js, passing in the host url """
+
+
 	def get(self):
-		self.render("www-built/socket.js", host=self.request.host)
+		self.render(path.join(CLIENT_SIDE_DIRECTORY_PATH, "socket.js"), host=self.request.host)
+
 
 def make_app():
 	return Application(
 		[
 			url('/mySocket', SocketHandler, {} , name = "a"),
 			url('/socket.js', JSSocketHandler, {}, name = "b"),
-			url(r'/(.*)', StaticFileHandler, { "path": "www-built/" }) # captures anything at all, and serves it as a static file. simple!
+			url(r'/(.*)', StaticFileHandler, { "path": CLIENT_SIDE_DIRECTORY_PATH }) # captures anything at all, and serves it as a static file. simple!
 		],
 		#settings
 		debug = True,
