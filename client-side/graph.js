@@ -8,7 +8,7 @@ class Graph {
 
 	// Add Nodes
 	addNode(type, shownName) {
-		// First check if node exists already
+		// Check if node exists already
 		var node = this.getNodeByID(type, nameTrim(shownName))
 		if( node ) return node
 
@@ -90,7 +90,7 @@ class Node {
 
 		// Default Initializations
 		this.type = type; // Declare node type: "meal", "ingr", or "description"
-		this.element = document.createElement("div"); // Create an element to be displayed on the page
+		this.element = $( document.createElement("div") ); // Create an element to be displayed on the page
 		this.shownName = shownName;
 		this.edges = new Set();
 
@@ -118,7 +118,7 @@ class Node {
 	//method to change name of item
 	set shownName(newName) { //update true name
 		this._shownName = newName;
-		this.element.setAttribute("id", this.id);
+		this.element.attr("id", this.id);
 		this.updateElement();
 	}
 
@@ -136,22 +136,20 @@ class Node {
 
 	//update innerHTML and dimensions
 	updateElement() {
-		this.element.innerHTML = this._shownName;
-		this.hrad = this.element.clientWidth / 2;  //vertical radius
-		this.vrad = this.element.clientHeight / 2;  //horizontal radius
+		this.element.html(this._shownName);
+		this.hrad = this.element.width() / 2;  //horizontal radius
+		this.vrad = this.element.height / 2;  //vertical radius
 	}
 
 	// put node in limbo (hidden from view)
 	sendToLimbo() {
 		this.chosen = false;
 		this.found = false;
-		document.getElementById("limbo").appendChild(this.element);
+		$("#limbo").append(this.element);
 	}
 	// Delete element
 	selfDestruct(){
-		// Delete element by putting in limbo, then removing into the void...
-		this.sendToLimbo();
-		document.getElementById("limbo").removeChild(this.element);
+		this.element.remove();
 	}
 
 	//updates object coordinates
@@ -162,8 +160,8 @@ class Node {
 	}
 	//updates actual object location in window
 	draw() {
-		this.element.style.left = this.xpos - this.hrad;
-		this.element.style.top = this.ypos - this.vrad;
+		this.element.css("left", this.xpos - this.hrad);
+		this.element.css("top", this.ypos - this.vrad);
 	}
 
 
@@ -173,7 +171,7 @@ class MealNode extends Node {
 	// Define a subclass of node specific to meals
 	constructor(shownName) {
 		super(shownName, 'meal');
-		this.element.setAttribute("class", "meal_text word_text");
+		this.element.addClass("meal_text word_text");
 
 		this.inMenu = false; // store whether meal node is in the menu or not
 	}
@@ -183,8 +181,9 @@ class MealNode extends Node {
 		this.found = true;
 		this.inMenu = false;
 
-		document.getElementById("search_results").appendChild(this.element);
-		this.element.setAttribute("class","meal_text word_text");
+		$("#search_results").append(this.element);
+		this.element.removeClass("meal_onMenu_text");
+		this.element.addClass("meal_text");
 	}
 
 	// Add meal to menu
@@ -192,8 +191,9 @@ class MealNode extends Node {
 		this.inMenu = true;
 		this.chosen = false;
 
-		document.getElementById("menuField").appendChild(this.element);
-		this.element.setAttribute("class","meal_onMenu_text word_text");
+		$("#menuField").append(this.element);
+		this.element.addClass("meal_onMenu_text");
+		this.element.removeClass("meal_text");
 	}
 }
 
@@ -205,29 +205,30 @@ class IngrNode extends Node {
 		super(shownName, 'ingr');
 		this.quantity = 0;
 
-		this.element.setAttribute("class", "ingr_text word_text");
+		this.element.addClass("ingr_text word_text");
 	}
 
 	// Add ingr to grocery list
 	addToGroceryList() {
 		this.chosen = 0;
 
-		document.getElementById("groceryField").appendChild(this.element);
-		this.element.setAttribute("class", "ingr_onMenu_text word_text");
+		$("#groceryField").append(this.element);
+		this.element.removeClass("ingr_onMenu_text");
+		this.element.addClass("ingr_text");
 	}
 
 	//update innerHTML and dimensions (overwrite superclass method)
 	updateElement() {
 		if (this.quantity > 1) {
 			// if multiple entries, bold and include x#
-			this.element.innerHTML = this._shownName + "<b>" + " x" + quan + "</b>";
+			this.element.html(this._shownName + "<b>" + " x" + quan + "</b>");
 		}
 		else {
-			this.element.innerHTML = this._shownName;
+			this.element.html(this._shownName);
 		}
 
-		this.hrad = this.element.clientWidth / 2;  //vertical radius
-		this.vrad = this.element.clientHeight / 2;  //horizontal radius
+		this.hrad = this.element.width() / 2;  //vertical radius
+		this.vrad = this.element.height() / 2;  //horizontal radius
 	}
 
 }
@@ -236,6 +237,6 @@ class TagNode extends Node {
 	// Define a subclass of node specific to tag
 	constructor(shownName) {
 		super(shownName, 'tag');
-		this.element.setAttribute("class", "word_text");
+		this.element.addClass("word_text");
 	}
 }

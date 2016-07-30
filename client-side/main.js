@@ -21,15 +21,33 @@ function initTriggers() {
 	/* recipe area */
 	$('#create_meal_button').click(function(){
 		let shownName = $('#meal_input').val()
+		// Before proceeding, edit clean up shownName
+		shownName = cleanName(shownName);
+		$('#meal_input').val(shownName); // Update in case it changed
+		
 		recipe.createNode('meal', shownName)
 	})
 	$('#remove_meal_button').click(function(){
 		recipe.removeMeal()
 	})
+	$('.node_input').keypress(function(event) {
+		let key = event.which;
+		let character = String.fromCharCode(key);
+		let allowedKeys = [13] // special keys
+		let allowedChars = /[0-9A-Za-z _',:]/g;
+		
+		if (allowedKeys.indexOf(key) != -1) return true
+		else if (character.match(allowedChars)) return true
+		else return false
+	})
 	$('.node_input').keyup(function(event){
 		let type = $(this).attr("data-type")
 		let shownName = $(this).val()
-		let key = event.keyCode;
+		// Before proceeding, edit clean up shownName
+		shownName = cleanName(shownName);
+		$(this).val(shownName); // Update in case it changed
+		
+		let key = event.which;
 		recipe.keyPress(key, type, shownName)
 	})
 
