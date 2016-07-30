@@ -9,8 +9,6 @@ from tornado.web import url
 from tornado.ioloop import IOLoop
 from tornado.log import enable_pretty_logging
 
-import sys
-sys.path.append('./serverSide')
 from database import DB
 
 CLIENT_SIDE_DIRECTORY_PATH = "../client-side-built/"
@@ -36,14 +34,24 @@ class SocketHandler (WebSocketHandler):
 		# Check to ensure a command is received
 		if "command" not in message_dict:
 			raise KeyError("Key 'command' is missing. Way to suck...")
-		command, data, token = message_dict["command"], message_dict["data"], message_dict["token"]
-
+		command	= message_dict["command"]
+		# Grab data and token if they are passed
+		if "data" in message_dict:
+			data = message_dict["data"]
+		else:
+			data = "" # Avoid an error later on if data is expected
+		if "token" in message_dict:
+			token = message_dict["token"]
+			respond = True
+		else:
+			respond = False
+		response = {} # Initialize as dictionary
+		
 		### Check the command received and proceed accordingly
 		# user commands
 		if command == "login":
 			# Query the database for this user. If successful, assign username and return user info
 			success = self.db.user_login(data)
-			response = {};
 			if success:
 				print 'Successful login: ' + self.db.username
 				response["status"] = True
@@ -52,33 +60,24 @@ class SocketHandler (WebSocketHandler):
 			else:
 				print 'Unsuccessful login attempt from: ' + data['username']
 				response["status"] = False
-			# Send response to login request
-			response["token"] = token
-			self.send_message('response', response)
 
 		elif command == "user-query":
 			# Check if username already exists
 			exist = self.db.user_query(data)
-			response = {};
-			# Send response to user query
-			response["token"] = token
 			response["status"] = exist
-			self.send_message('response', response)
 
 		elif command == "add-user":
 			# Add a new user.
 			success = self.db.add_user(data)
-			response = {};
 			if success:
 				print 'Added user: ' + data['username']
 			else:
 				print 'Failed to add user: ' + data['username']
 			# Send response to user query
-			response["token"] = token
 			response["status"] = success
-			self.send_message('response', response)
 
-		if command == "add-node":
+		# Node operations
+		elif command == "add-node":
 			success = self.db.add_node(data)
 			if success:
 				print 'added node'
@@ -109,8 +108,15 @@ class SocketHandler (WebSocketHandler):
 
 		elif command == "update-data":
 			# Request data is updated
-			self.send_message('download:full', self.db.load())
-
+			response["status"] = True
+			response["data"] = self.db.load()
+			print 'Sent full data back to user'
+		
+		# If a response is expected, send onem even if it's empty
+		if respond:
+			response["token"] = token
+			self.send_message('response', response)
+		
 	def send_message(self, command, data):
 		self.write_message({
 			'command': command,

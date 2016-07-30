@@ -67,6 +67,9 @@ class ServerTalk {
 		}
 
 		this.mute = false;
+		
+		searchArea.launchSearch();
+		
 	}
 
 	// Send a request to the server

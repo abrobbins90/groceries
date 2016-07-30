@@ -35,11 +35,10 @@ function initTriggers() {
 
 	/* search area */
 	$('.Tab').click(function(){
-		switchTab(this)
+		searchArea.switchTab(this)
 	})
 	$('#mealLookup, #ingrSearch').keyup(function(){
-		let id = $(this).attr('id')
-		launchSearch(id)
+		searchArea.launchSearch()
 	})
 
 	/* grocery area */
@@ -62,27 +61,6 @@ function initTriggers() {
 	})
 	$('#qmenu').click(qmenu)
 	*/
-}
-
-
-/////////////////////////////// Search Area
-
-//switch between search tabs
-function switchTab(el) {
-	if (!searchArea.switchTab(el)) {return}
-
-	//launchSearch();
-	//transferButtons();
-}
-
-// Commence searching
-function launchSearch(searchType) {
-	if (searchType == "mealLookup") {
-		searchArea.mealLookup();
-	}
-	else if (searchType == "ingrSearch") {
-		searchArea.ingrSearch();
-	}
 }
 
 

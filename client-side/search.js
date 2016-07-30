@@ -32,6 +32,15 @@ class SearchArea {
 		return el.id.match(/[^_]+$/);
 	}
 
+	//switch between search tabs
+	switchTab(el) {
+		// if click was current selection, do nothing
+		if (!this.switchTab(el)) {return}
+
+		//this.launchSearch();
+		//transferButtons();
+	}
+	
 	// Switch the tab that is selected when the user clicks a new one
 	switchTab(newTabEl) {
 		// If clicked tab is already selected, do nothing
@@ -49,9 +58,23 @@ class SearchArea {
 		this.tab[newTab].addClass("tab_selected");
 		this.sWindow[newTab].removeClass("area_unselected");
 		this.sWindow[newTab].addClass("area_selected");
+		
+		return true
 	}
 
+	
 	///// Searches
+	
+	// Commence searching
+	launchSearch() {
+		let searchType = this.selectedTab;
+		if (searchType == "mealLookup") {
+			this.mealLookup();
+		}
+		else if (searchType == "ingrSearch") {
+			this.ingrSearch();
+		}
+	}
 
 	// Search by by name
 	mealLookup() {
