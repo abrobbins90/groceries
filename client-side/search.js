@@ -32,6 +32,15 @@ class SearchArea {
 		return el.id.match(/[^_]+$/);
 	}
 
+	//switch between search tabs
+	switchTab(el) {
+		// if click was current selection, do nothing
+		if (!this.switchTab(el)) {return}
+
+		//this.launchSearch();
+		//transferButtons();
+	}
+	
 	// Switch the tab that is selected when the user clicks a new one
 	switchTab(newTabEl) {
 		// If clicked tab is already selected, do nothing
@@ -49,9 +58,23 @@ class SearchArea {
 		this.tab[newTab].addClass("tab_selected");
 		this.sWindow[newTab].removeClass("area_unselected");
 		this.sWindow[newTab].addClass("area_selected");
+		
+		return true
 	}
 
+	
 	///// Searches
+	
+	// Commence searching
+	launchSearch() {
+		let searchType = this.selectedTab;
+		if (searchType == "mealLookup") {
+			this.mealLookup();
+		}
+		else if (searchType == "ingrSearch") {
+			this.ingrSearch();
+		}
+	}
 
 	// Search by by name
 	mealLookup() {
@@ -61,17 +84,23 @@ class SearchArea {
 		var mealNodes = graph.getNodesByID_partial("meal", "")
 		if (searchStr === "") {
 			for (let i in mealNodes) {
-				mealNodes[i].addToMealResults();
+				if (!mealNodes[i].inMenu) {
+					mealNodes[i].addToMealResults();
+				}
 			}
 		}
 		else { // Otherwise, clear all then show search results
 			for (let i in mealNodes) {
-				mealNodes[i].sendToLimbo();
+				if (!mealNodes[i].inMenu) {
+					mealNodes[i].sendToLimbo();
+				}
 			}
 
 			var nodeList = graph.getNodesByID_partial("meal", searchStr)
 			for (let i in nodeList) {
-				nodeList[i].addToMealResults();
+				if (!nodeList[i].inMenu) {
+					nodeList[i].addToMealResults();
+				}
 			}
 		}
 

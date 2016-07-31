@@ -1,5 +1,5 @@
 node_modules/
-www-built/
+client-side-built/
 *.orig
 *.pyc
 *.swp

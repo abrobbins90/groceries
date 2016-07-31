@@ -3,7 +3,8 @@ let graph = undefined
 let recipe = undefined
 let searchArea = undefined
 let groceryArea = undefined
-let ws = undefined
+let server = undefined
+let socket = undefined
 
 
 /////////////////// FUNCTIONS ///////////////////
@@ -12,35 +13,80 @@ function initGlobals() {
 	recipe = new RecipeArea(graph);
 	searchArea = new SearchArea(graph);
 	groceryArea = new GroceryListArea();
-	ws = new Socket(function(){}) // input your receiveData function here
+	server = new ServerTalk();
+	socket = new Socket(server)
 }
 
 function initTriggers() {
 	/* recipe area */
 	$('#create_meal_button').click(function(){
 		let shownName = $('#meal_input').val()
+		// Before proceeding, edit clean up shownName
+		shownName = cleanName(shownName);
+		$('#meal_input').val(shownName); // Update in case it changed
+		
 		recipe.createNode('meal', shownName)
 	})
 	$('#remove_meal_button').click(function(){
 		recipe.removeMeal()
 	})
+	$('.node_input').keypress(function(event) {
+		let key = event.which;
+		let character = String.fromCharCode(key);
+		let allowedKeys = [13] // special keys
+		let allowedChars = /[0-9A-Za-z _',:]/g;
+		
+		if (allowedKeys.indexOf(key) != -1) return true
+		else if (character.match(allowedChars)) return true
+		else return false
+	})
 	$('.node_input').keyup(function(event){
 		let type = $(this).attr("data-type")
 		let shownName = $(this).val()
-		let key = event.keyCode;
+		// Before proceeding, edit clean up shownName
+		shownName = cleanName(shownName);
+		$(this).val(shownName); // Update in case it changed
+		
+		let key = event.which;
 		recipe.keyPress(key, type, shownName)
 	})
 
-	/* search area */
+	
+	/***** search area *****/
 	$('.Tab').click(function(){
-		switchTab(this)
+		searchArea.switchTab(this)
 	})
 	$('#mealLookup, #ingrSearch').keyup(function(){
-		let id = $(this).attr('id')
-		launchSearch(id)
+		searchArea.launchSearch()
 	})
 
-	/* grocery area */
+	$('#search_results').on("dragover", function(event){
+		event.preventDefault();
+		event.originalEvent.dataTransfer.dropEffect = "move";
+	})
+	$('#search_results').on("drop", function(event){
+		event.preventDefault();
+		let id = event.originalEvent.dataTransfer.getData("text");
+		let node = graph.getNodeById(id);
+		node.sendToLimbo()
+		searchArea.launchSearch()
+	})
+	
+	
+	
+	
+	/***** grocery area *****/
+	$('#menuField').on("dragover", function(event){
+		event.preventDefault();
+		event.originalEvent.dataTransfer.dropEffect = "move";
+	})
+	$('#menuField').on("drop", function(event){
+		event.preventDefault();
+		let id = event.originalEvent.dataTransfer.getData("text");
+		let node = graph.getNodeById(id);
+		node.addToMenu()
+	})
+	
 	$('#print_button').click(function(){
 		groceryArea.print()
 	})
@@ -60,27 +106,6 @@ function initTriggers() {
 	})
 	$('#qmenu').click(qmenu)
 	*/
-}
-
-
-/////////////////////////////// Search Area
-
-//switch between search tabs
-function switchTab(el) {
-	if (!searchArea.switchTab(el)) {return}
-
-	//launchSearch();
-	//transferButtons();
-}
-
-// Commence searching
-function launchSearch(searchType) {
-	if (searchType == "mealLookup") {
-		searchArea.mealLookup();
-	}
-	else if (searchType == "ingrSearch") {
-		searchArea.ingrSearch();
-	}
 }
 
 

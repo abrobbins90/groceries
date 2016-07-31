@@ -12,3 +12,10 @@ function nameTrim(name) {
 
 	return name
 }
+
+// similar to nameTrim, but primarily avoiding cross site scripting and code injection
+function cleanName(name) {
+	let allowedChars = /[^0-9A-Za-z _',:]/g;
+	name = name.replace(allowedChars, '');
+	return name
+}

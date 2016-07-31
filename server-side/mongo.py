@@ -15,25 +15,25 @@ class Mongo:
         msg = "(client: {}, db: {})".format(self.client, self.database)
         return msg
 
-    def insertOne(self, collection, dic):
-        self.client[self.database][collection].insertOne(dic)
+    def insert_one(self, collection, dic):
+        self.client[self.database][collection].insert_one(dic)
 
-    def insertMany(self, collection, list_of_dicts):
+    def insert_many(self, collection, list_of_dicts):
         # Will complain if you attempt to insert duplicates
-        self.client[self.database][collection].insertMany(list_of_dicts)
+        self.client[self.database][collection].insert_many(list_of_dicts)
 
-    def update(self, collection, query, update, options):
-        self.client[self.database][collection].update(query, update, options)
+    def update(self, collection, query, update):
+        self.client[self.database][collection].update_one(query, update, upsert=False)
 
     def upsert(self, collection, query, update):
-        self.client[self.database][collection].update(query, update, upsert=True)
+        self.client[self.database][collection].update_one(query, update, upsert=True)
 
     def find(self, collection, dict_fields=None, projection=None):
         return self.client[self.database][collection].find(dict_fields, projection)
 		
-    def findOne(self, collection, dict_fields=None, projection=None):
-        return self.client[self.database][collection].findOne(dict_fields, projection)
+    def find_one(self, collection, dict_fields=None, projection=None):
+        return self.client[self.database][collection].find_one(dict_fields, projection)
 
-    def deleteMany(self, collection, dict_fields):
+    def delete_many(self, collection, dict_fields):
         # This will delete from all fields which match the parameter!!
-        results = self.client[self.database][collection].deleteMany(dict_fields)
+        results = self.client[self.database][collection].delete_many(dict_fields)
