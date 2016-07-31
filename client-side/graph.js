@@ -94,7 +94,7 @@ class Node {
 		this.shownName = shownName;
 		this.edges = new Set();
 
-		this.chosen = false; //track whether this node is selected
+		this.selected = false; //track whether this node is selected
 		this.found = false; // 1 if in current search results. 0 otherwise
 
 		this.xstart = 0; //root location
@@ -103,6 +103,13 @@ class Node {
 		this.ypos = 0;
 
 		this.sendToLimbo();	// store object in limbo (not visible)
+		
+		// Add click events to the element
+		this.clickFlag = 0; // used to keep track of clicks vs dbl clicks
+		this.element.click(this.clicks.bind(this));
+		// Allow node to be dragged and dropped
+		this.element.attr("draggable", true)
+		
 	}
 
 	asDict() {
@@ -121,10 +128,28 @@ class Node {
 		this.element.attr("id", this.id);
 		this.updateElement();
 	}
+	
+	// Update element appearance based on whether it is selected or not
+	set selected(TF) {
+		this.updateSelection(TF);
+	}
+	updateSelection(TF) {
+		this._selected = TF;
+		if (TF) { // selected
+			this.element.addClass("node_select");
+			this.element.removeClass("node_unselect");
+		} else {
+			this.element.addClass("node_unselect");
+			this.element.removeClass("node_select");
+		}
+	}
 
 	// Getters
 	get shownName() {
 		return this._shownName
+	}
+	get selected() {
+		return this._selected
 	}
 	get name() {
 		return nameTrim(this.shownName)
@@ -143,7 +168,7 @@ class Node {
 
 	// put node in limbo (hidden from view)
 	sendToLimbo() {
-		this.chosen = false;
+		this.selected = false;
 		this.found = false;
 		$("#limbo").append(this.element);
 	}
@@ -163,7 +188,28 @@ class Node {
 		this.element.css("left", this.xpos - this.hrad);
 		this.element.css("top", this.ypos - this.vrad);
 	}
-
+	
+	// Events
+	clicks(event) { // Distinguish between single and double clicks
+		this.clickFlag++;
+		if (this.clickFlag === 1) {
+			setTimeout(function() {
+				if (this.clickFlag === 1){
+					this.singleClick(event)
+				}
+				else {
+					this.doubleClick(event)
+				}
+				this.clickFlag = 0;
+			}.bind(this), 200) // ms delay to qualify as a double click
+		}
+	}
+	singleClick(event) {
+		this.selected = !this.selected;
+	}
+	doubleClick(event) {
+		
+	}
 
 }
 
@@ -171,29 +217,58 @@ class MealNode extends Node {
 	// Define a subclass of node specific to meals
 	constructor(shownName) {
 		super(shownName, 'meal');
-		this.element.addClass("meal_text word_text");
+		this.element.addClass("word_text");
 
 		this.inMenu = false; // store whether meal node is in the menu or not
 	}
 
+	
+	// setters
+	set selected(TF) {
+		this.updateSelection(TF)
+		if (this.selected) {
+			// make this selected in the recipe panel
+			recipe.selectMeal(this)
+		}
+	}
+	// getters
+	get selected() {
+		return this._selected
+	}
+				
 	// add meal to search results
 	addToMealResults() {
 		this.found = true;
 		this.inMenu = false;
 
 		$("#search_results").append(this.element);
-		this.element.removeClass("meal_onMenu_text");
-		this.element.addClass("meal_text");
+		this.element.removeClass("meal_onMenu");
+		this.element.addClass("meal_search");
 	}
 
 	// Add meal to menu
 	addToMenu() {
 		this.inMenu = true;
-		this.chosen = false;
+		this.selected = false;
 
 		$("#menuField").append(this.element);
-		this.element.addClass("meal_onMenu_text");
-		this.element.removeClass("meal_text");
+		this.element.removeClass("meal_search");
+		this.element.addClass("meal_onMenu");
+	}
+	sendToLimbo() {
+		this.inMenu = false;
+		super.sendToLimbo()
+		this.element.removeClass("meal_onMenu meal_search")
+	}
+	
+	// Events
+	doubleClick(event) {
+		if (this.inMenu === false) { // Transfer to the menu
+			this.addToMenu()
+		} else { // Remove from menu; relaunch search in case meal is in results
+			this.sendToLimbo()
+			searchArea.launchSearch()
+		}
 	}
 }
 
@@ -205,16 +280,15 @@ class IngrNode extends Node {
 		super(shownName, 'ingr');
 		this.quantity = 0;
 
-		this.element.addClass("ingr_text word_text");
+		this.element.addClass("word_text");
 	}
 
 	// Add ingr to grocery list
 	addToGroceryList() {
-		this.chosen = 0;
+		this.selected = false;
 
 		$("#groceryField").append(this.element);
-		this.element.removeClass("ingr_onMenu_text");
-		this.element.addClass("ingr_text");
+		this.element.addClass("ingr_onMenu");
 	}
 
 	//update innerHTML and dimensions (overwrite superclass method)
@@ -230,7 +304,10 @@ class IngrNode extends Node {
 		this.hrad = this.element.width() / 2;  //vertical radius
 		this.vrad = this.element.height() / 2;  //horizontal radius
 	}
-
+	sendToLimbo() {
+		super.sendToLimbo()
+		this.element.removeClass("ingr_onMenu")
+	}
 }
 
 class TagNode extends Node {

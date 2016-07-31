@@ -103,6 +103,12 @@ class RecipeArea {
 		return this.graph.getNodeByID("meal", name)
 	}
 
+	// Manually choose a meal to be selected
+	selectMeal(node) {
+		$('#meal_input').val(node.shownName)
+		this.search("meal", node.shownName)
+	}
+	
 	////////// Recipe Display Functions
 
 	clearDisplay() {

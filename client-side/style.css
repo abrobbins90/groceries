@@ -271,28 +271,24 @@
 
 /* Search Results */
 #search_results {
+	padding: 2px;
 	flex: 1 0 200px;
 	display: flex;
 	flex-direction: column;
-	align-items: left;
+	align-items: flex-start;
 	flex-wrap: wrap;
 }
-#search_results > div {
-	margin: 3px;
-}
 
 
-
-
-/***** Meal/ingr List Panel *****/
+/***** Menu/ingr List Panel *****/
 
 /* Menu display area: includes meals and ingr lists */
 #menu_area {
-	font-family: "Arial";
 	flex: 5 0 300px;
 	flex-basis: 300px;
 	background-color: #58F; /*55F*/
 	color: #FFFFFF;
+	
 	display: flex;
 	flex-direction: column;
 }
@@ -308,9 +304,28 @@
 	height: 32px;
 	line-height: 200%;
 	background-color: #1626FF;
+	font-family: "Arial";
 	color: #EEF;
 	text-align: center;
 }
+
+#menuField {
+	padding: 2px;
+	
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	align-items: flex-start;
+}
+#groceryField {
+	padding: 2px;
+	
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	align-items: flex-start;
+}
+
 
 /* print button */
 #print_button {
@@ -351,6 +366,37 @@
 #clearMeals {
 	top: 0px;
 	right: 0px;
+}
+
+
+
+
+/***** Nodes *****/
+
+.word_text { /* All node elements */
+	cursor: pointer;
+	user-select: none;
+	margin: 1px;
+}
+.node_unselect { /* Any nodes currently selected */
+	padding: 3px;
+	border: 0px;
+}
+.node_select { /* Any nodes currently selected */
+	padding: 1px;
+	border: 2px solid white;
+	border-radius: 4px;
+}
+
+.meal_search { /* Meals in the search box */
+	
+}
+.meal_onMenu { /* Meals on the menu */
+	
+}
+
+.ingr_onMenu { /* Ingredient in the menu */
+	
 }
 
 

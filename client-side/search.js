@@ -84,17 +84,23 @@ class SearchArea {
 		var mealNodes = graph.getNodesByID_partial("meal", "")
 		if (searchStr === "") {
 			for (let i in mealNodes) {
-				mealNodes[i].addToMealResults();
+				if (!mealNodes[i].inMenu) {
+					mealNodes[i].addToMealResults();
+				}
 			}
 		}
 		else { // Otherwise, clear all then show search results
 			for (let i in mealNodes) {
-				mealNodes[i].sendToLimbo();
+				if (!mealNodes[i].inMenu) {
+					mealNodes[i].sendToLimbo();
+				}
 			}
 
 			var nodeList = graph.getNodesByID_partial("meal", searchStr)
 			for (let i in nodeList) {
-				nodeList[i].addToMealResults();
+				if (!nodeList[i].inMenu) {
+					nodeList[i].addToMealResults();
+				}
 			}
 		}
 
