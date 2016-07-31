@@ -295,13 +295,19 @@
 
 #mealChoices {
 	flex: 1 0 100px;
+	
+	display: flex;
+	flex-direction: column;
 }
 #groceryList {
 	flex: 2 0 300px;
+	
+	display: flex;
+	flex-direction: column;
 }
 
 .mcTitle {
-	height: 32px;
+	flex: 0 0 32px;
 	line-height: 200%;
 	background-color: #1626FF;
 	font-family: "Arial";
@@ -310,6 +316,7 @@
 }
 
 #menuField {
+	flex: 1 0 100px;
 	padding: 2px;
 	
 	display: flex;
@@ -318,6 +325,7 @@
 	align-items: flex-start;
 }
 #groceryField {
+	flex: 1 0 100px;
 	padding: 2px;
 	
 	display: flex;

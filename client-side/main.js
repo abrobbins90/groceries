@@ -51,7 +51,8 @@ function initTriggers() {
 		recipe.keyPress(key, type, shownName)
 	})
 
-	/* search area */
+	
+	/***** search area *****/
 	$('.Tab').click(function(){
 		searchArea.switchTab(this)
 	})
@@ -59,7 +60,33 @@ function initTriggers() {
 		searchArea.launchSearch()
 	})
 
-	/* grocery area */
+	$('#search_results').on("dragover", function(event){
+		event.preventDefault();
+		event.originalEvent.dataTransfer.dropEffect = "move";
+	})
+	$('#search_results').on("drop", function(event){
+		event.preventDefault();
+		let id = event.originalEvent.dataTransfer.getData("text");
+		let node = graph.getNodeById(id);
+		node.sendToLimbo()
+		searchArea.launchSearch()
+	})
+	
+	
+	
+	
+	/***** grocery area *****/
+	$('#menuField').on("dragover", function(event){
+		event.preventDefault();
+		event.originalEvent.dataTransfer.dropEffect = "move";
+	})
+	$('#menuField').on("drop", function(event){
+		event.preventDefault();
+		let id = event.originalEvent.dataTransfer.getData("text");
+		let node = graph.getNodeById(id);
+		node.addToMenu()
+	})
+	
 	$('#print_button').click(function(){
 		groceryArea.print()
 	})

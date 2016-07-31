@@ -9,7 +9,7 @@ class Graph {
 	// Add Nodes
 	addNode(type, shownName) {
 		// Check if node exists already
-		var node = this.getNodeByID(type, nameTrim(shownName))
+		var node = this.getNodeById(type + "_" + nameTrim(shownName))
 		if( node ) return node
 
 		if (type === "meal") node = new MealNode(shownName)
@@ -39,9 +39,9 @@ class Graph {
 	}
 
 	// Search a node by name
-	getNodeByID(type, name) {
+	getNodeById(id) {
 		for (let node of this.nodes) {
-			if( node.id === type + "_" + name ) return node
+			if( node.id === id ) return node
 		}
 		return false // not found
 	}
@@ -95,7 +95,6 @@ class Node {
 		this.edges = new Set();
 
 		this.selected = false; //track whether this node is selected
-		this.found = false; // 1 if in current search results. 0 otherwise
 
 		this.xstart = 0; //root location
 		this.ystart = 0;
@@ -106,10 +105,8 @@ class Node {
 		
 		// Add click events to the element
 		this.clickFlag = 0; // used to keep track of clicks vs dbl clicks
-		this.element.click(this.clicks.bind(this));
-		// Allow node to be dragged and dropped
-		this.element.attr("draggable", true)
-		
+		this.element.click(this.click.bind(this));
+
 	}
 
 	asDict() {
@@ -169,7 +166,6 @@ class Node {
 	// put node in limbo (hidden from view)
 	sendToLimbo() {
 		this.selected = false;
-		this.found = false;
 		$("#limbo").append(this.element);
 	}
 	// Delete element
@@ -190,7 +186,7 @@ class Node {
 	}
 	
 	// Events
-	clicks(event) { // Distinguish between single and double clicks
+	click(event) { // Distinguish between single and double clicks
 		this.clickFlag++;
 		if (this.clickFlag === 1) {
 			setTimeout(function() {
@@ -201,7 +197,7 @@ class Node {
 					this.doubleClick(event)
 				}
 				this.clickFlag = 0;
-			}.bind(this), 200) // ms delay to qualify as a double click
+			}.bind(this), 300) // ms delay to qualify as a double click
 		}
 	}
 	singleClick(event) {
@@ -220,6 +216,13 @@ class MealNode extends Node {
 		this.element.addClass("word_text");
 
 		this.inMenu = false; // store whether meal node is in the menu or not
+		this.inResults = false; // store whether meal node is in a search
+		
+		// Allow node to be dragged and dropped
+		this.element.attr("draggable", true)
+		this.element.on("dragstart", function(event) {
+			event.originalEvent.dataTransfer.setData("text", event.target.id);
+		})
 	}
 
 	
@@ -238,7 +241,7 @@ class MealNode extends Node {
 				
 	// add meal to search results
 	addToMealResults() {
-		this.found = true;
+		this.inResults = true;
 		this.inMenu = false;
 
 		$("#search_results").append(this.element);
@@ -248,6 +251,7 @@ class MealNode extends Node {
 
 	// Add meal to menu
 	addToMenu() {
+		this.inResults = false;
 		this.inMenu = true;
 		this.selected = false;
 
@@ -257,6 +261,7 @@ class MealNode extends Node {
 	}
 	sendToLimbo() {
 		this.inMenu = false;
+		this.inResults = false;
 		super.sendToLimbo()
 		this.element.removeClass("meal_onMenu meal_search")
 	}

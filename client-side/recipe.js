@@ -43,7 +43,7 @@ class RecipeArea {
 		else {
 			// Otherwise, check to see if the node exists. If so, mark as selected
 			let name = nameTrim(shownName)
-			let node = this.graph.getNodeByID(type, name)
+			let node = this.graph.getNodeById(type + "_" + name)
 			if( node ) this.input[type].addClass("node_selected")
 			else this.input[type].removeClass("node_selected")
 		}
@@ -79,7 +79,7 @@ class RecipeArea {
 
 	// [ACTION: Remove node edge] Remove an ingr or tag from a menu
 	removeEdge(type, name) {
-		let node = this.graph.getNodeByID(type, name)
+		let node = this.graph.getNodeById(type + "_" + name)
 		if( !node || !this.selectedMeal ){
 			throw 'No such node.'
 			return false
@@ -100,7 +100,7 @@ class RecipeArea {
 		if( !name ) return false
 
 		// Check what meal node is referenced in the meal input box
-		return this.graph.getNodeByID("meal", name)
+		return this.graph.getNodeById("meal_" + name)
 	}
 
 	// Manually choose a meal to be selected
