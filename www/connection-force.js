@@ -4,20 +4,11 @@
 
 //editItem should be here
 // item class; stores item name, associated keywords, and representative object (aka itemBox aka ibox)
-var itemList = []
-function itemObject(node) {
-	this.node = node
-
-	this.name = function(){
-		return this.node.shownName
-	}
-
-	this.connections=new Array();
-
-
-	this.chosen=0;
-	this.found=0;
-	this.ibox=new itemBox(this.node); // for the ANIMATION
+function itemObject(node) { // CLASS
+// MIGRATE all of this into the Node class.
+	this.chosen = 0
+	this.found = 0
+	this.ibox = new itemBox(this.node) // for the ANIMATION
 }
 
 ///////////////////////// Function to search and display items based on searched items /////////////////////////
@@ -132,10 +123,10 @@ function cf_namespace_choose(wch) {
 		itemList[editing].chosen=1;
 		itemList[editing].ibox.ID.style.opacity=.5;
 		document.getElementById("editButton").disabled=false;
-		document.getElementById("item1").value=itemList[editing].name();
+		document.getElementById("item1").value=itemList[editing].shownName;
 		var connectionNames=new Array();
 		for (var i in itemList[editing].connections) {
-			connectionNames[i]=itemList[editing].connections[i].name();
+			connectionNames[i]=itemList[editing].connections[i].shownName;
 		}
 		document.getElementById("item2").value=connectionNames.join(", ");
 	}
