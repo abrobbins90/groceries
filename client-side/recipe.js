@@ -18,8 +18,14 @@ class Input {
 class RecipeArea {
 	constructor(graph) {
 		this.graph = graph
-		this.boxes = new Boxes(this.removeEdge.bind(this))
+
+		function appendLocation(box){
+			"#" + box.node.type + "_entry"
+		}
+		this.boxes = new Boxes(appendLocation, this.removeEdge.bind(this), "menu_item_box")
+
 		this.input = new Input()
+
 		this.mode = "closed"
 	}
 
@@ -108,7 +114,7 @@ class RecipeArea {
 		$('#meal_input').val(node.shownName)
 		this.search("meal", node.shownName)
 	}
-	
+
 	////////// Recipe Display Functions
 
 	clearDisplay() {

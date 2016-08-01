@@ -16,10 +16,10 @@ class Graph {
 		else if (type === "ingr") node = new IngrNode(shownName)
 		else if (type === "tag") node = new TagNode(shownName)
 		this.nodes.add(node)
-	
+
 		// Update server
 		server.send('add-node', node.asDict())
-	
+
 		return node
 	}
 
@@ -59,8 +59,6 @@ class Graph {
 		return nodeList
 	}
 
-
-
 	// Deal with edges (edges)
 	addEdge(node1, node2) {
 		node1.edges.add(node2);
@@ -78,6 +76,21 @@ class Graph {
 		if (node1.edges.has(node2)) { return true }
 		return false
 	}
+
+	// stuff for connection-force
+	get foundNodes() {
+		let found_node_list = []
+		for( let node of this.nodes )if( node.found ){
+			found_node_list.push(node)
+		}
+		return found_node_list
+	}
+	clearFoundNodes() {
+		for( let node of this.nodes ){
+			node.found = false
+		}
+	}
+
 
 }
 
@@ -102,11 +115,15 @@ class Node {
 		this.ypos = 0;
 
 		this.sendToLimbo();	// store object in limbo (not visible)
-		
+
 		// Add click events to the element
 		this.clickFlag = 0; // used to keep track of clicks vs dbl clicks
 		this.element.click(this.click.bind(this));
 
+		// These are for connection-force.js animation
+		this.chosen = false
+		this.found = false
+		this.ibox = new ItemBox(this) // for the ANIMATION
 	}
 
 	asDict() {
@@ -125,7 +142,7 @@ class Node {
 		this.element.attr("id", this.id);
 		this.updateElement();
 	}
-	
+
 	// Update element appearance based on whether it is selected or not
 	set selected(TF) {
 		this.updateSelection(TF);
@@ -184,7 +201,7 @@ class Node {
 		this.element.css("left", this.xpos - this.hrad);
 		this.element.css("top", this.ypos - this.vrad);
 	}
-	
+
 	// Events
 	click(event) { // Distinguish between single and double clicks
 		this.clickFlag++;
@@ -204,7 +221,7 @@ class Node {
 		this.selected = !this.selected;
 	}
 	doubleClick(event) {
-		
+
 	}
 
 }
@@ -217,7 +234,7 @@ class MealNode extends Node {
 
 		this.inMenu = false; // store whether meal node is in the menu or not
 		this.inResults = false; // store whether meal node is in a search
-		
+
 		// Allow node to be dragged and dropped
 		this.element.attr("draggable", true)
 		this.element.on("dragstart", function(event) {
@@ -225,7 +242,7 @@ class MealNode extends Node {
 		})
 	}
 
-	
+
 	// setters
 	set selected(TF) {
 		this.updateSelection(TF)
@@ -238,7 +255,7 @@ class MealNode extends Node {
 	get selected() {
 		return this._selected
 	}
-				
+
 	// add meal to search results
 	addToMealResults() {
 		this.inResults = true;
@@ -265,7 +282,7 @@ class MealNode extends Node {
 		super.sendToLimbo()
 		this.element.removeClass("meal_onMenu meal_search")
 	}
-	
+
 	// Events
 	doubleClick(event) {
 		if (this.inMenu === false) { // Transfer to the menu

@@ -1,11 +1,15 @@
 class Boxes {
-	constructor(destructAction=function(){}) {
+	constructor(appendLocation, destructAction=function(){}, className) {
+		this.appendLocation = appendLocation
 		this.destructAction = destructAction
+		this.className = className
 		this.boxes = []
 	}
 
 	add(node) {
-		this.boxes.push(new Box(node, this.destructAction))
+		this.boxes.push(
+			new Box(node, this.appendLocation, this.destructAction, this.className)
+		)
 	}
 
 	toPrintableString() {
@@ -32,20 +36,23 @@ class Boxes {
 }
 
 class Box {
-	constructor(node, destructAction) {
+	constructor(node, appendLocation, destructAction, className) {
 		this.node = node
 		this.destructAction = destructAction // a function to perform on removeButton.click
-		this.$el = this.constructElement()
+		this.$el = this.constructElement(className)
 		// attach element to DOM
-		$("#" + this.node.type + "_entry").append(this.$el)
+		if( typeof appendLocation === "function" ){
+			appendLocation = appendLocation(this)
+		}
+		$(appendLocation).append(this.$el)
 	}
 
-	constructElement() {
+	constructElement(className="") {
 		return $("<div/>")
 			.attr("id", this.id)
 			.append(this.constructContents())
 			.append(this.constructRemoveButton())
-			.addClass("menu_item_box")
+			.addClass(className)
 			.addClass(this.node.type + "_box")
 	}
 
