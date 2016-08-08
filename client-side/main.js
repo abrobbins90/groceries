@@ -20,17 +20,17 @@ function initGlobals() {
 function initTriggers() {
 	/* recipe area */
 	$('#create_meal_button').click(function(){
-		let shownName = $('#meal_input').val()
-		// Before proceeding, edit clean up shownName
-		shownName = cleanName(shownName);
-		$('#meal_input').val(shownName); // Update in case it changed
+		let inName = $('#meal_input').val();
+		let node = recipe.createNode('meal', inName);
 		
-		recipe.createNode('meal', shownName)
+		if (node) {
+			$('#meal_input').val(node.shownName) // Update in case it changed
+		}
 	})
 	$('#remove_meal_button').click(function(){
 		recipe.removeMeal()
 	})
-	$('.node_input').keypress(function(event) {
+	$('.node_input').keypress(function(event) { // instantaneous processing of input names
 		let key = event.which;
 		let character = String.fromCharCode(key);
 		let allowedKeys = [13] // special keys
@@ -41,14 +41,14 @@ function initTriggers() {
 		else return false
 	})
 	$('.node_input').keyup(function(event){
-		let type = $(this).attr("data-type")
-		let shownName = $(this).val()
-		// Before proceeding, edit clean up shownName
-		shownName = cleanName(shownName);
-		$(this).val(shownName); // Update in case it changed
-		
 		let key = event.which;
-		recipe.keyPress(key, type, shownName)
+		let type = $(this).attr("data-type")
+		let inName = $(this).val()
+		let node = recipe.keyPress(key, type, inName)
+		
+		if (node) {
+			$(this).val(node.shownName); // Update in case it changed
+		}
 	})
 
 	

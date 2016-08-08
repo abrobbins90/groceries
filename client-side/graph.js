@@ -8,6 +8,9 @@ class Graph {
 
 	// Add Nodes
 	addNode(type, shownName) {
+		// Clean up input
+		shownName = cleanName(shownName);
+		
 		// Check if node exists already
 		var node = this.getNodeById(type + "_" + nameTrim(shownName))
 		if( node ) return node

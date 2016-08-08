@@ -25,11 +25,12 @@ class RecipeArea {
 
 	keyPress(key, type, shownName) {
 		if (key === 13) { // Enter Button
-			this.createNode(type, shownName)
+			return this.createNode(type, shownName)
 		}
 		else {
 			this.search(type, shownName)
 		}
+		return false
 	}
 
 	////////////////////////////// Node/Edge Creation/Deletion Functions
