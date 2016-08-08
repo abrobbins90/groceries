@@ -58,6 +58,12 @@ class RecipeArea {
 
 		if( type !== 'meal' ){
 			this.graph.addEdge(this.selectedMeal, node)
+			// if the selected meal is on the menu, and it's being added to right now,
+			// update the grocery list
+			if (groceryArea.menuList.has(this.selectedMeal)) {
+				groceryArea.getGroceryList();
+			}
+			
 		}
 
 		this.writeDisplay()

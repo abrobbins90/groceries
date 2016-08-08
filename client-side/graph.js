@@ -237,9 +237,18 @@ class MealNode extends Node {
 			recipe.selectMeal(this)
 		}
 	}
+	set inMenu(val) {
+		this._inMenu = val;
+		// If something is being moved in or out of the menu, update grocery list
+		groceryArea.getMenu()
+	}
+	
 	// getters
 	get selected() {
 		return this._selected
+	}
+	get inMenu() {
+		return this._inMenu
 	}
 				
 	// add meal to search results
@@ -303,7 +312,7 @@ class IngrNode extends Node {
 	updateElement() {
 		if (this.quantity > 1) {
 			// if multiple entries, bold and include x#
-			this.element.html(this._shownName + "<b>" + " x" + quan + "</b>");
+			this.element.html(this._shownName + "<b>" + " x" + this.quantity + "</b>");
 		}
 		else {
 			this.element.html(this._shownName);

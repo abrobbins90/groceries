@@ -83,23 +83,23 @@ class SearchArea {
 		// If they leave it blank, show all meals
 		var mealNodes = graph.getNodesByID_partial("meal", "")
 		if (searchStr === "") {
-			for (let i in mealNodes) {
-				if (!mealNodes[i].inMenu) {
-					mealNodes[i].addToMealResults();
+			for (let meal of mealNodes) {
+				if (!meal.inMenu) {
+					meal.addToMealResults();
 				}
 			}
 		}
 		else { // Otherwise, clear all then show search results
-			for (let i in mealNodes) {
-				if (!mealNodes[i].inMenu) {
-					mealNodes[i].sendToLimbo();
+			for (let meal of mealNodes) {
+				if (!meal.inMenu) {
+					meal.sendToLimbo();
 				}
 			}
 
 			var nodeList = graph.getNodesByID_partial("meal", searchStr)
-			for (let i in nodeList) {
-				if (!nodeList[i].inMenu) {
-					nodeList[i].addToMealResults();
+			for (let meal of nodeList) {
+				if (!mode.inMenu) {
+					meal.addToMealResults();
 				}
 			}
 		}
