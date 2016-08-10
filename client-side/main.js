@@ -12,7 +12,7 @@ function initGlobals() {
 	graph = new Graph();
 	recipe = new RecipeArea(graph);
 	searchArea = new SearchArea(graph);
-	groceryArea = new GroceryListArea();
+	groceryArea = new GroceryListArea(graph);
 	server = new ServerTalk();
 	socket = new Socket(server)
 }
@@ -20,17 +20,17 @@ function initGlobals() {
 function initTriggers() {
 	/* recipe area */
 	$('#create_meal_button').click(function(){
-		let shownName = $('#meal_input').val()
-		// Before proceeding, edit clean up shownName
-		shownName = cleanName(shownName);
-		$('#meal_input').val(shownName); // Update in case it changed
+		let inName = $('#meal_input').val();
+		let node = recipe.createNode('meal', inName);
 		
-		recipe.createNode('meal', shownName)
+		if (node) {
+			$('#meal_input').val(node.shownName) // Update in case it changed
+		}
 	})
 	$('#remove_meal_button').click(function(){
 		recipe.removeMeal()
 	})
-	$('.node_input').keypress(function(event) {
+	$('.node_input').keypress(function(event) { // instantaneous processing of input names
 		let key = event.which;
 		let character = String.fromCharCode(key);
 		let allowedKeys = [13] // special keys
@@ -41,14 +41,11 @@ function initTriggers() {
 		else return false
 	})
 	$('.node_input').keyup(function(event){
-		let type = $(this).attr("data-type")
-		let shownName = $(this).val()
-		// Before proceeding, edit clean up shownName
-		shownName = cleanName(shownName);
-		$(this).val(shownName); // Update in case it changed
-		
 		let key = event.which;
-		recipe.keyPress(key, type, shownName)
+		let type = $(this).attr("data-type")
+		let inName = $(this).val()
+		recipe.keyPress(key, type, inName)
+
 	})
 
 	
@@ -114,104 +111,7 @@ function initTriggers() {
 
 ///////////////////////// Function to search and display items based on searched items /////////////////////////
 
-var foundItemList=new Array();
-function launchSearch() { // begin ingr(0) or meal(1) search
 
-	foundItemList=new Array();
-	for (var i in itemList){ //reset all items to not found
-		itemList[i].found=0;
-	}
-	if (currentTab==0) {foundItemList=ingrSearchFunc();}
-	else if (currentTab==2) {foundItemList=mealSearch();}
-
-	positionResults(foundItemList,1); //calculate positions based on search
-	transferButtons();
-}
-
-//search given item list (iList) for given specifications (type and spec)
-function itemSearch(iList,type,spec,posneg) {
-	var newList=new Array();
-	for (var i in iList) {
-		var flag=true;
-		//if this item is of the wrong type, fail
-		if (iList[i].type!=type ||iList[i].inMenu==1) {flag=false;}
-		//if there is a spec, it's positive, and this item isn't connected to the spec, fail
-		if (spec!=-1 && posneg==1 && iList[i].connections.indexOf(spec)==-1) {flag=false}
-		//if there is a spec, it's negative, and this item is connected to the spec, fail
-		else if (spec!=-1 && posneg==-1 && iList[i].connections.indexOf(spec)!=-1) {flag=false;}
-
-		//if none of the above were failed, keep this item
-		if (flag) {newList.push(iList[i]);}
-	}
-	return newList
-}
-
-//ingr search
-function ingrSearchFunc() {
-
-	var searchedItems
-	searchedItems=document.getElementById("ingrSearch").value;
-
-	var foundIngrList=new Array(); //list of found items
-	numberFound=0; //number of items found so far
-
-	 //if search query is "all", show all
-	if (searchedItems.replace(/\s/g,"")!="") {
-		if(searchedItems.toLowerCase()=="all") {
-			foundIngrList=itemSearch(itemList,1,-1,1);
-			numberFound=foundIngrList.length;
-		}
-		else {//convert to search query
-			//get rid of trailing AND or OR if there is nothing after:
-			var searchQuery=searchedItems.replace(/(a|an|and|o|or)\s*$/ig,"");
-			//replace AND, &&&&&& and OR, |||||||with && and ||
-			searchQuery=searchQuery.replace(/\band\b|&{2,}/ig,"&&");
-			searchQuery=searchQuery.replace(/\bor\b|\|{2,}/ig,"||");
-			//replace && ||||with &&, etc
-			searchQuery=searchQuery.replace(/&&(\s*(&&|\|\|))+/ig,"&&");
-			searchQuery=searchQuery.replace(/\|\|(\s*(&&|\|\|))+/ig,"||");
-			//replace searchQuery with function to check if it is connected to a given item
-			searchQuery=searchQuery.replace(/(^|\&&|\|\||\()((?:[^(](?!$|\)|&&|\|\|))*.(?=$|\)|&&|\|\|))/g,"$1isConnected(\"$2\",temp)");
-
-			//cycle through all items and compare to search criteria
-			var possMealList=itemSearch(itemList,1,-1,1);
-			for (var i in possMealList) {
-				temp=possMealList[i]; //required for searchQuery
-				if (eval(searchQuery) && possMealList[i].type==1) { //if it meets search criteria and it is a menu item
-					possMealList[i].found=1;
-					numberFound=foundIngrList.push(possMealList[i]);
-				}
-			}
-		}
-	}
-	return foundIngrList
-}
-
-//meal lookup
-function mealSearch() {
-	var searchItem=removeExtra(document.getElementById("mealLookup").value);
-	var foundMealList=new Array(); //list of found items
-	numberFound=0; //number of items found so far
-
-	if (searchItem.replace(/\s/g,"")!="") { //only proceed if it is not empty
-		if (searchItem.toLowerCase()=="all") { //if they type all, show all meals
-			foundMealList=itemSearch(itemList,1,-1,1);
-			numberFound=foundMealList.length;
-		}
-		else {
-			var mealList=itemSearch(itemList,1,-1,1);//get list of meals
-
-			var regex=new RegExp(searchItem,"i")
-			for (var i in mealList) {
-				if (regex.test(mealList[i].name)) {
-					mealList[i].found=1;
-					numberFound=foundMealList.push(mealList[i]);
-				}
-			}
-		}
-	}
-	return foundMealList
-}
 
 //random menu generator
 function generate() {
@@ -331,67 +231,6 @@ function removeMaxes(possibleMenuItems,specList) {
 }
 
 
-//Calculate position of items in results block given list of items and which results section
-function positionResults(itemDisplay,section) {
-	//DRAWING
-	//reset all objects first to offscreen
-	for (var i in itemList) {
-		var flag=false; //check if this section applies to this item. if so, reset
-		if (section==1 && itemList[i].type==1 && itemList[i].inMenu==0) {flag=true;}
-		else if (section==2 && itemList[i].type==1 && itemList[i].inMenu==1) {flag=true;}
-		else if (section==3 && itemList[i].type==2) {flag=true;}
-
-		if (flag) {
-			itemList[i].xstart=-500;
-			itemList[i].ystart=-500;
-		}
-	}
-	//update start position of all found objects
-	var curTop=0;
-	var curLeft=0;
-	var maxRight=0;
-	if (section==1) { //menu item search area
-		var bottom=document.getElementById("Results").clientHeight;}
-	else if (section==2) { //showing ingrs from given menu items
-		var bottom=document.getElementById("mealField").clientHeight;}
-	else if (section==3) { //showing ingrs from given menu items
-		var bottom=document.getElementById("groceryField").clientHeight;}
-
-	for (var i in itemDisplay) {
-		itemVrad=itemDisplay[i].vrad;
-		itemHrad=itemDisplay[i].hrad;
-		if (curTop+2*itemVrad>bottom) {curTop=0;
-			curLeft=maxRight+5;
-		}
-		itemDisplay[i].xstart=curLeft+itemHrad;
-		itemDisplay[i].ystart=curTop+itemVrad;
-		if (curLeft+2*itemHrad>maxRight) {
-			maxRight=curLeft+2*itemHrad;
-		}
-		curTop+=2*itemVrad;
-	}
-
-	for (var i in itemList){ //if item is removed from search, chosen=0
-		itemList[i].chosen*=itemList[i].found;
-		itemList[i].element.style.opacity=1-itemList[i].chosen*.5;
-	}
-	//if an item is removed from view or for some reason unchosen, reset editing conditions
-	if (editing!=-1 && itemList[editing].chosen==0) {
-		editing=-1;
-		document.getElementById("editButton").disabled=true;
-		document.getElementById("submitButton").disabled=false;
-		document.getElementById("item1").value='';
-		document.getElementById("item2").value='';
-		document.getElementById("item3").value='';
-	}
-	drawAll();//update positions
-}
-//Update all item locations
-function drawAll() {
-	for (var i in itemList) {
-		itemList[i].toStart();
-	}
-}
 
 ///////Show Chosen Menu Items and Grocery List///////
 

@@ -8,7 +8,7 @@ function nameTrim(name) {
 	name = name.toLowerCase(); // make lowercase
 	name = name.trim(); // remove spaces from the ends
 	name = name.replace(/\s+/g, '_'); // Replace spaces with underscores
-	name = name.replace(/\W/g, ''); // remove anything but letters, numbers, and _
+	name = cleanName(name); // Also, just apply clean name as well
 
 	return name
 }

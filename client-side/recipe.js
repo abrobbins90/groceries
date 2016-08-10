@@ -31,11 +31,12 @@ class RecipeArea {
 
 	keyPress(key, type, shownName) {
 		if (key === 13) { // Enter Button
-			this.createNode(type, shownName)
+			return this.createNode(type, shownName)
 		}
 		else {
 			this.search(type, shownName)
 		}
+		return false
 	}
 
 	////////////////////////////// Node/Edge Creation/Deletion Functions
@@ -63,6 +64,12 @@ class RecipeArea {
 
 		if( type !== 'meal' ){
 			this.graph.addEdge(this.selectedMeal, node)
+			// if the selected meal is on the menu, and it's being added to right now,
+			// update the grocery list
+			if (groceryArea.menuList.has(this.selectedMeal)) {
+				groceryArea.getGroceryList();
+			}
+			
 		}
 
 		this.writeDisplay()
