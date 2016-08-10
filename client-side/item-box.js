@@ -27,8 +27,8 @@ class ItemBox extends Box {
 		this.rooted = rooted // is this object rooted to start?
 
 		this.level = 1 //Level of object (all are level 1 for now)
-		this.hrad = this.ibox.$el.get(0).clientWidth / 2 //initial width
-		this.vrad = this.ibox.$el.get(0).clientHeight / 2
+		this.hrad = this.$el.get(0).clientWidth / 2 //initial width
+		this.vrad = this.$el.get(0).clientHeight / 2
 	}
 
 	//////////////////////////////////////////////
@@ -154,7 +154,10 @@ class ItemBox extends Box {
 
 		// apply acceleration to velocity
 		let totalAcc = pythag(this.xacc,this.yacc)
-		if (totalAcc>maxAcc) {this.xacc *= maxAcc/totalAccthis.yacc *= maxAcc/totalAcc}
+		if (totalAcc>maxAcc) {
+			this.xacc *= maxAcc/totalAcc
+			this.yacc *= maxAcc/totalAcc
+		}
 		this.xvel += this.xacc*sp
 		this.yvel += this.yacc*sp
 
@@ -164,17 +167,17 @@ class ItemBox extends Box {
 		else {this.xvel *= airresist
 			this.yvel *= airresist}
 
-		if (pythag(this.xvel,this.yvel)> = maxvel) {
+		if (pythag(this.xvel,this.yvel) >= maxvel) {
 			this.xvel *= velresist
 			this.yvel *= velresist
 		}
-		if (pythag(this.xvel,this.yvel)> = maxvel*maxmax) {
-			this.xvel/ = maxmax
-			this.yvel/ = maxmax
+		if (pythag(this.xvel,this.yvel) >= maxvel*maxmax) {
+			this.xvel /= maxmax
+			this.yvel /= maxmax
 		}
 
 		// mousefreeze?
-		if (mousefreeze === 1 && this.mousedist< = mfreezerad && displaymethod === 2) {
+		if (mousefreeze === 1 && this.mousedist <= mfreezerad && displaymethod === 2) {
 			this.xvel = 0
 			this.yvel = 0
 		}
@@ -191,33 +194,33 @@ class ItemBox extends Box {
 
 		//Horizontal
 		for (let i in hWall) {
-			if (hWall[i].side === 1 && rP> = hWall[i].lBound && lP< = hWall[i].rBound && tP-this.yvel*sp> = hWall[i].yLine && hWall[i].yLine> = tP) { //top
+			if (hWall[i].side === 1 && rP >= hWall[i].lBound && lP <= hWall[i].rBound && tP-this.yvel*sp >= hWall[i].yLine && hWall[i].yLine >= tP) { //top
 				this.ypos += 2*(hWall[i].yLine-tP)
 				this.yvel = Math.abs(this.yvel)
 			}
-			else if (hWall[i].side === -1 && rP> = hWall[i].lBound && lP< = hWall[i].rBound && bP> = hWall[i].yLine && hWall[i].yLine> = bP-this.yvel*sp) { //bottom
+			else if (hWall[i].side === -1 && rP >= hWall[i].lBound && lP <= hWall[i].rBound && bP >= hWall[i].yLine && hWall[i].yLine >= bP-this.yvel*sp) { //bottom
 				this.ypos += 2*(hWall[i].yLine-bP)
 				this.yvel = -Math.abs(this.yvel)
 			}
 		}
 		//Vertical
 		for (let i in vWall) {
-			if (vWall[i].side === 1 && bP> = vWall[i].tBound && tP< = vWall[i].bBound && lP-this.xvel*sp> = vWall[i].xLine && vWall[i].xLine> = lP) { //left
+			if (vWall[i].side === 1 && bP >= vWall[i].tBound && tP <= vWall[i].bBound && lP-this.xvel*sp >= vWall[i].xLine && vWall[i].xLine >= lP) { //left
 				this.xpos += 2*(vWall[i].xLine-lP)
 				this.xvel = Math.abs(this.xvel)
 			}
-			else if (vWall[i].side === -1 && bP> = vWall[i].tBound && tP< = vWall[i].bBound && rP> = vWall[i].xLine && vWall[i].xLine> = rP-this.xvel*sp) { //right
+			else if (vWall[i].side === -1 && bP >= vWall[i].tBound && tP <= vWall[i].bBound && rP >= vWall[i].xLine && vWall[i].xLine >= rP-this.xvel*sp) { //right
 				this.xpos += 2*(vWall[i].xLine-rP)
 				this.xvel = -Math.abs(this.xvel)
 			}
 		}
 
 		//window walls
-		if (bP> = vWall[i][0] && tP< = vWall[i][1] && Math.min(lP,lP-this.xvel*sp)< = vWall[i][2] && vWall[i][2]< = Math.max(lP,lP-this.xvel*sp)) { //left
+		if (bP >= vWall[i][0] && tP <= vWall[i][1] && Math.min(lP,lP-this.xvel*sp) <= vWall[i][2] && vWall[i][2] <= Math.max(lP,lP-this.xvel*sp)) { //left
 			this.xpos += 2*(vWall[2]-lP)
 			this.xvel *= -1
 		}
-		else if (bP> = vWall[i][0] && tP< = vWall[i][1] && Math.min(rP,rP-this.xvel*sp)< = vWall[i][2] && vWall[i][2]< = Math.max(rP,rP-this.xvel*sp)) { //right
+		else if (bP >= vWall[i][0] && tP <= vWall[i][1] && Math.min(rP,rP-this.xvel*sp) <= vWall[i][2] && vWall[i][2] <= Math.max(rP,rP-this.xvel*sp)) { //right
 			this.xpos += 2*(vWall[2]-rP)
 			this.xvel *= -1
 		}
