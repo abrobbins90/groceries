@@ -17,12 +17,22 @@ class Input {
 
 class RecipeArea {
 	constructor(graph) {
+		this.name = "recipe"
 		this.graph = graph
 
 		function appendLocation(box){
 			"#" + box.node.type + "_entry"
 		}
-		this.boxes = new Boxes(appendLocation, this.removeEdge.bind(this), "menu_item_box")
+		this.closet = new Closet({
+			"appendLocation": appendLocation,
+			"className": "menu_item_box",
+			"isDraggable": false,
+			"isBoxXable": true,
+			"XAction": function(){
+				this.destruct
+				this.removeEdge.bind(this)
+			},
+		})
 
 		this.input = new Input()
 
@@ -69,7 +79,7 @@ class RecipeArea {
 			if (groceryArea.menuList.has(this.selectedMeal)) {
 				groceryArea.getGroceryList();
 			}
-			
+
 		}
 
 		this.writeDisplay()
@@ -125,13 +135,13 @@ class RecipeArea {
 	////////// Recipe Display Functions
 
 	clearDisplay() {
-		this._clearBoxes()
+		this._clearCloset()
 		if( this.mode === "open" ) this._toggleDisplay()
 		this.mode = "closed"
 	}
 
 	writeDisplay() {
-		this._clearBoxes()
+		this._clearCloset()
 		if( this.mode === "closed" ) this._toggleDisplay()
 		this.mode = "open"
 
@@ -146,15 +156,15 @@ class RecipeArea {
 		this.input.tag.toggle()
 	}
 
-	_clearBoxes() {
-		this.boxes.destructElements()
+	_clearCloset() {
+		this.closet.destructElements()
 		this.input.ingr.removeClass("node_selected").val("")
 		this.input.tag.removeClass("node_selected").val("")
 	}
 
 	_writeNeighbors() {
 		for (let node of this.selectedMeal.edges) {
-			this.boxes.add(node)
+			this.closet.add(node)
 		}
 	}
 }

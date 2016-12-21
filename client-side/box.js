@@ -1,14 +1,19 @@
-class Boxes {
-	constructor(appendLocation, destructAction=function(){}, className) {
-		this.appendLocation = appendLocation
-		this.destructAction = destructAction
-		this.className = className
+class Closet {
+	constructor(options) {
+		_.default(options, {
+			"appendLocation": undefined,
+			"className": "",
+			"isDraggable": false,
+			"isBoxXable": false,
+			"XAction": function(){},
+		})
+		this.options = options
 		this.boxes = []
 	}
 
 	add(node) {
 		this.boxes.push(
-			new Box(node, this.appendLocation, this.destructAction, this.className)
+			new Box(node, this.options)
 		)
 	}
 
@@ -27,42 +32,57 @@ class Boxes {
 		win.print()
 	}
 
+	remove(box) {
+		let index = this.boxes.indexOf(box)
+		this.boxes.splice(index, 1)
+	}
+
 	destructElements() {
 		for( let box of this.boxes ){
 			box.destructElement()
 		}
 		this.boxes = []
 	}
+
+
 }
 
 class Box {
-	constructor(node, appendLocation, destructAction, className) {
+	constructor(node, options) {
 		this.node = node
-		this.node.boxes.add(this) // so node is aware of the box and can update it
-		this.destructAction = destructAction // a function to perform on removeButton.click
-		this.$el = this.constructElement(className)
+		this.node.closet.add(this) // so node is aware of the box and can update it
+		this.destructAction = options["destructAction"] // a function to perform on XButton.click
+		this.$el = this.constructElement(options)
 		// Add click events to the element
 		this.clickFlag = 0; // used to keep track of clicks vs dbl clicks
 		this.$el.get(0).click(this.click.bind(this));
 		// attach element to DOM
+		appendLocation = options["appendLocation"]
 		if( typeof appendLocation === "function" ){
 			appendLocation = appendLocation(this)
 		}
 		$(appendLocation).append(this.$el)
-		// Allow box to be dragged and dropped (we can make this optional in the future, if there are certain boxes that we don't want to be draggable)
-		this.$el.get(0).attr("draggable", true)
-		this.$el.get(0).on("dragstart", function(event) {
-			event.originalEvent.dataTransfer.setData("text", event.target.id);
-		})
+		// Allow box to be dragged and dropped (we can make this optional in the future, if there are certain closet that we don't want to be draggable)
+
+		// but things in recipe area should not be draggable
+		alert('isDraggable ' + options["isDraggable"])
+		if( options["isDraggable"] ){
+			this.$el.get(0).attr("draggable", true)
+			this.$el.get(0).on("dragstart", function(event) {
+				event.originalEvent.dataTransfer.setData("text", event.target.id)
+			})
+		}
+		this.XAction = options["XAction"]
 	}
 
-	constructElement(className="") {
-		return $("<div/>")
+	constructElement(options) {
+		let $b = $("<div/>")
 			.attr("id", this.id)
 			.append(this.constructContents())
-			.append(this.constructRemoveButton())
-			.addClass(className)
+			.addClass(options["className"])
 			.addClass(this.node.type + "_box")
+		if( options["isBoxXable"] ) $b.append(this.constructXButton())
+		return $b
 	}
 
 	constructContents() {
@@ -72,13 +92,13 @@ class Box {
 			.addClass("box_contents")
 	}
 
-	constructRemoveButton() {
+	constructXButton() {
 		// Add button to destructAction the item if need be
 		return $("<div/>")
 			.attr("type", "button")
 			.html("&times;")
 			.addClass("rmItemButton")
-			.click(this.destruct.bind(this))
+			.click(this.Xaction.bind(this))
 	}
 
 	update() {
@@ -101,7 +121,7 @@ class Box {
 	}
 
 	get id() {
-		return "box_el_" + this.node.id
+		return "Box_el_" + "Area_" + area.name + "_Node_id_" + this.node.id
 	}
 
 	set selected(TF) {
@@ -144,7 +164,8 @@ class Box {
 	destruct() {
 		this.destructAction(this.node.type, this.node.name)
 		this.destructElement()
-		this.node.boxes.delete(this)
+		this.closet.remove(this)
+		this.node.boxes.remove(this)
 	}
 }
 

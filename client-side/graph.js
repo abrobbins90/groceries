@@ -190,24 +190,6 @@ class MealNode extends Node {
 		this.element.addClass("meal_search");
 	}
 
-	// Add meal to menu
-	addToMenu() { // same issue as above
-		this.inResults = false;
-		this.inMenu = true;
-		this.selected = false;
-
-		$("#menuField").append(this.element);
-		this.element.removeClass("meal_search");
-		this.element.addClass("meal_onMenu");
-	}
-
-	sendToLimbo() { // needs to be moved
-		this.inMenu = false;
-		this.inResults = false;
-		super.sendToLimbo()
-		this.element.removeClass("meal_onMenu meal_search")
-	}
-
 	// Events
 	// doubleClick(event) { // for now, just dragging functionality is fine
 	// 	if (this.inMenu === false) { // Transfer to the menu

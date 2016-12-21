@@ -1,20 +1,40 @@
 
 class GroceryListArea {
 	constructor(graph) {
+		this.name = "grocery"
 		this.graph = graph // graph storing all nodes
-		this.menuList = new Set() // keep track of all menu nodes
-		this.groceryList = new Set() // keep track of all ingredients on menu
+		this.menuCloset = new Closet({ // keep track of all menu nodes
+			"appendLocation": ".cssstring",
+			"className": "meal_onMenu",
+			"isDraggable": true,
+			"isBoxXable": true,
+			"XAction": dropInSearchArea,
+		})
+		this.groceryCloset = new Closet({ // keep track of all ingredients on menu
+			"appendLocation": "cssefhei",
+			"className": "meal_ingrAreaaaa",
+			"isDraggable": false,
+			"isBoxXable": true,
+			"XAction": geryOut,
+		})
+	}
+
+	// Add meal to menu
+	addNodeToMenu(node) { // same issue as above
+		node.selected = false;
+
+		this.menuCloset.add(node)
 	}
 
 	// Go through all meal nodes and find what is on the menu
 	getMenu() {
 
 		// Assemble the menu list (meal nodes)
-		this.menuList = new Set();
+		this.menuCloset = new Set();
 		let mealNodes = graph.getNodesByID_partial("meal", "")
 		for (let meal of mealNodes) {
 			if (meal.inMenu) { // if in the menu
-				this.menuList.add(meal)
+				this.menuCloset.add(meal)
 			}
 		}
 		this.getGroceryList()
@@ -30,11 +50,11 @@ class GroceryListArea {
 		}
 
 		// Now go through menu and tally up ingredients
-		this.groceryList = new Set()
-		for (let mealNode of this.menuList) {
+		this.groceryCloset = new Set()
+		for (let mealNode of this.menuCloset) {
 			for (let edge of mealNode.edges) {
 				if (edge.type === "ingr") { // Only tally ingredients
-					this.groceryList.add(edge) // add to list
+					this.groceryCloset.add(edge) // add to list
 					edge.quantity++
 				}
 			}
@@ -46,7 +66,7 @@ class GroceryListArea {
 	updateGroceryListDisplay() {
 
 		// Now update grocery list display
-		for (let ingr of this.groceryList) {
+		for (let ingr of this.groceryCloset) {
 			// First update its display quantity
 			ingr.updateElement()
 			// Then ensure it is in the grocery list display window
@@ -58,8 +78,8 @@ class GroceryListArea {
 		let ingrNodes = graph.getNodesByID_partial("ingr", "")
 		for (let ingr of ingrNodes) {
 			if (ingr.quantity === 0) {
-				for( let box of ingr.boxes ) box.update()
-				for( let box of ingr.boxes ) selected = false // or maybe just for the box in grocery list
+				for( let box of ingr.closet ) box.update()
+				for( let box of ingr.closet ) selected = false // or maybe just for the box in grocery list
 				box.destruct()
 			}
 		}
@@ -68,7 +88,7 @@ class GroceryListArea {
 
 	print() {
 		let stringArray = []
-		for (let ingr of this.groceryList) {
+		for (let ingr of this.groceryCloset) {
 			stringArray.push(ingr.element.html())
 		}
 

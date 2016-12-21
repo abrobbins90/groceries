@@ -22,7 +22,7 @@ function initTriggers() {
 	$('#create_meal_button').click(function(){
 		let inName = $('#meal_input').val();
 		let node = recipe.createNode('meal', inName);
-		
+
 		if (node) {
 			$('#meal_input').val(node.shownName) // Update in case it changed
 		}
@@ -35,7 +35,7 @@ function initTriggers() {
 		let character = String.fromCharCode(key);
 		let allowedKeys = [13] // special keys
 		let allowedChars = /[0-9A-Za-z _',:]/g;
-		
+
 		if (allowedKeys.indexOf(key) != -1) return true
 		else if (character.match(allowedChars)) return true
 		else return false
@@ -48,7 +48,7 @@ function initTriggers() {
 
 	})
 
-	
+
 	/***** search area *****/
 	$('.Tab').click(function(){
 		searchArea.switchTab(this)
@@ -63,15 +63,15 @@ function initTriggers() {
 	})
 	$('#search_results').on("drop", function(event){
 		event.preventDefault();
-		let id = event.originalEvent.dataTransfer.getData("text");
-		let node = graph.getNodeById(id);
+		let id = event.originalEvent.dataTransfer.getData("text")
+		let node = graph.getNodeById(id)
 		node.sendToLimbo()
 		searchArea.launchSearch()
 	})
-	
-	
-	
-	
+
+
+
+
 	/***** grocery area *****/
 	$('#menuField').on("dragover", function(event){
 		event.preventDefault();
@@ -83,7 +83,7 @@ function initTriggers() {
 		let node = graph.getNodeById(id);
 		node.addToMenu()
 	})
-	
+
 	$('#print_button').click(function(){
 		groceryArea.print()
 	})

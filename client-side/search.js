@@ -2,7 +2,17 @@
 
 class SearchArea {
 	constructor(graph) {
+		this.name = "search"
 		this.graph = graph;
+		this.closet = new Closet({
+			"appendLocation": ".cssstring",
+			"className": "meal_search_area...",
+			"isDraggable": true,
+			"isBoxXable": false,
+			"XAction": undefined,
+		})
+
+		})
 		this.tab = {
 			mealLookup: $("#tab_mealLookup"),
 			ingrSearch: $("#tab_ingrSearch"),
@@ -40,7 +50,7 @@ class SearchArea {
 		//this.launchSearch();
 		//transferButtons();
 	}
-	
+
 	// Switch the tab that is selected when the user clicks a new one
 	switchTab(newTabEl) {
 		// If clicked tab is already selected, do nothing
@@ -58,13 +68,13 @@ class SearchArea {
 		this.tab[newTab].addClass("tab_selected");
 		this.sWindow[newTab].removeClass("area_unselected");
 		this.sWindow[newTab].addClass("area_selected");
-		
+
 		return true
 	}
 
-	
+
 	///// Searches
-	
+
 	// Commence searching
 	launchSearch() {
 		let searchType = this.selectedTab;
@@ -109,7 +119,7 @@ class SearchArea {
 	// Search by Ingredient
 	ingrSearch() {
 
-
+		alert("I haven't been programmed yet!")
 
 
 	}

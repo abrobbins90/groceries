@@ -42,7 +42,7 @@
 	padding-top: 10px;
 }
 
-/* Input boxes*/
+/* Input closet*/
 .node_input {
 	text-align: center;
 	background-color: #FF9999;
@@ -95,17 +95,14 @@
 }
 
 /* ingr/tag entry*/
-.ingr_box {
-	margin: 3px;
-}
-.tag_box {
-	margin: 3px;
-}
-.menu_item_box { /*Box to hold item names and remove buttons*/
-	background-color: #FF9999;
+.box { /*Box to hold item names and remove buttons*/
 	border: 0px;
 	border-radius: 4px;
 	overflow: hidden;
+}
+.recipe_box { /*Box to hold item names and remove buttons*/
+	@extend .box;
+	background-color: #FF9999;
 }
 .box_contents {
 	font-family: "Arial";
@@ -114,8 +111,12 @@
 	padding: 4px 16px 4px 16px;
 	transition: all .2s;
 }
-.menu_item_box:hover > .box_contents {
+.recipe_box:hover > .box_contents {
 	padding: 4px;
+}
+.recipe_box:hover > .rmItemButton {
+	width: 23px;
+	border-left: 1px solid #FF5555;
 }
 .rmItemButton {
 	display: inline-block;
@@ -128,10 +129,6 @@
 	font-size: 15px;
 	text-align: center;
 	transition: all .2s; /* was only 'width' before */
-}
-.menu_item_box:hover > .rmItemButton {
-	width: 23px;
-	border-left: 1px solid #FF5555;
 }
 
 
@@ -157,7 +154,7 @@
 #tab_ingrSearch {
 	flex-grow: 1.3;
 }
-#tab_menuGenerator {
+#tab_recipeGenerator {
 	flex-grow: 1.2;
 }
 .Tab {
@@ -239,23 +236,23 @@
 	border-radius: 4px;
 }
 
-/* Menu Generator*/
-#sWindow_menuGenerator {
+/* Recipe Generator*/
+#sWindow_recipeGenerator {
 	padding: 10px;
 	flex-direction: row;
 	align-items: left;
 	justify-content: space-around;
 }
-#sWindow_menuGenerator > textarea{
+#sWindow_recipeGenerator > textarea{
 	margin: 5px;
 }
-#sWindow_menuGenerator > div{
+#sWindow_recipeGenerator > div{
 	display: flex;
 	flex-direction: column;
 	align-items: left;
 	justify-content: center;
 }
-#sWindow_menuGenerator > div > div{
+#sWindow_recipeGenerator > div > div{
 	margin: 5px;
 }
 #mealNumvalue {
@@ -280,28 +277,28 @@
 }
 
 
-/***** Menu/ingr List Panel *****/
+/***** Recipe/ingr List Panel *****/
 
-/* Menu display area: includes meals and ingr lists */
-#menu_area {
+/* Recipe display area: includes meals and ingr lists */
+#recipe_area {
 	flex: 5 0 300px;
 	flex-basis: 300px;
 	background-color: #58F; /*55F*/
 	color: #FFFFFF;
-	
+
 	display: flex;
 	flex-direction: column;
 }
 
 #mealChoices {
 	flex: 1 0 100px;
-	
+
 	display: flex;
 	flex-direction: column;
 }
 #groceryList {
 	flex: 2 0 300px;
-	
+
 	display: flex;
 	flex-direction: column;
 }
@@ -315,10 +312,10 @@
 	text-align: center;
 }
 
-#menuField {
+#recipeField {
 	flex: 1 0 100px;
 	padding: 2px;
-	
+
 	display: flex;
 	flex-direction: column;
 	flex-wrap: wrap;
@@ -327,7 +324,7 @@
 #groceryField {
 	flex: 1 0 100px;
 	padding: 2px;
-	
+
 	display: flex;
 	flex-direction: column;
 	flex-wrap: wrap;
@@ -354,7 +351,7 @@
 
 
 
-.menuButtons {
+.recipeButtons {
 	display: none;
 	padding: 0px;
 }
@@ -397,14 +394,14 @@
 }
 
 .meal_search { /* Meals in the search box */
-	
+
 }
-.meal_onMenu { /* Meals on the menu */
-	
+.meal_onRecipe { /* Meals on the recipe */
+
 }
 
-.ingr_onMenu { /* Ingredient in the menu */
-	
+.ingr_onRecipe { /* Ingredient in the recipe */
+
 }
 
 
@@ -414,7 +411,7 @@
 	display: none;
 }
 
-#extramenu {
+#extrarecipe {
 	display: none;
 	position: absolute;
 	top: 510px;
