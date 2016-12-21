@@ -8,7 +8,7 @@ class GroceryListArea {
 
 	// Go through all meal nodes and find what is on the menu
 	getMenu() {
-		
+
 		// Assemble the menu list (meal nodes)
 		this.menuList = new Set();
 		let mealNodes = graph.getNodesByID_partial("meal", "")
@@ -19,16 +19,16 @@ class GroceryListArea {
 		}
 		this.getGroceryList()
 	}
-	
+
 	// Collect grocery list based on the menu
 	getGroceryList() {
-		
+
 		// Clear the quantities for all the ingredients
 		let ingrNodes = graph.getNodesByID_partial("ingr", "")
 		for (let ingr of ingrNodes) {
 			ingr.quantity = 0;
 		}
-		
+
 		// Now go through menu and tally up ingredients
 		this.groceryList = new Set()
 		for (let mealNode of this.menuList) {
@@ -41,7 +41,7 @@ class GroceryListArea {
 		}
 		this.updateGroceryListDisplay()
 	}
-	
+
 	// update display with the grocery list on record
 	updateGroceryListDisplay() {
 
@@ -52,25 +52,26 @@ class GroceryListArea {
 			// Then ensure it is in the grocery list display window
 			ingr.addToGroceryList()
 		}
-		
+
 		// To finish, go through ingredients one more time, removing any
 		// not in the grogery list and ensuring they are hidden
 		let ingrNodes = graph.getNodesByID_partial("ingr", "")
 		for (let ingr of ingrNodes) {
 			if (ingr.quantity === 0) {
-				ingr.updateElement()
-				ingr.sendToLimbo()
+				for( let box of ingr.boxes ) box.update()
+				for( let box of ingr.boxes ) selected = false // or maybe just for the box in grocery list
+				box.destruct()
 			}
 		}
 	}
-	
-	
+
+
 	print() {
 		let stringArray = []
 		for (let ingr of this.groceryList) {
 			stringArray.push(ingr.element.html())
 		}
-		
+
 		let win = window.open()
 		win.document.write(stringArray.join("<br>"))
 		win.print()

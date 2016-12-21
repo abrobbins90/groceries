@@ -1,7 +1,7 @@
-// an ItemBox is like a Box, but with a position and sizing (for the graph animation)
+// an CoordBox is like a Box, but with a position and sizing (for the graph animation)
 
 
-class ItemBox extends Box {
+class CoordBox extends Box {
 
 
 	constructor(node) {

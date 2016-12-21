@@ -247,9 +247,9 @@ function setWalls () {
 	hWall[1]=new HoriWall(1,t2left,t2left+t2width,t2top+t2height)
 }
 
-////////////////////////////////// ItemBox object constructor //////////////////////////////////
+////////////////////////////////// CoordBox object constructor //////////////////////////////////
 function editItem(item1Value,item2Value) {alert("DONT COME HERE!!!")
-// this may be needed when the ItemBox gets UPDATED with some new name or window resize, etc
+// this may be needed when the CoordBox gets UPDATED with some new name or window resize, etc
 		itemIdNum[editing].ibox.ID.innerHTML=itemVal;
 		itemIdNum[editing].ibox.hrad=itemIdNum[editing].ibox.ID.clientWidth/2;
 		itemIdNum[editing].ibox.vrad=itemIdNum[editing].ibox.ID.clientHeight/2;

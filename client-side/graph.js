@@ -10,7 +10,7 @@ class Graph {
 	addNode(type, shownName) {
 		// Clean up input
 		shownName = cleanName(shownName);
-		
+
 		// Check if node exists already
 		var node = this.getNodeById(type + "_" + nameTrim(shownName))
 		if( node ) return node
@@ -106,27 +106,15 @@ class Node {
 
 		// Default Initializations
 		this.type = type; // Declare node type: "meal", "ingr", or "description"
-		this.element = $( document.createElement("div") ); // Create an element to be displayed on the page
-		this.shownName = shownName;
 		this.edges = new Set();
+		this.boxes = new Set();
+		this.shownName = shownName;
 
 		this.selected = false; //track whether this node is selected
 
-		this.xstart = 0; //root location
-		this.ystart = 0;
-		this.xpos = 0;
-		this.ypos = 0;
-
-		this.sendToLimbo();	// store object in limbo (not visible)
-
-		// Add click events to the element
-		this.clickFlag = 0; // used to keep track of clicks vs dbl clicks
-		this.element.click(this.click.bind(this));
-
-		// These are for connection-force.js animation
+		// These are for connection-force.js animation (as well as one CoordBox that will be created by the animation and added to this.boxes)
 		this.chosen = false
 		this.found = false
-		this.ibox = new ItemBox(this) // for the ANIMATION
 	}
 
 	asDict() {
@@ -137,36 +125,14 @@ class Node {
 		}
 	}
 
-	// Setters
-
 	//method to change name of item
 	set shownName(newName) { //update true name
 		this._shownName = newName;
-		this.element.attr("id", this.id);
-		this.updateElement();
+		// make sure all boxes get the new shownName
+		for( let box of this.boxes ) box.update()
 	}
-
-	// Update element appearance based on whether it is selected or not
-	set selected(TF) {
-		this.updateSelection(TF);
-	}
-	updateSelection(TF) {
-		this._selected = TF;
-		if (TF) { // selected
-			this.element.addClass("node_select");
-			this.element.removeClass("node_unselect");
-		} else {
-			this.element.addClass("node_unselect");
-			this.element.removeClass("node_select");
-		}
-	}
-
-	// Getters
 	get shownName() {
 		return this._shownName
-	}
-	get selected() {
-		return this._selected
 	}
 	get name() {
 		return nameTrim(this.shownName)
@@ -175,101 +141,47 @@ class Node {
 		return this.type + '_' + this.name
 	}
 
-
-	//update innerHTML and dimensions
-	updateElement() {
-		this.element.html(this._shownName);
-		this.hrad = this.element.width() / 2;  //horizontal radius
-		this.vrad = this.element.height / 2;  //vertical radius
+	// Update element appearance based on whether it is selected or not
+	set selected(TF) {
+		this.updateSelection(TF);
 	}
-
-	// put node in limbo (hidden from view)
-	sendToLimbo() {
-		this.selected = false;
-		$("#limbo").append(this.element);
+	updateSelection(TF) {
+		this._selected = TF;
+		for( let box of this.boxes ) box.selected = TF
 	}
-	// Delete element
-	selfDestruct(){
-		this.element.remove();
+	get selected() {
+		return this._selected
 	}
-
-	//updates object coordinates
-	toStart() {
-		this.xpos = this.xstart;
-		this.ypos = this.ystart;
-		this.draw();
-	}
-	//updates actual object location in window
-	draw() {
-		this.element.css("left", this.xpos - this.hrad);
-		this.element.css("top", this.ypos - this.vrad);
-	}
-
-	// Events
-	click(event) { // Distinguish between single and double clicks
-		this.clickFlag++;
-		if (this.clickFlag === 1) {
-			setTimeout(function() {
-				if (this.clickFlag === 1){
-					this.singleClick(event)
-				}
-				else {
-					this.doubleClick(event)
-				}
-				this.clickFlag = 0;
-			}.bind(this), 300) // ms delay to qualify as a double click
-		}
-	}
-	singleClick(event) {
-		this.selected = !this.selected;
-	}
-	doubleClick(event) {
-
-	}
-
 }
 
 class MealNode extends Node {
 	// Define a subclass of node specific to meals
 	constructor(shownName) {
 		super(shownName, 'meal');
-		this.element.addClass("word_text");
 
 		this.inMenu = false; // store whether meal node is in the menu or not
 		this.inResults = false; // store whether meal node is in a search
-
-		// Allow node to be dragged and dropped
-		this.element.attr("draggable", true)
-		this.element.on("dragstart", function(event) {
-			event.originalEvent.dataTransfer.setData("text", event.target.id);
-		})
 	}
 
-
-	// setters
 	set selected(TF) {
-		this.updateSelection(TF)
+		this.updateSelection(TF) // i think we can use super.selected = TF instead
 		if (this.selected) {
 			// make this selected in the recipe panel
 			recipe.selectMeal(this)
 		}
 	}
+
 	set inMenu(val) {
 		this._inMenu = val;
 		// If something is being moved in or out of the menu, update grocery list
 		groceryArea.getMenu()
 	}
-	
-	// getters
-	get selected() {
-		return this._selected
-	}
 	get inMenu() {
 		return this._inMenu
 	}
-				
+
 	// add meal to search results
-	addToMealResults() {
+	addToMealResults() { // searchArea should have an addMeal like method, instead of this.
 		this.inResults = true;
 		this.inMenu = false;
 
@@ -279,7 +191,7 @@ class MealNode extends Node {
 	}
 
 	// Add meal to menu
-	addToMenu() {
+	addToMenu() { // same issue as above
 		this.inResults = false;
 		this.inMenu = true;
 		this.selected = false;
@@ -288,7 +200,8 @@ class MealNode extends Node {
 		this.element.removeClass("meal_search");
 		this.element.addClass("meal_onMenu");
 	}
-	sendToLimbo() {
+
+	sendToLimbo() { // needs to be moved
 		this.inMenu = false;
 		this.inResults = false;
 		super.sendToLimbo()
@@ -296,14 +209,14 @@ class MealNode extends Node {
 	}
 
 	// Events
-	doubleClick(event) {
-		if (this.inMenu === false) { // Transfer to the menu
-			this.addToMenu()
-		} else { // Remove from menu; relaunch search in case meal is in results
-			this.sendToLimbo()
-			searchArea.launchSearch()
-		}
-	}
+	// doubleClick(event) { // for now, just dragging functionality is fine
+	// 	if (this.inMenu === false) { // Transfer to the menu
+	// 		this.addToMenu()
+	// 	} else { // Remove from menu; relaunch search in case meal is in results
+	// 		this.sendToLimbo()
+	// 		searchArea.launchSearch()
+	// 	}
+	// }
 }
 
 
@@ -313,34 +226,14 @@ class IngrNode extends Node {
 	constructor(shownName) {
 		super(shownName, 'ingr');
 		this.quantity = 0;
-
-		this.element.addClass("word_text");
 	}
 
 	// Add ingr to grocery list
-	addToGroceryList() {
+	addToGroceryList() { // erm
 		this.selected = false;
 
 		$("#groceryField").append(this.element);
 		this.element.addClass("ingr_onMenu");
-	}
-
-	//update innerHTML and dimensions (overwrite superclass method)
-	updateElement() {
-		if (this.quantity > 1) {
-			// if multiple entries, bold and include x#
-			this.element.html(this._shownName + "<b>" + " x" + this.quantity + "</b>");
-		}
-		else {
-			this.element.html(this._shownName);
-		}
-
-		this.hrad = this.element.width() / 2;  //vertical radius
-		this.vrad = this.element.height() / 2;  //horizontal radius
-	}
-	sendToLimbo() {
-		super.sendToLimbo()
-		this.element.removeClass("ingr_onMenu")
 	}
 }
 
@@ -348,6 +241,5 @@ class TagNode extends Node {
 	// Define a subclass of node specific to tag
 	constructor(shownName) {
 		super(shownName, 'tag');
-		this.element.addClass("word_text");
 	}
 }
