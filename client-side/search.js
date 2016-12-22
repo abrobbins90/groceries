@@ -5,13 +5,11 @@ class SearchArea {
 		this.name = "search"
 		this.graph = graph;
 		this.closet = new Closet({
-			"appendLocation": ".cssstring",
-			"className": "meal_search_area...",
+			"appendLocation": "#search_results",
+			"className": "search_results_closet",
 			"isDraggable": true,
 			"isBoxXable": false,
 			"XAction": undefined,
-		})
-
 		})
 		this.tab = {
 			mealLookup: $("#tab_mealLookup"),

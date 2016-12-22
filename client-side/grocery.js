@@ -4,18 +4,18 @@ class GroceryListArea {
 		this.name = "grocery"
 		this.graph = graph // graph storing all nodes
 		this.menuCloset = new Closet({ // keep track of all menu nodes
-			"appendLocation": ".cssstring",
+			"appendLocation": "#groceryField",
 			"className": "meal_onMenu",
 			"isDraggable": true,
 			"isBoxXable": true,
-			"XAction": dropInSearchArea,
+			"XAction": searchArea.launchSearch, // not sure why this doesn't take the node as input!!!!
 		})
 		this.groceryCloset = new Closet({ // keep track of all ingredients on menu
 			"appendLocation": "cssefhei",
 			"className": "meal_ingrAreaaaa",
 			"isDraggable": false,
 			"isBoxXable": true,
-			"XAction": geryOut,
+			"XAction": this.disable,
 		})
 	}
 

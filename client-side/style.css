@@ -94,7 +94,7 @@
 	display: none;
 }
 
-/* ingr/tag entry*/
+/* Box things! */
 .box { /*Box to hold item names and remove buttons*/
 	border: 0px;
 	border-radius: 4px;
@@ -104,23 +104,27 @@
 	@extend .box;
 	background-color: #FF9999;
 }
+$box_contents_padding: 4px 16px 4px 16px;
 .box_contents {
 	font-family: "Arial";
 	font-size: 15px;
 	display: inline-block;
-	padding: 4px 16px 4px 16px;
+	padding: $box_contents_padding;
 	transition: all .2s;
 }
-.recipe_box:hover > .box_contents {
+.Xable:hover > .box_contents {
 	padding: 4px;
 }
-.recipe_box:hover > .rmItemButton {
+.Xable:hover > .XButton {
 	width: 23px;
 	border-left: 1px solid #FF5555;
 }
-.rmItemButton {
+$XButton_width: 0px;
+$XButton_border_left: 0px;
+.XButton {
 	display: inline-block;
-	width: 0px;
+	width: $XButton_width;
+	border-left: 0px;
 	padding: 0px;
 	outline: none;
 	cursor: pointer;
@@ -130,6 +134,18 @@
 	text-align: center;
 	transition: all .2s; /* was only 'width' before */
 }
+.disabled {
+	background-color: #00FF00;
+}
+/* override Xable stuff */
+.disabled:hover > .box_contents {
+	padding: $box_contents_padding;
+}
+.disabled:hover > .XButton {
+	width: $XButton_width;
+	border-left: $XButton_border_left;
+}
+
 
 
 

@@ -157,7 +157,7 @@ class RecipeArea {
 	}
 
 	_clearCloset() {
-		this.closet.destructElements()
+		this.closet.destructBoxes()
 		this.input.ingr.removeClass("node_selected").val("")
 		this.input.tag.removeClass("node_selected").val("")
 	}

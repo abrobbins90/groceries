@@ -81,7 +81,7 @@ function initTriggers() {
 		event.preventDefault();
 		let id = event.originalEvent.dataTransfer.getData("text");
 		let node = graph.getNodeById(id);
-		node.addToMenu()
+		groceryListArea.addNodeToMenu(node)
 	})
 
 	$('#print_button').click(function(){

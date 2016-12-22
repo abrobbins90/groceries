@@ -1,15 +1,17 @@
 class Closet {
 	// Class Closet represents a collection of instances of class Box
 	constructor(area, options) {
-		_.default(options, {
+		let defaults = {
 			"appendLocation": undefined, // css selector
 			"className": "", // single classname to apply to box elements
 			"isDraggable": false, // can this box be dragged between areas
 			"isBoxXable": false, // should an x-button be drawn in the box
 			"XAction": function(){}, // what should happen upon clicking the x
-		})
-		this.area = area
+		}
+		options = $.extend({}, defaults, options)
 		this.options = options
+
+		this.area = area
 		this.boxes = []
 	}
 
@@ -39,11 +41,10 @@ class Closet {
 		this.boxes.splice(index, 1)
 	}
 
-	destructElements() {
+	destructBoxes() {
 		for( let box of this.boxes ){
-			box.destructElement()
+			box.destruct()
 		}
-		this.boxes = []
 	}
 
 
@@ -60,7 +61,7 @@ class Box {
 		// Add click events to the element
 		this.clickFlag = 0; // used to keep track of clicks vs dbl clicks
 		this.$el.get(0).click(this.click.bind(this));
-		
+
 		// attach element to DOM
 		appendLocation = options["appendLocation"]
 		if( typeof appendLocation === "function" ){
@@ -89,8 +90,9 @@ class Box {
 	}
 
 	constructContents() {
+		let box = this // only delete if you can verify this doesn't refer to jQuery element below
 		return $("<div/>")
-			.html(this.contents)
+			.html(box.contents)
 			.addClass("box_contents")
 	}
 
@@ -99,8 +101,8 @@ class Box {
 		return $("<div/>")
 			.attr("type", "button")
 			.html("&times;")
-			.addClass("rmItemButton")
-			.click(this.Xaction.bind(this))
+			.addClass("XButton")
+			.click(this.XAction.bind(this))
 	}
 
 	update() {
@@ -123,7 +125,7 @@ class Box {
 	}
 
 	get id() {
-		return "Box_el_" + "Area_" + this.closet.area.name + "_Node_id_" + this.node.id
+		return "Box_el_" + "in_Area_" + this.closet.area.name + "_for_Node_" + this.node.id
 	}
 
 	set selected(TF) {
@@ -137,7 +139,7 @@ class Box {
 		}
 	}
 
-	// Events
+	// Click Events
 	click(event) { // Distinguish between single and double clicks
 		this.clickFlag++;
 		if (this.clickFlag === 1) {
@@ -159,8 +161,14 @@ class Box {
 		// pass
 	}
 
+	disable() { // this greys out the box and makes it uninteractible
+		this.$el.addClass("disabled")
+	}
+	enable() { // this undisables a box
+		this.$el.removeClass("disabled")
+	}
+
 	destruct() {
-		//this.destructAction(this.node.type, this.node.name)
 		this.$el.remove()
 		this.closet.remove(this)
 		this.node.boxes.remove(this)

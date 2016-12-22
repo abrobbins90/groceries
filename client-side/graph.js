@@ -193,7 +193,7 @@ class MealNode extends Node {
 	// Events
 	// doubleClick(event) { // for now, just dragging functionality is fine
 	// 	if (this.inMenu === false) { // Transfer to the menu
-	// 		this.addToMenu()
+	// 		this.addToMnu() // replaced with menu area thingy....
 	// 	} else { // Remove from menu; relaunch search in case meal is in results
 	// 		this.sendToLimbo()
 	// 		searchArea.launchSearch()
