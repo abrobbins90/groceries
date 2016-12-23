@@ -25,7 +25,7 @@ class RecipeArea {
 		}
 		this.closet = new Closet(this, {
 			"appendLocation": appendLocation,
-			"className": "menu_item_box",
+			"className": "recipe_box",
 			"isDraggable": false,
 			"isBoxXable": true,
 			"XAction": function(){

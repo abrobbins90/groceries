@@ -96,8 +96,9 @@ class Box {
 		let $b = $("<div/>")
 			.attr("id", this.id)
 			.append(this.constructContents())
-			.addClass(options["className"])
+			.addClass("box")
 			.addClass(this.node.type + "_box")
+			.addClass(options["className"])
 		if( options["isBoxXable"] ) $b.append(this.constructXButton())
 		return $b
 	}

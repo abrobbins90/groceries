@@ -94,13 +94,13 @@
 }
 
 /* Box things! */
-.box { /*Box to hold item names and remove buttons*/
-	border: 0px;
+.box { /* Box to hold node names and X buttons*/
+	border: 10px;
 	border-radius: 4px;
+	-webkit-border-radius: 4px; /* no idea why the browsers need this!  Modern browsers should do fine with border-radius */
 	overflow: hidden;
 }
 .recipe_box { /*Box to hold item names and remove buttons*/
-	@extend .box;
 	background-color: #FF9999;
 }
 .box_contents {

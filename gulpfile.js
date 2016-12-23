@@ -44,7 +44,7 @@ gulp.task('watch.js', function() {
 gulp.task('css', function() {
 	gulp.src(src_css)
 		.pipe(autoprefixer({
-			browsers: ['last 3 versions'],
+			browsers: ['last 4 versions'],
 			cascade: false,
 		}))
 		.pipe(gulp.dest('client-side-built'))
