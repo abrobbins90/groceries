@@ -41,11 +41,6 @@ class GroceryListArea {
 		})
 	}
 
-	// Add meal to menu
-	addNodeToMenu(node) { // same issue as above
-		this.menuCloset.add(node)
-	}
-
 	// Go through all meal nodes and find what is on the menu
 	getMenu() {
 		// Assemble the menu list (meal nodes)

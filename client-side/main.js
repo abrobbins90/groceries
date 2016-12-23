@@ -63,8 +63,8 @@ function initTriggers() {
 	})
 	$('#search_results').on("drop", function(event){
 		event.preventDefault();
-		let id = event.originalEvent.dataTransfer.getData("text")
-		let node = graph.getNodeById(id)
+		let node_id = event.originalEvent.dataTransfer.getData("text")
+		let node = graph.getNodeById(node_id)
 		node.sendToLimbo()
 		searchArea.launchSearch()
 	})
@@ -78,10 +78,10 @@ function initTriggers() {
 		event.originalEvent.dataTransfer.dropEffect = "move";
 	})
 	$('#menuField').on("drop", function(event){
-		event.preventDefault();
-		let id = event.originalEvent.dataTransfer.getData("text");
-		let node = graph.getNodeById(id);
-		groceryListArea.addNodeToMenu(node)
+		event.preventDefault()
+		let node_id = event.originalEvent.dataTransfer.getData("text")
+		let node = graph.getNodeById(node_id)
+		groceryArea.menuCloset.add(node)
 	})
 
 	$('#print_button').click(groceryArea.groceryCloset.print)

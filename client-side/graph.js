@@ -92,9 +92,9 @@ class Node {
 
 		// Default Initializations
 		this.type = type; // Declare node type: "meal", "ingr", or "description"
-		this.edges = new Set();
-		this.boxes = new Set();
-		this.shownName = shownName;
+		this.edges = new Set()
+		this.boxes = new Set()
+		this.shownName = shownName
 	}
 
 	asDict() {

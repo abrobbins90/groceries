@@ -84,8 +84,10 @@ class Box {
 		// Make box draggable if need be
 		if( options["isDraggable"] ){
 			this.$el.attr("draggable", true)
+			let box = this
 			this.$el.on("dragstart", function(event) {
-				event.originalEvent.dataTransfer.setData("text", event.target.id)
+				// pass along the NODE id
+				event.originalEvent.dataTransfer.setData("text/plain", box.node.id)
 			})
 		}
 
