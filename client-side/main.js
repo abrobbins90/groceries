@@ -65,7 +65,7 @@ function initTriggers() {
 		event.preventDefault();
 		let node_id = event.originalEvent.dataTransfer.getData("text")
 		let node = graph.getNodeById(node_id)
-		node.sendToLimbo()
+		groceryArea.menuCloset.removeNode(node)
 		searchArea.launchSearch()
 	})
 
@@ -81,6 +81,7 @@ function initTriggers() {
 		event.preventDefault()
 		let node_id = event.originalEvent.dataTransfer.getData("text")
 		let node = graph.getNodeById(node_id)
+		searchArea.closet.removeNode(node)
 		groceryArea.menuCloset.add(node)
 	})
 

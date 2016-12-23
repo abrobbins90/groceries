@@ -22,6 +22,7 @@ class Closet {
 	}
 
 	add(node) { // Create a new Box element
+		// assuming we don't want the same node to appear twice in a closet, should we make this check for redundancy?
 		this.boxes.push(
 			new Box(node, this, this.options)
 		)
@@ -44,6 +45,10 @@ class Closet {
 		let win = window.open()
 		win.document.write(this.toPrintableString())
 		win.print()
+	}
+
+	removeNode(node) {
+		for( let box in this.boxes )if( box.node === node ) box.destruct()
 	}
 
 	remove(box) {
