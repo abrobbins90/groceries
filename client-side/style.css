@@ -41,7 +41,7 @@
 	padding-top: 10px;
 }
 .input_selected {
-	border-color: dodgerblue; /*99FF99*/
+	border-color: dodgerblue;
 }
 
 /* Input closet*/
@@ -135,7 +135,7 @@
 }
 
 .box_selected {
-	border-color: dodgerblue; /*99FF99*/
+	border-color: dodgerblue;
 }
 .box_highlighted {
 	border-color: gold;
@@ -162,7 +162,7 @@
 #tab_ingrSearch {
 	flex-grow: 1.3;
 }
-#tab_recipeGenerator {
+#tab_menuGenerator {
 	flex-grow: 1.2;
 }
 .Tab {
@@ -244,23 +244,23 @@
 	border-radius: 4px;
 }
 
-/* Recipe Generator*/
-#sWindow_recipeGenerator {
+/* Menu Generator*/
+#sWindow_menuGenerator {
 	padding: 10px;
 	flex-direction: row;
 	align-items: left;
 	justify-content: space-around;
 }
-#sWindow_recipeGenerator > textarea{
+#sWindow_menuGenerator > textarea{
 	margin: 5px;
 }
-#sWindow_recipeGenerator > div{
+#sWindow_menuGenerator > div{
 	display: flex;
 	flex-direction: column;
 	align-items: left;
 	justify-content: center;
 }
-#sWindow_recipeGenerator > div > div{
+#sWindow_menuGenerator > div > div{
 	margin: 5px;
 }
 #mealNumvalue {
@@ -285,10 +285,10 @@
 }
 
 
-/***** Recipe/ingr List Panel *****/
+/***** Menu/ingr List Panel (part of GroceryListArea!)*****/
 
-/* Recipe display area: includes meals and ingr lists */
-#recipe_area {
+/* Menu display area: includes meals and ingr lists */
+#menu_area {
 	flex: 5 0 300px;
 	flex-basis: 300px;
 	background-color: #58F; /*55F*/
@@ -320,7 +320,7 @@
 	text-align: center;
 }
 
-#recipeField {
+#menuField {
 	flex: 1 0 100px;
 	padding: 2px;
 
@@ -359,7 +359,7 @@
 
 
 
-.recipeButtons {
+.menuButtons {
 	display: none;
 	padding: 0px;
 }
@@ -403,22 +403,17 @@
 .meal_search { /* Meals in the search box */
 
 }
-.meal_onRecipe { /* Meals on the recipe */
+.meal_onMenu { /* Meals on the menu */
 
 }
 
-.ingr_onRecipe { /* Ingredient in the recipe */
+.ingr_onMenu { /* Ingredient in the menu */
 
 }
 
 
 
-
-#limbo {
-	display: none;
-}
-
-#extrarecipe {
+#extramenu {
 	display: none;
 	position: absolute;
 	top: 510px;
