@@ -41,6 +41,9 @@
 	justify-content: flex-start;
 	padding-top: 10px;
 }
+.input_selected {
+	border-color: dodgerblue; /*99FF99*/
+}
 
 /* Input closet*/
 .node_input {
@@ -60,9 +63,6 @@
 }
 
 
-.node_selected {
-	border-color: dodgerblue; /*99FF99*/
-}
 #meal_input {
 
 }
@@ -104,26 +104,23 @@
 	@extend .box;
 	background-color: #FF9999;
 }
-$box_contents_padding: 4px 16px 4px 16px;
 .box_contents {
 	font-family: "Arial";
 	font-size: 15px;
 	display: inline-block;
-	padding: $box_contents_padding;
+	padding: 4px 16px 4px 16px;
 	transition: all .2s;
 }
-.Xable:hover > .box_contents {
+.Xable:not(.disabled):hover > .box_contents {
 	padding: 4px;
 }
-.Xable:hover > .XButton {
+.Xable:not(.disabled):hover > .XButton {
 	width: 23px;
 	border-left: 1px solid #FF5555;
 }
-$XButton_width: 0px;
-$XButton_border_left: 0px;
 .XButton {
 	display: inline-block;
-	width: $XButton_width;
+	width: 0px;
 	border-left: 0px;
 	padding: 0px;
 	outline: none;
@@ -137,17 +134,13 @@ $XButton_border_left: 0px;
 .disabled {
 	background-color: #00FF00;
 }
-/* override Xable stuff */
-.disabled:hover > .box_contents {
-	padding: $box_contents_padding;
+
+.box_selected {
+	border-color: dodgerblue; /*99FF99*/
 }
-.disabled:hover > .XButton {
-	width: $XButton_width;
-	border-left: $XButton_border_left;
+.box_highlighted {
+	border-color: gold;
 }
-
-
-
 
 
 /***** Search Area Panel *****/
@@ -388,7 +381,6 @@ $XButton_border_left: 0px;
 	top: 0px;
 	right: 0px;
 }
-
 
 
 

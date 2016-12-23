@@ -21,16 +21,16 @@ class RecipeArea {
 		this.graph = graph
 
 		function appendLocation(box){
-			"#" + box.node.type + "_entry"
+			return "#" + box.node.type + "_entry"
 		}
-		this.closet = new Closet({
+		this.closet = new Closet(this, {
 			"appendLocation": appendLocation,
 			"className": "menu_item_box",
 			"isDraggable": false,
 			"isBoxXable": true,
 			"XAction": function(){
-				this.destruct
-				this.removeEdge.bind(this)
+				recipe.removeEdge(this.node, graph.selectedMeal)
+				this.destruct()
 			},
 		})
 
@@ -61,8 +61,8 @@ class RecipeArea {
 			// Otherwise, check to see if the node exists. If so, mark as selected
 			let name = nameTrim(shownName)
 			let node = this.graph.getNodeById(type + "_" + name)
-			if( node ) this.input[type].addClass("node_selected")
-			else this.input[type].removeClass("node_selected")
+			if( node ) this.input[type].addClass("input_selected")
+			else this.input[type].removeClass("input_selected")
 		}
 	}
 
@@ -76,8 +76,8 @@ class RecipeArea {
 			this.graph.addEdge(this.selectedMeal, node)
 			// if the selected meal is on the menu, and it's being added to right now,
 			// update the grocery list
-			if (groceryArea.menuList.has(this.selectedMeal)) {
-				groceryArea.getGroceryList();
+			if (this.selectedMeal.inMenu) {
+				groceryArea.updateGroceryList()
 			}
 
 		}
@@ -149,7 +149,7 @@ class RecipeArea {
 	}
 
 	_toggleDisplay() {
-		$('#meal_input').toggleClass("node_selected")
+		$('#meal_input').toggleClass("input_selected")
 		$('#create_meal_button').toggle()
 		$('#remove_meal_button').toggle()
 		this.input.ingr.toggle()
@@ -158,8 +158,8 @@ class RecipeArea {
 
 	_clearCloset() {
 		this.closet.destructBoxes()
-		this.input.ingr.removeClass("node_selected").val("")
-		this.input.tag.removeClass("node_selected").val("")
+		this.input.ingr.removeClass("input_selected").val("")
+		this.input.tag.removeClass("input_selected").val("")
 	}
 
 	_writeNeighbors() {

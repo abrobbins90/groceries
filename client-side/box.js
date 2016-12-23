@@ -4,12 +4,18 @@ class Closet {
 		let defaults = {
 			"appendLocation": undefined, // css selector
 			"className": "", // single classname to apply to box elements
+			"onSelectionChange": function(){},
+			"shouldBeHighlighted": function(){},
+
 			"isDraggable": false, // can this box be dragged between areas
 			"isBoxXable": false, // should an x-button be drawn in the box
 			"XAction": function(){}, // what should happen upon clicking the x
 		}
 		options = $.extend({}, defaults, options)
 		this.options = options
+
+		this.onSelectionChange = options["onSelectionChange"]
+		this.shouldBeHighlighted = options["shouldBeHighlighted"]
 
 		this.area = area
 		this.boxes = []
@@ -61,26 +67,29 @@ class Box {
 		this.node.boxes.add(this) // so node is aware of the box and can update it
 		this.XAction = options["XAction"] // a function to perform on XButton.click
 		this.$el = this.constructElement(options)
+		this.selected = false // keep track of box's selection status (like when user clicks)
+
 
 		// Add click events to the element
 		this.clickFlag = 0; // used to keep track of clicks vs dbl clicks
 		this.$el.get(0).click(this.click.bind(this));
 
 		// attach element to DOM
-		appendLocation = options["appendLocation"]
+		let appendLocation = options["appendLocation"]
 		if( typeof appendLocation === "function" ){
 			appendLocation = appendLocation(this)
 		}
 		$(appendLocation).append(this.$el)
 
 		// Make box draggable if need be
-		alert('isDraggable ' + options["isDraggable"])
 		if( options["isDraggable"] ){
 			this.$el.get(0).attr("draggable", true)
 			this.$el.get(0).on("dragstart", function(event) {
 				event.originalEvent.dataTransfer.setData("text", event.target.id)
 			})
 		}
+
+		this.update()
 	}
 
 	constructElement(options) {
@@ -96,8 +105,8 @@ class Box {
 	constructContents() {
 		let box = this // only delete if you can verify this doesn't refer to jQuery element below
 		return $("<div/>")
-			.html(box.contents)
 			.addClass("box_contents")
+			// note the actual text contents are added later
 	}
 
 	constructXButton() {
@@ -111,7 +120,9 @@ class Box {
 
 	update() {
 		this.$el.html(this.contents)
-		// any other things that need updating should be added here
+
+		// Update highlighting
+		this.highlighted = this.closet.shouldBeHighlighted(this)
 	}
 
 	toPrintableString() {
@@ -132,14 +143,27 @@ class Box {
 		return "Box_el_" + "in_Area_" + this.closet.area.name + "_for_Node_" + this.node.id
 	}
 
+
+	get selected() {
+		return this._selected
+	}
+
 	set selected(TF) {
-		this._selected = TF;
+		this._selected = TF
 		if (TF) { // selected
-			this.$el.addClass("node_select");
-			this.$el.removeClass("node_unselect");
+			this.$el.addClass("box_selected")
 		} else {
-			this.$el.addClass("node_unselect");
-			this.$el.removeClass("node_select");
+			this.$el.removeClass("box_selected")
+		}
+		this.closet.onSelectionChange(this)
+	}
+
+	set highlighted(TF) {
+		if (TF) {
+			this.$el.addClass("box_highlighted")
+		}
+		else {
+			this.$el.removeClass("box_highlighted")
 		}
 	}
 
@@ -175,7 +199,7 @@ class Box {
 	destruct() {
 		this.$el.remove()
 		this.closet.remove(this)
-		this.node.boxes.remove(this)
+		this.node.boxes.delete(this)
 	}
 }
 

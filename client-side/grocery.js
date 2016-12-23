@@ -3,25 +3,46 @@ class GroceryListArea {
 	constructor(graph) {
 		this.name = "grocery"
 		this.graph = graph // graph storing all nodes
-		this.menuCloset = new Closet({ // keep track of all menu nodes
+		this.menuCloset = new Closet(this, { // keep track of all menu nodes
 			"appendLocation": "#menuField",
 			"className": "meal_onMenu",
 			"isDraggable": true,
 			"isBoxXable": true,
-			"XAction": searchArea.launchSearch, // not sure why this doesn't take the node as input!!!!
+			"XAction": searchArea.launchSearch,
+			"onSelectionChange": function(){this.groceryCloset.update()}.bind(this),
+			"shouldBeHighlighted": function(mainBox) {
+				for (let node in mainBox.node.edges) {
+					for (let box in node.boxes) {
+						if (box.closet === this.groceryCloset && box.selected) {
+							return true
+						}
+					}
+				}
+				return false
+			}.bind(this),
 		})
-		this.groceryCloset = new Closet({ // keep track of all ingredients on menu
+		this.groceryCloset = new Closet(this, { // keep track of all ingredients on menu
 			"appendLocation": "#groceryField",
 			"className": "ingr_onMenu",
 			"isDraggable": false,
 			"isBoxXable": true,
 			"XAction": this.disable,
+			"onSelectionChange": function(){this.menuCloset.update()}.bind(this),
+			"shouldBeHighlighted": function(mainBox) {
+				for (let node in mainBox.node.edges) {
+					for (let box in node.boxes) {
+						if (box.closet === this.menuCloset && box.selected) {
+							return true
+						}
+					}
+				}
+				return false
+			}.bind(this),
 		})
 	}
 
 	// Add meal to menu
 	addNodeToMenu(node) { // same issue as above
-		node.selected = false;
 		this.menuCloset.add(node)
 	}
 
@@ -35,11 +56,11 @@ class GroceryListArea {
 				this.menuCloset.add(meal)
 			}
 		}
-		this.getGroceryList()
+		this.updateGroceryList()
 	}
 
 	// Collect grocery list based on the menu
-	getGroceryList() {
+	updateGroceryList() {
 		// Clear the quantities for all the ingredients
 		let ingrNodes = graph.getNodesByID_partial("ingr", "")
 		for (let ingr of ingrNodes) {
@@ -50,21 +71,13 @@ class GroceryListArea {
 		this.groceryCloset.destructBoxes()
 		for (let box of this.menuCloset.boxes) {
 			let meal = box.node
-			for (let edge of meal.edges) {
-				if (edge.type === "ingr") { // Only tally ingredients
-					this.groceryCloset.add(edge) // add to list
-					edge.quantity++
+			for (let node of meal.edges) {
+				if (node.type === "ingr") { // Only tally ingredients
+					this.groceryCloset.add(node) // add to list
+					node.quantity++
 				}
 			}
 		}
-		this.updateGroceryListDisplay()
 	}
 
-	// update display with the grocery list on record
-	updateGroceryListDisplay() {
-		for (let ingr of this.groceryCloset.boxes) {
-			this.selected = false;
-		}
-		this.groceryCloset.update()
-	}
 }

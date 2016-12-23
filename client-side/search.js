@@ -4,7 +4,7 @@ class SearchArea {
 	constructor(graph) {
 		this.name = "search"
 		this.graph = graph;
-		this.closet = new Closet({
+		this.closet = new Closet(this, {
 			"appendLocation": "#search_results",
 			"className": "search_results_closet",
 			"isDraggable": true,
