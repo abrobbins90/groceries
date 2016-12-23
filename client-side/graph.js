@@ -85,9 +85,7 @@ class Graph {
 
 }
 
-// Define a node
 class Node {
-	// Define an instance of a node
 	// A node possesses various properties, as well as edges to other nodes
 	// This node is meant to be a superclass
 	constructor(shownName = '', type) {

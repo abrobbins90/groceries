@@ -27,7 +27,7 @@ class ServerTalk {
 			username : "default",
 			password : "password"
 		};
-		this.send("login", data, "login")
+		// this.send("login", data, "login")
 	}
 	// Handle login information from the server
 	login(data) {
@@ -67,9 +67,9 @@ class ServerTalk {
 		}
 
 		this.mute = false;
-		
+
 		searchArea.launchSearch();
-		
+
 	}
 
 	// Send a request to the server
@@ -88,7 +88,7 @@ class ServerTalk {
 			this.queries[token] = responseFunction;
 		}
 		// send request onto the server through the socket
-		this.socket.send(outData)
+		// this.socket.send(outData)
 	}
 
 	// function receive messages from the server

@@ -83,8 +83,8 @@ class Box {
 
 		// Make box draggable if need be
 		if( options["isDraggable"] ){
-			this.$el.get(0).attr("draggable", true)
-			this.$el.get(0).on("dragstart", function(event) {
+			this.$el.attr("draggable", true)
+			this.$el.on("dragstart", function(event) {
 				event.originalEvent.dataTransfer.setData("text", event.target.id)
 			})
 		}
@@ -103,10 +103,9 @@ class Box {
 	}
 
 	constructContents() {
-		let box = this // only delete if you can verify this doesn't refer to jQuery element below
 		return $("<div/>")
 			.addClass("box_contents")
-			// note the actual text contents are added later
+			// note: the actual text contents are added later in .update
 	}
 
 	constructXButton() {

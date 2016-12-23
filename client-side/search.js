@@ -12,17 +12,17 @@ class SearchArea {
 			"XAction": undefined,
 		})
 		this.tab = {
-			mealLookup: $("#tab_mealLookup"),
+			mealSearch: $("#tab_mealSearch"),
 			ingrSearch: $("#tab_ingrSearch"),
 			menuGenerator: $("#tab_menuGenerator"),
 		};
 		this.sWindow = {
-			mealLookup: $("#sWindow_mealLookup"),
+			mealSearch: $("#sWindow_mealSearch"),
 			ingrSearch: $("#sWindow_ingrSearch"),
 			menuGenerator: $("#sWindow_menuGenerator"),
 		};
 		this.searchBox = {
-			mealLookup: $("#mealLookup"),
+			mealSearch: $("#mealSearch"),
 			ingrSearch: $("#ingrSearch"),
 			menuGenerator: $("#mealSpecifications"),
 		};
@@ -76,50 +76,30 @@ class SearchArea {
 	// Commence searching
 	launchSearch() {
 		let searchType = this.selectedTab;
-		if (searchType == "mealLookup") {
-			this.mealLookup();
+		if (searchType === "mealSearch") {
+			this.mealSearch()
 		}
-		else if (searchType == "ingrSearch") {
-			this.ingrSearch();
+		else if (searchType === "ingrSearch") {
+			this.ingrSearch()
 		}
+		else throw 'unknown search type'
 	}
 
-	// Search by by name
-	mealLookup() {
-		var searchStr = nameTrim(this.searchBox.mealLookup.val());
-
-		// If they leave it blank, show all meals
-		var mealNodes = graph.getNodesByID_partial("meal", "")
-		if (searchStr === "") {
-			for (let meal of mealNodes) {
-				if (!meal.inMenu) {
-					meal.addToMealResults();
-				}
+	// Search meal by name
+	mealSearch() {
+		var searchStr = nameTrim(this.searchBox.mealSearch.val());
+		var mealList = graph.getNodesByID_partial("meal", searchStr) // note that if searchStr is "", this returns ALL meals
+		// clear all meals then show search results
+		this.closet.destructBoxes()
+		for (let meal of mealList) {
+			if (!meal.inMenu) {
+				this.closet.add(meal)
 			}
 		}
-		else { // Otherwise, clear all then show search results
-			for (let meal of mealNodes) {
-				if (!meal.inMenu) {
-					meal.sendToLimbo();
-				}
-			}
-
-			var nodeList = graph.getNodesByID_partial("meal", searchStr)
-			for (let meal of nodeList) {
-				if (!mode.inMenu) {
-					meal.addToMealResults();
-				}
-			}
-		}
-
-
 	}
 	// Search by Ingredient
 	ingrSearch() {
-
 		alert("I haven't been programmed yet!")
-
-
 	}
 
 

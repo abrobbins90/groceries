@@ -53,7 +53,7 @@ function initTriggers() {
 	$('.Tab').click(function(){
 		searchArea.switchTab(this)
 	})
-	$('#mealLookup, #ingrSearch').keyup(function(){
+	$('#mealSearch, #ingrSearch').keyup(function(){
 		searchArea.launchSearch()
 	})
 
