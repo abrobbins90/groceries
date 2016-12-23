@@ -84,9 +84,7 @@ function initTriggers() {
 		groceryListArea.addNodeToMenu(node)
 	})
 
-	$('#print_button').click(function(){
-		groceryArea.print()
-	})
+	$('#print_button').click(groceryArea.groceryCloset.print)
 
 	/*
 	$('#mealNumValue').keyup(mealGenNum)

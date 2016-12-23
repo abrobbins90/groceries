@@ -4,14 +4,14 @@ class GroceryListArea {
 		this.name = "grocery"
 		this.graph = graph // graph storing all nodes
 		this.menuCloset = new Closet({ // keep track of all menu nodes
-			"appendLocation": "#groceryField",
+			"appendLocation": "#menuField",
 			"className": "meal_onMenu",
 			"isDraggable": true,
 			"isBoxXable": true,
 			"XAction": searchArea.launchSearch, // not sure why this doesn't take the node as input!!!!
-		});
+		})
 		this.groceryCloset = new Closet({ // keep track of all ingredients on menu
-			"appendLocation": "cssefhei",
+			"appendLocation": "#groceryField",
 			"className": "ingr_onMenu",
 			"isDraggable": false,
 			"isBoxXable": true,
@@ -22,7 +22,6 @@ class GroceryListArea {
 	// Add meal to menu
 	addNodeToMenu(node) { // same issue as above
 		node.selected = false;
-
 		this.menuCloset.add(node)
 	}
 
@@ -32,7 +31,7 @@ class GroceryListArea {
 		this.menuCloset.destructBoxes()
 		let mealNodes = graph.getNodesByID_partial("meal", "")
 		for (let meal of mealNodes) {
-			if (meal.inMenu) { // if in the menu
+			if (meal.inMenu) { // i don't think we need to keep track of what's on the menu by using inMenu anymore.  I think we can just use groceryListArea.menuCloset.boxes to see what's on the menu.  This is the next thing to take a look at and understand better. (todo)
 				this.menuCloset.add(meal)
 			}
 		}
@@ -49,8 +48,9 @@ class GroceryListArea {
 
 		// Now go through menu and tally up ingredients
 		this.groceryCloset.destructBoxes()
-		for (let mealNode of this.menuCloset) {
-			for (let edge of mealNode.edges) {
+		for (let box of this.menuCloset.boxes) {
+			let meal = box.node
+			for (let edge of meal.edges) {
 				if (edge.type === "ingr") { // Only tally ingredients
 					this.groceryCloset.add(edge) // add to list
 					edge.quantity++
@@ -66,16 +66,5 @@ class GroceryListArea {
 			this.selected = false;
 		}
 		this.groceryCloset.update()
-	}
-
-	print() { // i think this function is redundant.  Shouldn't we just call this.groceryCloset.print ?
-		let stringArray = []
-		for (let ingr of this.groceryCloset) {
-			stringArray.push(ingr.element.html())
-		}
-
-		let win = window.open()
-		win.document.write(stringArray.join("<br>"))
-		win.print()
 	}
 }
