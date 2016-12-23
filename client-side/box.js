@@ -21,6 +21,10 @@ class Closet {
 		)
 	}
 
+	update() {
+		for( box of this.boxes ) box.update()
+	}
+
 	toPrintableString() {
 		// We will populate a blank HTML page with this string and then print it
 		let stringArray = []

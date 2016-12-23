@@ -209,14 +209,6 @@ class IngrNode extends Node {
 		super(shownName, 'ingr');
 		this.quantity = 0;
 	}
-
-	// Add ingr to grocery list
-	addToGroceryList() { // erm
-		this.selected = false;
-
-		$("#groceryField").append(this.element);
-		this.element.addClass("ingr_onMenu");
-	}
 }
 
 class TagNode extends Node {
