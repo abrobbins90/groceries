@@ -6,10 +6,15 @@ class SearchArea {
 		this.graph = graph;
 		this.closet = new Closet(this, {
 			"appendLocation": "#search_results",
-			"className": "search_results_closet",
+			"className": "search_box",
 			"isDraggable": true,
 			"isBoxXable": false,
 			"XAction": undefined,
+			"doubleClick": function(event) {
+				let node = this.node
+				searchArea.closet.removeNode(node)
+				groceryArea.menuCloset.add(node)
+			}
 		})
 		this.tab = {
 			mealSearch: $("#tab_mealSearch"),

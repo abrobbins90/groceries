@@ -1,7 +1,7 @@
 // Define websocket to be used for server interaction
 
 class Socket { // manually extend WebSocket, because WebSocket didn't want to use "super"
-	constructor(serverClass) {
+	constructor(serverClass) {return
 		this.ws = new WebSocket("ws://{{host}}/mySocket")
 		this.ws.socket = this
 		this.serverClass = serverClass

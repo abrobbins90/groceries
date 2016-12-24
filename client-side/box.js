@@ -10,6 +10,8 @@ class Closet {
 			"isDraggable": false, // can this box be dragged between areas
 			"isBoxXable": false, // should an x-button be drawn in the box
 			"XAction": function(){}, // what should happen upon clicking the x
+			"singleClick": function(event) {this.selected = !this.selected},
+			"doubleClick": function(event) {},
 		}
 		options = $.extend({}, defaults, options)
 		this.options = options
@@ -92,14 +94,16 @@ class Box {
 		this.node = node
 		this.closet = closet
 		this.node.boxes.add(this) // so node is aware of the box and can update it
-		this.XAction = options["XAction"] // a function to perform on XButton.click
+		this.XAction = options["XAction"] // add functions that respond to clicks
+		this.singleClick = options["singleClick"]
+		this.doubleClick = options["doubleClick"]
 		this.$el = this.constructElement(options)
 		this.selected = false // keep track of box's selection status (like when user clicks)
 
 
 		// Add click events to the element
 		this.clickFlag = 0; // used to keep track of clicks vs dbl clicks
-		this.$el.get(0).click(this.click.bind(this));
+		this.$el.children("div.box_contents").click(this.click.bind(this));
 
 		// attach element to DOM
 		let appendLocation = options["appendLocation"]
@@ -215,12 +219,6 @@ class Box {
 				this.clickFlag = 0;
 			}.bind(this), 300) // ms delay to qualify as a double click
 		}
-	}
-	singleClick(event) {
-		this.selected = !this.selected;
-	}
-	doubleClick(event) {
-		// pass
 	}
 
 	disable() { // this greys out the box and makes it uninteractible

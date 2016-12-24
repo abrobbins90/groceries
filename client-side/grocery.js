@@ -3,12 +3,18 @@ class GroceryListArea {
 	constructor(graph) {
 		this.name = "grocery"
 		this.graph = graph // graph storing all nodes
+		let removeFromMenu = function(event) {
+			let node = this.node
+			groceryArea.menuCloset.removeNode(node)
+			searchArea.launchSearch()
+		}
 		this.menuCloset = new Closet(this, { // keep track of all menu nodes
 			"appendLocation": "#menuField",
-			"className": "meal_onMenu",
+			"className": "menuMeal_box",
 			"isDraggable": true,
 			"isBoxXable": true,
-			"XAction": searchArea.launchSearch,
+			"XAction": removeFromMenu,
+			"doubleClick": removeFromMenu,
 			"onSelectionChange": function(){this.groceryCloset.update()}.bind(this),
 			"shouldBeHighlighted": function(mainBox) {
 				for (let node in mainBox.node.edges) {
@@ -23,7 +29,7 @@ class GroceryListArea {
 		})
 		this.groceryCloset = new Closet(this, { // keep track of all ingredients on menu
 			"appendLocation": "#groceryField",
-			"className": "ingr_onMenu",
+			"className": "menuIngr_box",
 			"isDraggable": false,
 			"isBoxXable": true,
 			"XAction": this.disable,

@@ -32,6 +32,7 @@ class RecipeArea {
 				recipe.removeEdge(this.node.type, this.node.name)
 				this.destruct()
 			},
+			"singleClick": function(event) {}, 
 		})
 
 		this.input = new Input()
@@ -84,6 +85,7 @@ class RecipeArea {
 			}
 			
 			this.input[type].val("") // clear entry area
+			this.input[type].removeClass("input_selected")
 		}
 
 		this.writeDisplay()
