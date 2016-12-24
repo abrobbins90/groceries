@@ -29,7 +29,7 @@ class RecipeArea {
 			"isDraggable": false,
 			"isBoxXable": true,
 			"XAction": function(){
-				recipe.removeEdge(this.node, graph.selectedMeal)
+				recipe.removeEdge(this.node.type, this.node.name)
 				this.destruct()
 			},
 		})
@@ -73,13 +73,17 @@ class RecipeArea {
 		let node = this.graph.addNode(type, shownName)
 
 		if( type !== 'meal' ){
+			// Check to see if this node is already an edge
+			if (this.selectedMeal.edges.has(node)) return node // do nothing
+
 			this.graph.addEdge(this.selectedMeal, node)
 			// if the selected meal is on the menu, and it's being added to right now,
 			// update the grocery list
 			if (this.selectedMeal.inMenu) {
 				groceryArea.updateGroceryList()
 			}
-
+			
+			this.input[type].val("") // clear entry area
 		}
 
 		this.writeDisplay()
@@ -135,17 +139,18 @@ class RecipeArea {
 	////////// Recipe Display Functions
 
 	clearDisplay() {
-		this._clearCloset()
-		if( this.mode === "open" ) this._toggleDisplay()
+		if( this.mode === "open" ) {
+			this._clearCloset()
+			this._toggleDisplay()
+		}
 		this.mode = "closed"
 	}
 
 	writeDisplay() {
-		this._clearCloset()
 		if( this.mode === "closed" ) this._toggleDisplay()
 		this.mode = "open"
 
-		this._writeNeighbors()
+		this._fillCloset()
 	}
 
 	_toggleDisplay() {
@@ -162,9 +167,7 @@ class RecipeArea {
 		this.input.tag.removeClass("input_selected").val("")
 	}
 
-	_writeNeighbors() {
-		for (let node of this.selectedMeal.edges) {
-			this.closet.add(node)
-		}
+	_fillCloset() {
+		this.closet.addNodes(Array.from(this.selectedMeal.edges), true)
 	}
 }

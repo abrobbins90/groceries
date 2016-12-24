@@ -40,9 +40,6 @@
 	justify-content: flex-start;
 	padding-top: 10px;
 }
-.input_selected {
-	border-color: dodgerblue;
-}
 
 /* Input closet*/
 .node_input {
@@ -59,6 +56,9 @@
 }
 .node_input::-webkit-input-placeholder {
 	color: #555555;
+}
+.input_selected {
+	border-color: dodgerblue;
 }
 
 
@@ -102,6 +102,7 @@
 }
 .recipe_box { /*Box to hold item names and remove buttons*/
 	background-color: #FF9999;
+	margin: 0px 0px 3px 0px;
 }
 .box_contents {
 	font-family: "Arial";
@@ -379,45 +380,5 @@
 #clearMeals {
 	top: 0px;
 	right: 0px;
-}
-
-
-
-/***** Nodes *****/
-
-.word_text { /* All node elements */
-	cursor: pointer;
-	user-select: none;
-	margin: 1px;
-}
-.node_unselect { /* Any nodes currently selected */
-	padding: 3px;
-	border: 0px;
-}
-.node_select { /* Any nodes currently selected */
-	padding: 1px;
-	border: 2px solid white;
-	border-radius: 4px;
-}
-
-.meal_search { /* Meals in the search box */
-
-}
-.meal_onMenu { /* Meals on the menu */
-
-}
-
-.ingr_onMenu { /* Ingredient in the menu */
-
-}
-
-
-
-#extramenu {
-	display: none;
-	position: absolute;
-	top: 510px;
-	padding: 2px;
-	background-color: #CACBB5;
 }
 

@@ -22,11 +22,48 @@ class Closet {
 	}
 
 	add(node) { // Create a new Box element
-		// assuming we don't want the same node to appear twice in a closet, should we make this check for redundancy?
-		this.boxes.push(
-			new Box(node, this, this.options)
-		)
+		if (!this.getBoxByNode(node)) {
+			this.boxes.push( new Box(node, this, this.options) )
+		}
 	}
+	addNodes(nodeList, clear = false) { // add multiple nodes
+		// <clear> indicates whether to remove existing nodes/boxes first
+		if (clear) { // Clear boxes in the closet not in nodeList
+			let boxes = this.boxes.slice()
+			let index
+			for ( let box of boxes ) {
+				index = nodeList.indexOf(box.node)
+				if (index === -1) { // not in list
+					box.destruct()
+				}
+				else { // in list already, so clear from nodeList
+					nodeList.splice(index, 1)
+				}
+			}
+		}
+		// Now add all elements of nodeList
+		nodeList.forEach(this.add.bind(this))
+	}
+
+	removeNode(node) { // remove a box with a particular node
+		 let box = this.getBoxByNode(node)
+		 if (box) box.destruct()
+	}
+
+	destructBoxes() {
+		let boxes = this.boxes.slice()
+		for( let box of boxes ){
+			box.destruct()
+		}
+	}
+
+	getBoxByNode(node) {
+		for( let box of this.boxes ) {
+			if( box.node === node ) return box
+		}
+		return false
+	}
+
 
 	update() {
 		for( box of this.boxes ) box.update()
@@ -45,21 +82,6 @@ class Closet {
 		let win = window.open()
 		win.document.write(this.toPrintableString())
 		win.print()
-	}
-
-	removeNode(node) {
-		for( let box in this.boxes )if( box.node === node ) box.destruct()
-	}
-
-	remove(box) {
-		let index = this.boxes.indexOf(box)
-		this.boxes.splice(index, 1)
-	}
-
-	destructBoxes() {
-		for( let box of this.boxes ){
-			box.destruct()
-		}
 	}
 
 
@@ -106,7 +128,10 @@ class Box {
 			.addClass("box")
 			.addClass(this.node.type + "_box")
 			.addClass(options["className"])
-		if( options["isBoxXable"] ) $b.append(this.constructXButton())
+		if( options["isBoxXable"] ) {
+			$b.addClass("Xable")
+			$b.append(this.constructXButton())
+		}
 		return $b
 	}
 
@@ -126,15 +151,10 @@ class Box {
 	}
 
 	update() {
-		this.$el.html(this.contents)
+		this.$el.children("div.box_contents").html(this.contents)
 
 		// Update highlighting
 		this.highlighted = this.closet.shouldBeHighlighted(this)
-	}
-
-	toPrintableString() {
-		// any modifications for printing can go here
-		return this.contents
 	}
 
 	get contents() {
@@ -150,6 +170,13 @@ class Box {
 		return "Box_el_" + "in_Area_" + this.closet.area.name + "_for_Node_" + this.node.id
 	}
 
+
+	destruct() {
+		this.$el.remove() // delete HTML element
+		this.node.boxes.delete(this) // remove box record from node
+		let index = this.closet.boxes.indexOf(this) // remove from closet
+		this.closet.boxes.splice(index, 1)
+	}
 
 	get selected() {
 		return this._selected
@@ -203,10 +230,10 @@ class Box {
 		this.$el.removeClass("disabled")
 	}
 
-	destruct() {
-		this.$el.remove()
-		this.closet.remove(this)
-		this.node.boxes.delete(this)
+
+	toPrintableString() {
+		// any modifications for printing can go here
+		return this.contents
 	}
 }
 
