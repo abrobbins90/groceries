@@ -42,22 +42,22 @@
 	</div>
 
 	<div id="search_area">
-		<div id="search_tab">
+		<div id="search_tabs">
 			<div id="tab_mealSearch" class="Tab tab_selected">Meal Lookup</div>
-			<div id="tab_ingrSearch" class="Tab tab_unselected">Ingredient Search</div>
-			<div id="tab_menuGenerator" class="Tab tab_unselected">Menu Generator</div>
+			<div id="tab_ingrSearch" class="Tab">Ingredient Search</div>
+			<div id="tab_menuGenerator" class="Tab">Menu Generator</div>
 		</div>
 
-		<div id="search_window">
-			<div id="sWindow_mealSearch" class="SearchArea area_selected">
+		<div id="search_windows">
+			<div id="sWindow_mealSearch" class="SearchWindow window_selected">
 				<div>Search for Meals:</div>
 				<input type="text" id="mealSearch" placeholder="Search Meals..."></input>
 			</div>
-			<div id="sWindow_ingrSearch" class="SearchArea area_unselected">
+			<div id="sWindow_ingrSearch" class="SearchWindow">
 				<div>Search Meals by Ingredients:</div>
 				<input type="text" id="ingrSearch" placeholder="Search By Ingredient..."></textarea>
 			</div>
-			<div id="sWindow_menuGenerator" class="SearchArea area_unselected">
+			<div id="sWindow_menuGenerator" class="SearchWindow">
 				<div>
 					<div>
 						# of Meals:
@@ -97,21 +97,6 @@
 		</div>
 	</div>
 
-</div>
-
-<div id="limbo"></div>
-
-<div id="extraMenu">
-	<input type="button" id="saveButton" value="Save"></input>
-	<input type="text" id="saveOrLoadRecord" size="1"></input>
-	<input type="button" id="loadButton" value="Load"></input>
-	<br />
-	<input type="button" id="unselectAll" value="Unselect All"></input>
-	<br />
-	<input type="button" id="undo" class="history" value="Undo" disabled="disabled"></input>
-	<input type="button" id="redo" class="history" value="Redo" disabled="disabled"></input>
-	<br />
-	<input id="qmenu" type="button" value="Done"></input>
 </div>
 
 </body>

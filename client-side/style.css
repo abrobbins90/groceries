@@ -26,10 +26,10 @@
 	transition: all .2s;
 }
 
-.Xable:not(.disabled):hover > .box_contents {
+.Xable:hover > .box_contents {
 	padding: 2px 4px 2px 2px;
 }
-.Xable:not(.disabled):hover > .XButton {
+.Xable:hover > .XButton {
 	width: 21px;
 }
 .XButton {
@@ -135,7 +135,7 @@
 	border: 2px solid #FF9999;
 	margin: 0px 0px 3px 0px;
 }
-.Xable.recipe_box:not(.disabled):hover > .XButton {
+.Xable.recipe_box:hover > .XButton {
 	background-color: #FF9999;
 	color: #FFFFFF;
 	border-left: 1px solid #FF5555;
@@ -152,7 +152,7 @@
 }
 
 /* Tabs */
-#search_tab{
+#search_tabs{
 	display: flex
 }
 
@@ -171,13 +171,11 @@
 	padding: 8px 6px;
 	border: none;
 	transition: all .3s;
-}
-.tab_unselected {
 	background-color: #DDDDDD;
 	color: #000000;
 	cursor: pointer;
 }
-.tab_unselected:hover {
+.Tab:not(.tab_selected):hover {
 	background-color: #000000;
 	color: #DDDDDD;
 	z-index: 2;
@@ -189,18 +187,18 @@
 }
 
 /* Search Areas */
-#search_window {
+#search_windows {
 	flex: 0 0 100px;
 	display: flex;
 }
-.area_selected {
+.SearchWindow {
+	display: none;
+}
+.window_selected {
 	flex: 1 1 auto;
 	background-color: #444444;
 	color: #FFFFFF;
 	display: flex;
-}
-.area_unselected {
-	display: none;
 }
 
 /* Meal Lookup*/
@@ -354,13 +352,23 @@
 	border: 2px solid #69F;
 	margin: 0px 0px 3px 0px;
 }
-.Xable.menuMeal_box:not(.disabled):hover > .XButton {
+.Xable.menuMeal_box:hover > .XButton {
+	color: #FFFFFF;
+	border-left: 1px solid #58F;
+}
+
+.menuIngr_box {
+	background-color: #69F;
+	border: 2px solid #69F;
+	margin: 0px 0px 3px 0px;
+}
+.Xable.menuIngr_box:hover > .XButton {
 	color: #FFFFFF;
 	border-left: 1px solid #58F;
 }
 /* Box Effects*/
 .disabled {
-	opacity: 0.5;
+	opacity: 0.35;
 }
 .box_selected {
 	border-color: #36F;
