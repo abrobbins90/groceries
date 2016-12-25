@@ -19,6 +19,7 @@ class ServerTalk {
 
 	// assign socket and try to log in once socket opens
 	onopen(socket) {
+
 		this.socket = socket;
 		// Try to login if there is enough information
 
@@ -88,7 +89,7 @@ class ServerTalk {
 			this.queries[token] = responseFunction;
 		}
 		// send request onto the server through the socket
-		// this.socket.send(outData)
+		this.socket.send(outData)
 	}
 
 	// function receive messages from the server
