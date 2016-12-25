@@ -2,6 +2,7 @@ import json
 from os import path
 
 from tornado.web import RequestHandler
+from tornado.web import RedirectHandler
 from tornado.web import StaticFileHandler
 from tornado.websocket import WebSocketHandler
 from tornado.web import Application
@@ -46,7 +47,7 @@ class SocketHandler (WebSocketHandler):
 		else:
 			respond = False
 		response = {} # Initialize as dictionary
-		
+
 		### Check the command received and proceed accordingly
 		# user commands
 		if command == "login":
@@ -111,12 +112,12 @@ class SocketHandler (WebSocketHandler):
 			response["status"] = True
 			response["data"] = self.db.load()
 			print 'Sent full data back to user'
-		
+
 		# If a response is expected, send onem even if it's empty
 		if respond:
 			response["token"] = token
 			self.send_message('response', response)
-		
+
 	def send_message(self, command, data):
 		self.write_message({
 			'command': command,
@@ -138,8 +139,9 @@ class JSSocketHandler (RequestHandler):
 def make_app():
 	return Application(
 		[
-			url('/mySocket', SocketHandler, {} , name = "a"),
-			url('/socket.js', JSSocketHandler, {}, name = "b"),
+			url(r'/mySocket', SocketHandler, {} , name = "a"),
+			url(r'/socket\.js', JSSocketHandler, {}, name = "b"),
+			url(r'/?', RedirectHandler, { "url": "index.html" }),
 			url(r'/(.*)', StaticFileHandler, { "path": CLIENT_SIDE_DIRECTORY_PATH }) # captures anything at all, and serves it as a static file. simple!
 		],
 		#settings

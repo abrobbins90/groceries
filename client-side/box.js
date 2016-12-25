@@ -151,7 +151,7 @@ class Box {
 	}
 
 	update() {
-		this.$el.children("div.box_contents").html(this.contents)
+		this.$el.children(".box_contents").html(this.contents)
 
 		// Update highlighting
 		this.highlighted = this.closet.shouldBeHighlighted(this)
