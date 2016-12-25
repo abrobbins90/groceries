@@ -68,14 +68,32 @@ class SearchArea {
 
 	// Search meal by name
 	mealSearch() {
-		var searchStr = nameTrim(this.searchBox.mealSearch.val())
-		var mealList = graph.getNodesByID_partial("meal", searchStr) // note that if searchStr is "", this returns ALL meals
+		let searchStr = nameTrim(this.searchBox.mealSearch.val())
+		let mealList = graph.getNodesByID_partial("meal", searchStr) // note that if searchStr is "", this returns ALL meals
 		mealList = mealList.filter(function(meal) {return !meal.inMenu})
 		this.closet.addNodes(mealList, true)
 	}
 	// Search by Ingredient
 	ingrSearch() {
-		alert("I haven't been programmed yet!")
+		let searchStr = nameTrim(this.searchBox.ingrSearch.val())
+		// split at commas to get separate tags
+		let searchStrs = searchStr.split(/_*,_*/g)
+		// Collect matching ingredients/tags from each search string
+		let nodeList = []
+		for (let str of searchStrs) {
+			nodeList = nodeList.concat(graph.getNodesByID_partial("ingr", str))
+			nodeList = nodeList.concat(graph.getNodesByID_partial("tag", str))
+		}
+		let nodeSet = new Set(nodeList) // ensure uniqueness
+		// go through each node and collect all edges
+		let mealList = []
+		for (let node of nodeSet) {
+			mealList = mealList.concat(Array.from(node.edges))
+		}
+		mealList = Array.from(new Set(mealList)) // ensure uniqueness
+		mealList = mealList.filter(function(meal) {return !meal.inMenu})
+		this.closet.addNodes(mealList, true)
+
 	}
 
 
