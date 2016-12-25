@@ -27,7 +27,7 @@ class ServerTalk {
 			username : "default",
 			password : "password"
 		};
-		// this.send("login", data, "login")
+		this.send("login", data, "login")
 	}
 	// Handle login information from the server
 	login(data) {

@@ -4,13 +4,7 @@ class SearchArea {
 	constructor(graph) {
 		this.name = "search"
 		this.graph = graph;
-		this.closet = new Closet(this, {
-			"appendLocation": "#search_results",
-			"className": "search_results_closet",
-			"isDraggable": true,
-			"isBoxXable": false,
-			"XAction": undefined,
-		})
+		this.closet = new SearchCloset(this)
 		this.tab = {
 			mealSearch: $("#tab_mealSearch"),
 			ingrSearch: $("#tab_ingrSearch"),
@@ -37,37 +31,24 @@ class SearchArea {
 	}
 
 	getElName(el) {
-		return el.id.match(/[^_]+$/);
-	}
-
-	//switch between search tabs
-	switchTab(el) {
-		// if click was current selection, do nothing
-		if (!this.switchTab(el)) {return}
-
-		//this.launchSearch();
-		//transferButtons();
+		return el.id.match(/[^_]+$/)
 	}
 
 	// Switch the tab that is selected when the user clicks a new one
 	switchTab(newTabEl) {
 		// If clicked tab is already selected, do nothing
-		var oldTab = this.selectedTab;
-		var newTab = this.getElName(newTabEl);
-		if (oldTab === newTab) return false;
+		var oldTab = this.selectedTab
+		var newTab = this.getElName(newTabEl)
+		if (oldTab === newTab) { return } 
 
 		// unselect old tab
-		this.tab[oldTab].removeClass("tab_selected");
-		this.tab[oldTab].addClass("tab_unselected");
-		this.sWindow[oldTab].removeClass("area_selected");
-		this.sWindow[oldTab].addClass("area_unselected");
+		this.tab[oldTab].removeClass("tab_selected")
+		this.sWindow[oldTab].removeClass("window_selected")
 		// select new tab
-		this.tab[newTab].removeClass("tab_unselected");
-		this.tab[newTab].addClass("tab_selected");
-		this.sWindow[newTab].removeClass("area_unselected");
-		this.sWindow[newTab].addClass("area_selected");
+		this.tab[newTab].addClass("tab_selected")
+		this.sWindow[newTab].addClass("window_selected")
 
-		return true
+		this.launchSearch()
 	}
 
 
@@ -75,7 +56,7 @@ class SearchArea {
 
 	// Commence searching
 	launchSearch() {
-		let searchType = this.selectedTab;
+		let searchType = this.selectedTab
 		if (searchType === "mealSearch") {
 			this.mealSearch()
 		}
@@ -87,15 +68,10 @@ class SearchArea {
 
 	// Search meal by name
 	mealSearch() {
-		var searchStr = nameTrim(this.searchBox.mealSearch.val());
+		var searchStr = nameTrim(this.searchBox.mealSearch.val())
 		var mealList = graph.getNodesByID_partial("meal", searchStr) // note that if searchStr is "", this returns ALL meals
-		// clear all meals then show search results
-		this.closet.destructBoxes()
-		for (let meal of mealList) {
-			if (!meal.inMenu) {
-				this.closet.add(meal)
-			}
-		}
+		mealList = mealList.filter(function(meal) {return !meal.inMenu})
+		this.closet.addNodes(mealList, true)
 	}
 	// Search by Ingredient
 	ingrSearch() {

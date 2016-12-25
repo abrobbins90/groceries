@@ -8,6 +8,43 @@
 	display: flex;
 }
 
+/*** General Box Settings ***/
+
+.box { /* Box to hold node names and X buttons*/
+	border-radius: 4px;
+	-webkit-border-radius: 4px; /* no idea why the browsers need this!  Modern browsers should do fine with border-radius */
+	overflow: hidden;
+}
+.box_contents {
+	font-family: "Arial";
+	font-size: 15px;
+	display: inline-block;
+	padding: 2px;
+}
+.Xable > .box_contents {
+	padding: 2px 14px 2px 14px;
+	transition: all .2s;
+}
+
+.Xable:hover > .box_contents {
+	padding: 2px 4px 2px 2px;
+}
+.Xable:hover > .XButton {
+	width: 21px;
+}
+.XButton {
+	display: inline-block;
+	width: 0px;
+	border-left: 0px;
+	padding: 0px;
+	outline: none;
+	cursor: pointer;
+	font-size: 15px;
+	text-align: center;
+	transition: all .2s; /* was only 'width' before */
+}
+
+
 /***** Recipe Entry Panel *****/
 #recipe_area {
 	display: flex;
@@ -93,57 +130,19 @@
 	display: none;
 }
 
-/* Box things! */
-.box { /* Box to hold node names and X buttons*/
-	border: 10px;
-	border-radius: 4px;
-	-webkit-border-radius: 4px; /* no idea why the browsers need this!  Modern browsers should do fine with border-radius */
-	overflow: hidden;
-}
 .recipe_box { /*Box to hold item names and remove buttons*/
 	background-color: #FF9999;
+	border: 2px solid #FF9999;
 	margin: 0px 0px 3px 0px;
 }
-.box_contents {
-	font-family: "Arial";
-	font-size: 15px;
-	display: inline-block;
-	padding: 4px 16px 4px 16px;
-	transition: all .2s;
-}
-.Xable:not(.disabled):hover > .box_contents {
-	padding: 4px;
-}
-.Xable:not(.disabled):hover > .XButton {
-	width: 23px;
-	border-left: 1px solid #FF5555;
-}
-.XButton {
-	display: inline-block;
-	width: 0px;
-	border-left: 0px;
-	padding: 0px;
-	outline: none;
-	cursor: pointer;
+.Xable.recipe_box:hover > .XButton {
 	background-color: #FF9999;
 	color: #FFFFFF;
-	font-size: 15px;
-	text-align: center;
-	transition: all .2s; /* was only 'width' before */
-}
-.disabled {
-	background-color: #00FF00;
-}
-
-.box_selected {
-	border-color: dodgerblue;
-}
-.box_highlighted {
-	border-color: gold;
+	border-left: 1px solid #FF5555;
 }
 
 
-/***** Search Area Panel *****/
+/***** _result Area Panel *****/
 
 #search_area {
 	flex: 2 0 300px;
@@ -153,7 +152,7 @@
 }
 
 /* Tabs */
-#search_tab{
+#search_tabs{
 	display: flex
 }
 
@@ -172,13 +171,11 @@
 	padding: 8px 6px;
 	border: none;
 	transition: all .3s;
-}
-.tab_unselected {
 	background-color: #DDDDDD;
 	color: #000000;
 	cursor: pointer;
 }
-.tab_unselected:hover {
+.Tab:not(.tab_selected):hover {
 	background-color: #000000;
 	color: #DDDDDD;
 	z-index: 2;
@@ -190,18 +187,18 @@
 }
 
 /* Search Areas */
-#search_window {
+#search_windows {
 	flex: 0 0 100px;
 	display: flex;
 }
-.area_selected {
+.SearchWindow {
+	display: none;
+}
+.window_selected {
 	flex: 1 1 auto;
 	background-color: #444444;
 	color: #FFFFFF;
 	display: flex;
-}
-.area_unselected {
-	display: none;
 }
 
 /* Meal Lookup*/
@@ -280,10 +277,20 @@
 	padding: 2px;
 	flex: 1 0 200px;
 	display: flex;
+	background-color: #AAAAAA;
 	flex-direction: column;
 	align-items: flex-start;
 	flex-wrap: wrap;
 }
+.search_box {
+	border: 2px solid #AAAAAA;
+	margin: 0px 0px 3px 0px;
+}
+/* Box Effects*/
+.search_box.box_selected {
+	border-color: #444444;
+}
+
 
 
 /***** Menu/ingr List Panel (part of GroceryListArea!)*****/
@@ -339,6 +346,36 @@
 	flex-wrap: wrap;
 	align-items: flex-start;
 }
+/*Box Properties*/
+.menuMeal_box {
+	background-color: #69F;
+	border: 2px solid #69F;
+	margin: 0px 0px 3px 0px;
+}
+.Xable.menuMeal_box:hover > .XButton {
+	color: #FFFFFF;
+	border-left: 1px solid #58F;
+}
+
+.menuIngr_box {
+	background-color: #69F;
+	border: 2px solid #69F;
+	margin: 0px 0px 3px 0px;
+}
+.Xable.menuIngr_box:hover > .XButton {
+	color: #FFFFFF;
+	border-left: 1px solid #58F;
+}
+/* Box Effects*/
+.disabled {
+	opacity: 0.35;
+}
+.box_selected {
+	border-color: #36F;
+}
+.box_highlighted {
+	border-color: gold;
+}
 
 
 /* print button */
@@ -356,7 +393,6 @@
 	background-color: #0F0;
 	color: #FFFFFF;
 }
-
 
 
 
@@ -381,4 +417,3 @@
 	top: 0px;
 	right: 0px;
 }
-

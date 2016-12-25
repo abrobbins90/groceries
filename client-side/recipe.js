@@ -19,23 +19,8 @@ class RecipeArea {
 	constructor(graph) {
 		this.name = "recipe"
 		this.graph = graph
-
-		function appendLocation(box){
-			return "#" + box.node.type + "_entry"
-		}
-		this.closet = new Closet(this, {
-			"appendLocation": appendLocation,
-			"className": "recipe_box",
-			"isDraggable": false,
-			"isBoxXable": true,
-			"XAction": function(){
-				recipe.removeEdge(this.node.type, this.node.name)
-				this.destruct()
-			},
-		})
-
+		this.closet = new RecipeCloset(this)
 		this.input = new Input()
-
 		this.mode = "closed"
 	}
 
@@ -84,6 +69,7 @@ class RecipeArea {
 			}
 			
 			this.input[type].val("") // clear entry area
+			this.input[type].removeClass("input_selected")
 		}
 
 		this.writeDisplay()
@@ -92,6 +78,9 @@ class RecipeArea {
 			// Put focus on new ingredient field, assuming that's next!
 			this.input.ingr.focus()
 		}
+
+		// After new node creation, repeat search
+		searchArea.launchSearch()
 
 		return node
 	}

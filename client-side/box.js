@@ -4,18 +4,14 @@ class Closet {
 		let defaults = {
 			"appendLocation": undefined, // css selector
 			"className": "", // single classname to apply to box elements
-			"onSelectionChange": function(){},
-			"shouldBeHighlighted": function(){},
-
 			"isDraggable": false, // can this box be dragged between areas
 			"isBoxXable": false, // should an x-button be drawn in the box
 			"XAction": function(){}, // what should happen upon clicking the x
+			"singleClick": function(event) {this.selected = !this.selected},
+			"doubleClick": function(event) {},
 		}
 		options = $.extend({}, defaults, options)
 		this.options = options
-
-		this.onSelectionChange = options["onSelectionChange"]
-		this.shouldBeHighlighted = options["shouldBeHighlighted"]
 
 		this.area = area
 		this.boxes = []
@@ -25,6 +21,7 @@ class Closet {
 		if (!this.getBoxByNode(node)) {
 			this.boxes.push( new Box(node, this, this.options) )
 		}
+		this.onChange()
 	}
 	addNodes(nodeList, clear = false) { // add multiple nodes
 		// <clear> indicates whether to remove existing nodes/boxes first
@@ -43,11 +40,13 @@ class Closet {
 		}
 		// Now add all elements of nodeList
 		nodeList.forEach(this.add.bind(this))
+		this.onChange()
 	}
 
 	removeNode(node) { // remove a box with a particular node
 		 let box = this.getBoxByNode(node)
 		 if (box) box.destruct()
+		 this.onChange()
 	}
 
 	destructBoxes() {
@@ -65,8 +64,8 @@ class Closet {
 	}
 
 
-	update() {
-		for( box of this.boxes ) box.update()
+	updateBoxes() {
+		for( let box of this.boxes ) box.update()
 	}
 
 	toPrintableString() {
@@ -84,22 +83,125 @@ class Closet {
 		win.print()
 	}
 
-
+	// default functions that might be overwritten in subclasses
+	onSelectionChange() {}
+	shouldBeHighlighted(box) {return false}
+	onChange() {}
 }
+
+class RecipeCloset extends Closet {
+	// Define a subclass of closet specific to the recipe area
+	constructor(area) {
+		let options = {
+			"appendLocation": function (box){ return "#" + box.node.type + "_entry"	},
+			"className": "recipe_box",
+			"isDraggable": false,
+			"isBoxXable": true,
+			"XAction": function(){
+				recipe.removeEdge(this.node.type, this.node.name)
+				this.destruct()
+			},
+			"singleClick": function(event) {},
+		}
+		super(area, options)
+	}
+	
+}
+class SearchCloset extends Closet {
+	// Define a subclass of closet specific to the search area
+	constructor(area) {
+		let options = {
+			"appendLocation": "#search_results",
+			"className": "search_box",
+			"isDraggable": true,
+			"isBoxXable": false,
+			"XAction": undefined,
+			"doubleClick": function(event) {
+				let node = this.node
+				searchArea.closet.removeNode(node)
+				groceryArea.menuCloset.add(node)
+			},
+		}
+		super(area, options)
+	}
+}
+class MenuCloset extends Closet {
+	// Define a subclass of closet specific to the menu area
+	constructor(area) {
+		let removeFromMenu = function(event) {
+			let node = this.node
+			groceryArea.menuCloset.removeNode(node)
+			searchArea.launchSearch()
+		}
+		let options = {
+			"appendLocation": "#menuField",
+			"className": "menuMeal_box",
+			"isDraggable": true,
+			"isBoxXable": true,
+			"XAction": removeFromMenu,
+			"doubleClick": removeFromMenu,
+		}
+		super(area, options)
+	}
+	onSelectionChange() { 
+		groceryArea.groceryCloset.updateBoxes()
+	}
+	shouldBeHighlighted(mainBox) {
+		for (let box of groceryArea.groceryCloset.boxes) {
+			if (mainBox.node.edges.has(box.node) && box.selected) {return true}
+		}
+		return false
+	}
+	onChange() {
+		groceryArea.updateGroceryList()
+	}
+}
+class GroceryCloset extends Closet {
+	// Define a subclass of closet specific to the grocery area
+	constructor(area) {
+		let options = {
+			"appendLocation": "#groceryField",
+			"className": "menuIngr_box",
+			"isDraggable": false,
+			"isBoxXable": true,
+			"XAction": function() {
+				this.disable()
+				this.$el.children(".XButton").click(function() {
+					this.enable()
+					this.$el.children(".XButton").click(this.XAction.bind(this))
+				}.bind(this))
+			},
+		}
+		super(area, options)
+	}
+	onSelectionChange() { 
+		groceryArea.menuCloset.updateBoxes()
+	}
+	shouldBeHighlighted(mainBox) {
+		for (let box of groceryArea.menuCloset.boxes) {
+			if (mainBox.node.edges.has(box.node) && box.selected) {return true}
+		}
+		return false
+	}
+}
+
+
 
 class Box {
 	constructor(node, closet, options) {
 		this.node = node
 		this.closet = closet
 		this.node.boxes.add(this) // so node is aware of the box and can update it
-		this.XAction = options["XAction"] // a function to perform on XButton.click
+		this.XAction = options["XAction"] // add functions that respond to clicks
+		this.singleClick = options["singleClick"]
+		this.doubleClick = options["doubleClick"]
 		this.$el = this.constructElement(options)
 		this.selected = false // keep track of box's selection status (like when user clicks)
 
 
 		// Add click events to the element
 		this.clickFlag = 0; // used to keep track of clicks vs dbl clicks
-		this.$el.get(0).click(this.click.bind(this));
+		this.$el.children("div.box_contents").click(this.click.bind(this));
 
 		// attach element to DOM
 		let appendLocation = options["appendLocation"]
@@ -178,9 +280,7 @@ class Box {
 		this.closet.boxes.splice(index, 1)
 	}
 
-	get selected() {
-		return this._selected
-	}
+	get selected() { return this._selected }
 
 	set selected(TF) {
 		this._selected = TF
@@ -192,7 +292,10 @@ class Box {
 		this.closet.onSelectionChange(this)
 	}
 
+	get highlighted() { return this._highlighted }
+
 	set highlighted(TF) {
+		this._highlighted = TF
 		if (TF) {
 			this.$el.addClass("box_highlighted")
 		}
@@ -215,12 +318,6 @@ class Box {
 				this.clickFlag = 0;
 			}.bind(this), 300) // ms delay to qualify as a double click
 		}
-	}
-	singleClick(event) {
-		this.selected = !this.selected;
-	}
-	doubleClick(event) {
-		// pass
 	}
 
 	disable() { // this greys out the box and makes it uninteractible
