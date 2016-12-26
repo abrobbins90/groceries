@@ -12,9 +12,8 @@
 class ServerTalk {
 	constructor() {
 		this.socket = undefined // will add this when socket is opened
-		this.username = ""
 		this.queries = {} // list of open queries
-		this.mute = false
+		this.mute = true
 	}
 
 	// assign socket and try to log in once socket opens
@@ -22,55 +21,9 @@ class ServerTalk {
 		this.socket = socket;
 		// Try to login if there is enough information
 
-		// For now, just try to do a default login
-		let data = {
-			username : "default",
-			password : "password"
-		};
-		this.send("login", data, "login")
+		// program to check cookies for old login information
 	}
-	// Handle login information from the server
-	login(data) {
-		let success = data.status;
-		if (success) { // Successfully logged in
-			let username = data.username;
-			this.username = username;
 
-			// Import all of the users data from the server
-			this.importData(data.data);
-
-		}
-		else { // unsuccessfull login attempt
-
-		}
-
-	}
-	// Import ALL of the server's data for this user
-	importData(data) {
-		// While importing is happening, as nodes, etc. are created
-		// mute all outgoing messages
-		this.mute = true;
-
-		// data should be an object whose keys are node IDs
-		// the contents of each should contain all required node information
-		for (let id in data) {
-			// Make it easier to access node for edges
-			data[id].node = graph.addNode(data[id].type, data[id].shownName)
-			// Any additional relevant fields...
-		}
-		// Repeat loop but for edges
-		for (let id1 in data) {
-			let edges = data[id1].edges;
-			for (let id2 of edges) {
-				graph.addEdge(data[id1].node, data[id2].node)
-			}
-		}
-
-		this.mute = false;
-
-		searchArea.launchSearch();
-
-	}
 
 	// Send a request to the server
 	send(command, data, responseFunction = false) {
@@ -85,10 +38,12 @@ class ServerTalk {
 		if (responseFunction !== false) {
 			let token = this.makeToken();
 			outData.token = token;
-			this.queries[token] = responseFunction;
+			this.queries[token] = {}
+			this.queries[token].func = responseFunction
+			this.queries[token].outData = data // store outgoing data
 		}
 		// send request onto the server through the socket
-		// this.socket.send(outData)
+		this.socket.send(outData)
 	}
 
 	// function receive messages from the server
@@ -106,7 +61,7 @@ class ServerTalk {
 			// Ensure this is an open query
 			if (this.queries.hasOwnProperty(token)) {
 				// Call response function and pass data
-				this[this.queries[token]](data)
+				this.queries[token].func(data, this.queries[token].outData)
 				// Clear query
 				delete this.queries[token]
 			}

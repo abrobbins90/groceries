@@ -2,11 +2,141 @@
 /*////////////////
 // HTML Display //
 ////////////////*/
-#container {
+
+#AccountWindow {
 	height: 100%;
 	width: 100%;
 	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #CCC
 }
+#AccountBar {
+	position:absolute;
+	top: 0px;
+	height: 30px;
+	width: 100%;
+	background-color: #005500;
+	display: none;
+}
+#MainWindow {
+	position:absolute;
+	top: 30px;
+	bottom: 0px;
+	width: 100%;
+	display: none;
+}
+
+
+/*** Account Window ***/
+#AccountManagement {
+	width: 250px;
+	height: 350px;
+
+	border: 4px solid black;
+	border-radius: 4px;
+
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	flex-direction: column;
+}
+#AccountTabs {
+	display: flex;
+}
+.AccountTab {
+	flex-grow: 1;
+	font-weight: bold;
+	text-align: center;
+	padding: 8px 6px;
+	border: none;
+	transition: all .3s;
+	background-color: #DDDDDD;
+	color: #000000;
+	cursor: pointer;
+}
+.AccountTab:not(.tab_selected):hover {
+	background-color: #000000;
+	color: #DDDDDD;
+	z-index: 2;
+}
+.AccountTab.tab_selected {
+	background-color: #BBB;
+	color: #000;
+	cursor: default;
+}
+
+#LoginWIndow {
+	flex-grow: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+
+	background-color: #BBB
+}
+#LoginWindow > .loginText {
+	text-align: left;
+
+	border-radius: 4px;
+	outline: none;
+	width: 200px;
+
+	font-family: "Arial";
+	font-size: 15px;
+	padding: 2px;
+}
+#username {
+	
+}
+#userpass {
+	margin-bottom: 30px;
+}
+#LoginWindow > div {
+	font-family: "Arial"
+	font-size: 15px;
+	padding: 2px;
+}
+#loginResponse {
+	margin: 5px;
+	color: red;
+	font-style: italic;
+}
+
+#loginButton {
+	font-family: "Arial";
+	font-size: 15px;
+
+	height: 25px;
+	width: 100px;
+	outline: none;
+	border: 2px solid #FFFFFF;
+	border-radius: 4px;
+	background-color: #FFFFFF;
+	color: #000000;
+	cursor: pointer;
+	transition-duration: 0.1s;
+}
+#loginButton:hover {
+	border: 2px solid #FFFFFF;
+	background-color: #000000;
+	color: #FFFFFF;
+}
+
+
+
+/*** Account Bar ***/
+#LogButton {
+	position:absolute;
+	right: 0px;
+	height: 100%;
+	padding: 7px;
+	color: #FFF;
+	font-family: "Arial";
+	font-size: 15px;
+}
+
+
 
 /*** General Box Settings ***/
 
@@ -165,7 +295,7 @@
 #tab_menuGenerator {
 	flex-grow: 1.2;
 }
-.Tab {
+.SearchTab {
 	font-weight: bold;
 	text-align: center;
 	padding: 8px 6px;
@@ -175,12 +305,12 @@
 	color: #000000;
 	cursor: pointer;
 }
-.Tab:not(.tab_selected):hover {
+.SearchTab:not(.tab_selected):hover {
 	background-color: #000000;
 	color: #DDDDDD;
 	z-index: 2;
 }
-.tab_selected {
+.SearchTab.tab_selected {
 	background-color: #444444;
 	color: #DDDDDD;
 	cursor: default;

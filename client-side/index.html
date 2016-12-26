@@ -12,6 +12,7 @@
 <script type="text/javascript" src="box.js"></script>
 <script type="text/javascript" src="item-box.js"></script>
 <!-- <script type="text/javascript" src="connection-force.js"></script> -->
+<script type="text/javascript" src="account.js"></script>
 <script type="text/javascript" src="graph.js"></script>
 <script type="text/javascript" src="recipe.js"></script>
 <script type="text/javascript" src="search.js"></script>
@@ -24,7 +25,13 @@
 
 <body>
 
-<div id="container">
+<div id="AccountBar">
+	<div id="LogButton">
+		LogOut
+	</div>
+</div>
+
+<div id="MainWindow">
 	<div id="recipe_area">
 		<div id="meal_entry" class="recipe_entry">
 			<input type="text" id="meal_input" class="node_input" data-type="meal" placeholder="New Meal"></input>
@@ -43,9 +50,9 @@
 
 	<div id="search_area">
 		<div id="search_tabs">
-			<div id="tab_mealSearch" class="Tab tab_selected">Meal Lookup</div>
-			<div id="tab_ingrSearch" class="Tab">Ingredient Search</div>
-			<div id="tab_menuGenerator" class="Tab">Menu Generator</div>
+			<div id="tab_mealSearch" class="SearchTab tab_selected">Meal Lookup</div>
+			<div id="tab_ingrSearch" class="SearchTab">Ingredient Search</div>
+			<div id="tab_menuGenerator" class="SearchTab">Menu Generator</div>
 		</div>
 
 		<div id="search_windows">
@@ -97,6 +104,26 @@
 		</div>
 	</div>
 
+</div>
+
+<div id="AccountWindow">
+	<div id="AccountManagement">
+		<div id="AccountTabs">
+			<div id="AccountTab_login" class="AccountTab tab_selected">	Login </div>
+			<div id="AccountTab_signup" class="AccountTab"> Sign Up </div>
+		</div>
+		<div id="LoginWindow">
+			<div> Username </div>
+			<input type="text" id="username" class="loginText"></input>
+			
+			<div id="loginResponse"></div>
+
+			<div> Password </div>
+			<input type="password" id="userpass" class="loginText"></input>
+
+			<input type="button" id="loginButton" value="Login"></input>
+		</div>
+	</div>
 </div>
 
 </body>

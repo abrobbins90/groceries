@@ -9,15 +9,22 @@ let socket = undefined
 
 /////////////////// FUNCTIONS ///////////////////
 function initGlobals() {
-	graph = new Graph();
-	recipe = new RecipeArea(graph);
-	searchArea = new SearchArea(graph);
-	groceryArea = new GroceryListArea(graph);
-	server = new ServerTalk();
+	account = new UserAccount()
+	graph = new Graph()
+	recipe = new RecipeArea(graph)
+	searchArea = new SearchArea(graph)
+	groceryArea = new GroceryListArea(graph)
+	server = new ServerTalk()
 	socket = new Socket(server)
 }
 
 function initTriggers() {
+	/* Account Window */
+	$('.AccountTab').click(function(){
+		account.switchTab(this)
+	})
+	$('#loginButton').click(account.serverLogin)
+
 	/* recipe area */
 	$('#create_meal_button').click(function(){
 		let inName = $('#meal_input').val();
@@ -50,7 +57,7 @@ function initTriggers() {
 
 
 	/***** search area *****/
-	$('.Tab').click(function(){
+	$('.SearchTab').click(function(){
 		searchArea.switchTab(this)
 	})
 	$('#mealSearch, #ingrSearch').keyup(function(){

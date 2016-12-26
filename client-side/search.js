@@ -31,7 +31,7 @@ class SearchArea {
 	}
 
 	getElName(el) {
-		return el.id.match(/[^_]+$/)
+		return el.id.match(/[^_]+$/)[0]
 	}
 
 	// Switch the tab that is selected when the user clicks a new one
@@ -40,6 +40,7 @@ class SearchArea {
 		var oldTab = this.selectedTab
 		var newTab = this.getElName(newTabEl)
 		if (oldTab === newTab) { return } 
+		else if (newTab === "menuGenerator"){ return } // For now, block access to 3rd tab
 
 		// unselect old tab
 		this.tab[oldTab].removeClass("tab_selected")
