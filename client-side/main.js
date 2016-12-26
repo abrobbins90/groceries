@@ -1,4 +1,5 @@
 //////////////////// GLOBALS ////////////////////
+let account = undefined
 let graph = undefined
 let recipe = undefined
 let searchArea = undefined
@@ -23,7 +24,7 @@ function initTriggers() {
 	$('.AccountTab').click(function(){
 		account.switchTab(this)
 	})
-	$('#loginButton').click(account.serverLogin)
+	$('#loginButton').click(account.serverLogin.bind(account))
 
 	/* recipe area */
 	$('#create_meal_button').click(function(){
@@ -508,4 +509,5 @@ $(document).ready(function(){
 	// jquery wait till dom loaded (see https://avaminzhang.wordpress.com/2013/06/11/document-ready-vs-window-load/ if any issues)
 	initGlobals()
 	initTriggers()
+	account.showAccountWindow(true)
 })

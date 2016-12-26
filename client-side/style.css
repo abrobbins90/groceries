@@ -17,14 +17,13 @@
 	height: 30px;
 	width: 100%;
 	background-color: #005500;
-	display: none;
 }
 #MainWindow {
 	position:absolute;
 	top: 30px;
 	bottom: 0px;
 	width: 100%;
-	display: none;
+	display: flex;
 }
 
 
@@ -73,7 +72,7 @@
 	justify-content: center;
 	flex-direction: column;
 
-	background-color: #BBB
+	background-color: #BBB;
 }
 #LoginWindow > .loginText {
 	text-align: left;
@@ -93,7 +92,7 @@
 	margin-bottom: 30px;
 }
 #LoginWindow > div {
-	font-family: "Arial"
+	font-family: "Arial";
 	font-size: 15px;
 	padding: 2px;
 }

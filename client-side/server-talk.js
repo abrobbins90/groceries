@@ -13,7 +13,7 @@ class ServerTalk {
 	constructor() {
 		this.socket = undefined // will add this when socket is opened
 		this.queries = {} // list of open queries
-		this.mute = true
+		this.mute = false
 	}
 
 	// assign socket and try to log in once socket opens
@@ -23,8 +23,7 @@ class ServerTalk {
 		// Try to login if there is enough information
 
 		// program to check cookies for old login information
-	}
-
+}
 
 	// Send a request to the server
 	send(command, data, responseFunction = false) {
@@ -35,7 +34,8 @@ class ServerTalk {
 		let outData = {
 			command : command,
 			data : data
-		};
+		}
+
 		if (responseFunction !== false) {
 			let token = this.makeToken();
 			outData.token = token;

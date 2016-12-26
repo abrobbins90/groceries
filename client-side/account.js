@@ -35,31 +35,32 @@ class UserAccount {
 		this.tab[newTab].addClass("tab_selected")
 
 		if (newTab === "login") {
-			$("#loginButton").val("Login").click(this.serverLogin)
+			$("#loginButton").val("Login").click(this.serverLogin.bind(this))
 		}
 		else if (newTab === "signup") {
-			$("#loginButton").val("Sign Up").click(this.signup)
+			$("#loginButton").val("Sign Up").click(this.signup.bind(this))
 		}
 	}
 
 	// Deal with Logging in
 	serverLogin() {
 		// First Read the username and password fields
-		$("#loginResponse").val('') // clear message
+		$("#loginResponse").html('') // clear message
 		let username = $("#username").val()
 		let userpass = $("#userpass").val()
 		let outData = {
 			"username" : username,
 			"password" : userpass,
 		}
-		this.send("login", outData, this.login)
+
+		server.send("login", outData, this.login.bind(this))
 
 	}
 	// Handle login information from the server
 	login(inData) {
 		let success = inData.status;
 		if (!success) { // unsuccessful
-			$("#loginResponse").val("Unsuccessful Login Attempt")
+			$("#loginResponse").html("Unsuccessful Login Attempt")
 		}
 
 		// Successfully logged in
@@ -75,19 +76,19 @@ class UserAccount {
 	// Create a new user account
 	signup() {
 		// First check the username
-		$("#loginResponse").val('') // clear message
+		$("#loginResponse").html('') // clear message
 		let username = $("#username").val()
 		let userpass = $("#userpass").val()
 		let outData = {
 			"username" : username,
 			"password" : userpass,
 		}
-		this.send("add-user", outData, this.signupResponse)
+		server.send("add-user", outData, this.signupResponse)
 	}
 	signupResponse(inData, outData) {
 		let success = inData.success
 		if (!success) {
-			$("#loginResponse").val("Username Invalid or Unavailable")
+			$("#loginResponse").html("Username Invalid or Unavailable")
 			return
 		}
 		this.username = outData.username
@@ -122,14 +123,14 @@ class UserAccount {
 	// Show or Hide Account Window
 	showAccountWindow(TF) {
 		if (TF) { // show account window
-			$("AccountWindow").attr('display', 'flex')
-			$("AccountBar").attr('display', 'none')
-			$("MainWindow").attr('display', 'none')
+			$("#AccountWindow").show()
+			$("#AccountBar").hide()
+			$("#MainWindow").hide()
 		}
 		else {
-			$("AccountWindow").attr('display', 'none')
-			$("AccountBar").attr('display', 'block')
-			$("MainWindow").attr('display', 'flex')
+			$("#AccountWindow").hide()
+			$("#AccountBar").show()
+			$("#MainWindow").show()
 		}
 	}
 }
