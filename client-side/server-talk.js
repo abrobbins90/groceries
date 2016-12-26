@@ -18,6 +18,7 @@ class ServerTalk {
 
 	// assign socket and try to log in once socket opens
 	onopen(socket) {
+
 		this.socket = socket;
 		// Try to login if there is enough information
 
