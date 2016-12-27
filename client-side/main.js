@@ -24,7 +24,18 @@ function initTriggers() {
 	$('.AccountTab').click(function(){
 		account.switchTab(this)
 	})
+	$('#username').keypress(function(event){
+		if( event.which === 13 /*Enter*/ ){
+			$('#userpass').focus()
+		}
+	})
 	$('#loginButton').click(account.serverLogin.bind(account))
+	$('#userpass').keypress(function(event){
+		if( event.which === 13 /*Enter*/ ){
+			account.serverLogin()
+		}
+	})
+	$('#guestButton').click(account.guestLogin.bind(account))
 
 	/* recipe area */
 	$('#create_meal_button').click(function(){
@@ -94,6 +105,11 @@ function initTriggers() {
 	})
 
 	$('#print_button').click(groceryArea.groceryCloset.print)
+
+	$('#logoutButton').click(function(){
+		account.showAccountWindow(true)
+	})
+
 
 	/*
 	$('#mealNumValue').keyup(mealGenNum)

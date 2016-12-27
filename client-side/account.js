@@ -2,7 +2,7 @@
 
 class UserAccount {
 	constructor(graph) {
-		this.username = "" 
+		this.username = ""
 		this.tab = {
 			login: $("#AccountTab_login"),
 			signup: $("#AccountTab_signup"),
@@ -27,7 +27,7 @@ class UserAccount {
 		// If clicked tab is already selected, do nothing
 		var oldTab = this.selectedTab
 		var newTab = this.getElName(newTabEl)
-		if (oldTab === newTab) { return } 
+		if (oldTab === newTab) { return }
 
 		// unselect old tab
 		this.tab[oldTab].removeClass("tab_selected")
@@ -72,6 +72,11 @@ class UserAccount {
 		// Import all of the users data from the server
 		this.importData(inData.data);
 
+	}
+	guestLogin() {
+		// no actual logging in occurs.  local javascript runs as usual.
+		this.showAccountWindow(false)
+		server.mute = true
 	}
 	// Create a new user account
 	signup() {

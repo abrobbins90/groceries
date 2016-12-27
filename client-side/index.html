@@ -26,7 +26,7 @@
 <body>
 
 <div id="AccountBar">
-	<div id="LogButton">
+	<div id="logoutButton">
 		LogOut
 	</div>
 </div>
@@ -35,8 +35,8 @@
 	<div id="recipe_area">
 		<div id="meal_entry" class="recipe_entry">
 			<input type="text" id="meal_input" class="node_input" data-type="meal" placeholder="New Meal"></input>
-			<input type="button" id="create_meal_button" class="meal_button" value="Add New Meal"></input>
-			<input type="button" id="remove_meal_button" class="meal_button" value="Remove Meal"></input>
+			<input type="button" id="create_meal_button" class="meal_button button" value="Add New Meal"></input>
+			<input type="button" id="remove_meal_button" class="meal_button button" value="Remove Meal"></input>
 		</div>
 
 		<div id="ingr_entry" class="recipe_entry">
@@ -70,24 +70,24 @@
 						# of Meals:
 						<input type="text" id="mealNumValue" value="7"></input>
 					</div>
-					<input id="generate" type="button" value="Generate">
+					<input id="generate" type="button" class="button" value="Generate">
 				</div>
 				<textarea id="mealSpecifications" rows="4" cols="25" placeholder="min/max ingredient&#13;&#10ex: 0/2 chicken" style="resize:none;"></textarea>
 			</div>
 		</div>
 
 		<div id="search_results">
-			<input type="button" id="addMeal" class="menuButtons" value="Add to Menu>>"></input>
-			<input type="button" id="addAllMeals" class="menuButtons" value="Add All to Menu>>"></input>
+			<input type="button" id="addMeal" class="menuButtons button" value="Add to Menu>>"></input>
+			<input type="button" id="addAllMeals" class="menuButtons button" value="Add All to Menu>>"></input>
 		</div>
 	</div>
 
 	<div id="menu_area">
 		<div id="mealChoices">
 			<div class="mcTitle">
-				<input type="button" id="removeMeal" class="menuButtons" value="<<Remove"></input>
+				<input type="button" id="removeMeal" class="menuButtons button" value="<< Remove"></input>
 				Chosen Menu
-				<input type="button" id="clearMeals" class="menuButtons" value="Clear Menu"></input>
+				<input type="button" id="clearMeals" class="menuButtons button" value="Clear Menu"></input>
 			</div>
 			<div id="menuField">
 
@@ -97,7 +97,7 @@
 			<div class="mcTitle">
 				Ingredients for Above Menu
 			</div>
-			<input type="button" id="print_button" value="Print Grocery List"></input>
+			<input type="button" class="button" id="print_button" value="Print Grocery List"></input>
 			<div id="groceryField">
 
 			</div>
@@ -115,13 +115,15 @@
 		<div id="LoginWindow">
 			<div> Username </div>
 			<input type="text" id="username" class="loginText"></input>
-			
+
 			<div id="loginResponse"></div>
 
 			<div> Password </div>
 			<input type="password" id="userpass" class="loginText"></input>
 
-			<input type="button" id="loginButton" value="Login"></input>
+			<input type="button" class="button" id="loginButton" value="Login"></input><br />
+
+			<input type="button" class="button" id="guestButton" value="Visit as Guest!"></input>
 		</div>
 	</div>
 </div>

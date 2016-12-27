@@ -86,7 +86,7 @@
 	padding: 2px;
 }
 #username {
-	
+
 }
 #userpass {
 	margin-bottom: 30px;
@@ -102,38 +102,37 @@
 	font-style: italic;
 }
 
-#loginButton {
-	font-family: "Arial";
-	font-size: 15px;
-
+.button {
+	display: inline-block; /* even if we hide buttons, they should be restored to this */
+	font-family: -apple-system, Verdana, Arial, sans-serif;
+	font-size: 12px;
 	height: 25px;
-	width: 100px;
+	padding-left: 4px;
+	padding-right: 4px;
 	outline: none;
-	border: 2px solid #FFFFFF;
+	border: 2px solid #F4F4F4;
 	border-radius: 4px;
-	background-color: #FFFFFF;
+	background-color: #F4F4F4;
 	color: #000000;
 	cursor: pointer;
 	transition-duration: 0.1s;
 }
-#loginButton:hover {
-	border: 2px solid #FFFFFF;
+.button:hover, .button:focus {
 	background-color: #000000;
 	color: #FFFFFF;
 }
 
-
-
 /*** Account Bar ***/
-#LogButton {
+#logoutButton {
 	position:absolute;
 	right: 0px;
-	height: 100%;
-	padding: 7px;
-	color: #FFF;
-	font-family: "Arial";
+	margin: 7px;
+	font-family: -apple-system, Verdana, Arial, sans-serif;
 	font-size: 15px;
+	color: white;
+	cursor: pointer;
 }
+
 
 
 
@@ -241,19 +240,8 @@
 }
 
 /* meal entry*/
-.meal_button {
-	height: 25px;
-	border: 2px solid #FFFFFF;
-	border-radius: 4px;
-	background-color: #FFFFFF;
-	color: #000000;
-	cursor: pointer;
-	transition-duration: 0.1s;
-}
 .meal_button:hover {
-	border: 2px solid #FFFFFF;
 	background-color: #FF0000;
-	color: #FFFFFF;
 }
 #remove_meal_button {
 	display: none;
@@ -265,7 +253,6 @@
 	margin: 0px 0px 3px 0px;
 }
 .Xable.recipe_box:hover > .XButton {
-	background-color: #FF9999;
 	color: #FFFFFF;
 	border-left: 1px solid #FF5555;
 }
@@ -442,14 +429,15 @@
 	flex-direction: column;
 }
 #groceryList {
-	flex: 2 0 300px;
-
 	display: flex;
+	flex: 2 0 300px;
 	flex-direction: column;
+	align-items: center;
 }
 
 .mcTitle {
 	flex: 0 0 32px;
+	align-self: stretch;
 	line-height: 200%;
 	background-color: #1626FF;
 	font-family: "Arial";
@@ -509,24 +497,17 @@
 
 /* print button */
 #print_button {
-	height: 25px;
-	border: 2px solid #FFFFFF;
-	border-radius: 4px;
-	background-color: #FFFFFF;
-	color: #000000;
-	cursor: pointer;
-	transition-duration: 0.1s;
+	/* being in the flex environment, this gets a 100% width.  perhaps we should set the flex options align-items: center (doing that now) */
+	/* alternatively, we can set a width or max-width here */
 }
 #print_button:hover {
-	border: 2px solid #FFFFFF;
 	background-color: #0F0;
-	color: #FFFFFF;
 }
 
 
 
 .menuButtons {
-	display: none;
+	visibility: hidden;
 	padding: 0px;
 }
 
