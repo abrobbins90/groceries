@@ -65,7 +65,7 @@
 	cursor: default;
 }
 
-#LoginWIndow {
+#LoginWindow {
 	flex-grow: 1;
 	display: flex;
 	align-items: center;
@@ -97,6 +97,7 @@
 	padding: 2px;
 }
 #loginResponse {
+	height: 15px;
 	margin: 5px;
 	color: red;
 	font-style: italic;
@@ -400,7 +401,7 @@
 }
 .search_box {
 	border: 2px solid #AAAAAA;
-	margin: 0px 0px 3px 0px;
+	margin: 1px 0px 1px 0px;
 }
 /* Box Effects*/
 .search_box.box_selected {
@@ -505,25 +506,3 @@
 }
 
 
-
-.menuButtons {
-	visibility: hidden;
-	padding: 0px;
-}
-
-#addMeal {
-	right: -4px;
-	bottom: 20px;
-}
-#addAllMeals {
-	right: -4px;
-	bottom: -4px;
-}
-#removeMeal {
-	top: 0px;
-	left: 0px;
-}
-#clearMeals {
-	top: 0px;
-	right: 0px;
-}

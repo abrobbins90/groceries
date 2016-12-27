@@ -83,6 +83,16 @@ class Graph {
 		return false
 	}
 
+	// Warning, this will clear ALL nodes
+	wipe() {
+		for (node of this.nodes) {
+			for (let box of node.boxes) {
+				box.destruct()
+			}
+		}
+		this.nodes = new Set()
+	}
+
 }
 
 class Node {

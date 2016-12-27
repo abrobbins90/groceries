@@ -61,6 +61,7 @@ class UserAccount {
 		let success = inData.status;
 		if (!success) { // unsuccessful
 			$("#loginResponse").html("Unsuccessful Login Attempt")
+			return
 		}
 
 		// Successfully logged in
@@ -124,6 +125,17 @@ class UserAccount {
 
 		searchArea.launchSearch()
 	}
+
+	// Log the user out
+	logout() {
+		server.send("logout", {})
+		this.username = ""
+		graph.wipe()
+		server.queries = {}
+		$("input[type='text']").val("")
+	}
+
+
 
 	// Show or Hide Account Window
 	showAccountWindow(TF) {

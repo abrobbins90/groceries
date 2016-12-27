@@ -90,6 +90,16 @@ class DB:
 		else:
 			return False
 
+	def is_logged_in(self):
+		# Simply check to see if the user is logged in
+		if self.username:
+			return True
+		return False
+
+	def logout(self):
+		# Logout
+		self.username = ""
+
 	###
 
 	def load(self):

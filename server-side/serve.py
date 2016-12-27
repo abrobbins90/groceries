@@ -58,8 +58,17 @@ class SocketHandler (WebSocketHandler):
 				response["status"] = True
 				response["username"] = self.db.username
 				response["data"] = self.db.load()
+				print 'Loaded all data to user'
 			else:
 				print 'Unsuccessful login attempt from: ' + data['username']
+				response["status"] = False
+
+		elif command == "logout":
+			# If logged in, log out
+			if self.db.is_logged_in():
+				self.db.logout()
+				response["status"] = True
+			else:
 				response["status"] = False
 
 		elif command == "user-query":
