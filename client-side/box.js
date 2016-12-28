@@ -98,8 +98,8 @@ class RecipeCloset extends Closet {
 			"isDraggable": false,
 			"isBoxXable": true,
 			"XAction": function(){
-				recipe.removeEdge(this.node.type, this.node.name)
 				this.destruct()
+				recipe.removeEdge(this.node.type, this.node.name)
 			},
 			"singleClick": function(event) {},
 		}
@@ -124,6 +124,11 @@ class SearchCloset extends Closet {
 		}
 		super(area, options)
 	}
+
+	onSelectionChange(box) {
+		// send the node from this box to the recipe panel for editing
+		if (box.selected) recipe.selectMeal(box.node)
+	}
 }
 class MenuCloset extends Closet {
 	// Define a subclass of closet specific to the menu area
@@ -143,8 +148,9 @@ class MenuCloset extends Closet {
 		}
 		super(area, options)
 	}
-	onSelectionChange() { 
+	onSelectionChange(box) { 
 		groceryArea.groceryCloset.updateBoxes()
+		if (box.selected) recipe.selectMeal(box.node)  // send the node from this box to the recipe panel for editing
 	}
 	shouldBeHighlighted(mainBox) {
 		for (let box of groceryArea.groceryCloset.boxes) {
@@ -274,6 +280,7 @@ class Box {
 
 
 	destruct() {
+		this.selected = false
 		this.$el.remove() // delete HTML element
 		this.node.boxes.delete(this) // remove box record from node
 		let index = this.closet.boxes.indexOf(this) // remove from closet
