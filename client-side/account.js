@@ -68,7 +68,7 @@ class UserAccount {
 		let username = inData.username;
 		this.username = username;
 
-		this.showAccountWindow(false)
+		windowManage(false, false)
 
 		// Import all of the users data from the server
 		this.importData(inData.data);
@@ -76,7 +76,7 @@ class UserAccount {
 	}
 	guestLogin() {
 		// no actual logging in occurs.  local javascript runs as usual.
-		this.showAccountWindow(false)
+		windowManage(false, false)
 		server.mute = true
 	}
 	// Create a new user account
@@ -112,6 +112,7 @@ class UserAccount {
 			// Make it easier to access node for edges
 			data[id].node = graph.addNode(data[id].type, data[id].shownName)
 			// Any additional relevant fields...
+			data[id].node.info = data[id].info
 		}
 		// Repeat loop but for edges
 		for (let id1 in data) {
@@ -135,19 +136,4 @@ class UserAccount {
 		$("input[type='text']").val("")
 	}
 
-
-
-	// Show or Hide Account Window
-	showAccountWindow(TF) {
-		if (TF) { // show account window
-			$("#AccountWindow").show()
-			$("#AccountBar").hide()
-			$("#MainWindow").hide()
-		}
-		else {
-			$("#AccountWindow").hide()
-			$("#AccountBar").show()
-			$("#MainWindow").show()
-		}
-	}
 }

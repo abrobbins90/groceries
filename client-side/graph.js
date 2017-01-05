@@ -101,10 +101,11 @@ class Node {
 	constructor(shownName = '', type) {
 
 		// Default Initializations
-		this.type = type; // Declare node type: "meal", "ingr", or "description"
+		this.type = type // Declare node type: "meal", "ingr", or "desc"
 		this.edges = new Set()
 		this.boxes = new Set()
 		this.shownName = shownName
+		this.info = {} // dictionary with relevant information about the node
 	}
 
 	asDict() {
@@ -137,6 +138,7 @@ class MealNode extends Node {
 	// Define a subclass of node specific to meals
 	constructor(shownName) {
 		super(shownName, 'meal');
+		this.info = {"instructions" : ""}
 	}
 
 	get inMenu() {

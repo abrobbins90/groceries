@@ -109,6 +109,7 @@ class DB:
 		#	type
 		#	shownName
 		#	edges
+		#	info
 		# 	<any additional fields relevant to that node>
 		
 		data = {}
@@ -121,7 +122,7 @@ class DB:
 		for node in nodes:
 			nodeDict = self.mongo.find_one("nodes", {"_id": self.getNodeId(node)})
 			nodeDict["shownName"] = nodeDict.pop("name") # change key to shownName
-			nodeDict.pop("_id") # don't need to include this
+			nodeDict.pop("_id") # don't need to include "_id" field
 			data[node] = nodeDict
 		
 		return data
@@ -153,6 +154,7 @@ class DB:
 			"name": userData["shownName"],
 			"type": userData["type"],
 			"edges": [],
+			"info": [],
 		}
 		self.mongo.insert_one("nodes", dictAdd)
 		
@@ -210,6 +212,24 @@ class DB:
 			{ "$pull": {"edges": userData["id2"]}})
 		self.mongo.update("nodes", {"_id": id2},
 			{ "$pull": {"edges": userData["id1"]}})
+		
+		return True	
+
+	def update_node_info(self, userData):
+		""" update a node's information (dictionary) """
+		# userData should be a dictionary with the following fields:
+		#	- id : id for node 1
+		#	- info : information dictionary to be saved
+		
+		# First, ensure the user has already been set
+		if not self.username:
+			return False	
+			
+		nodeid = self.getNodeId(userData["id"])
+		info = userData["info"]
+		self.mongo.update("nodes", {"_id": nodeid},
+			{ "$<<>>": {"info": info}})
+
 		
 		return True	
 
