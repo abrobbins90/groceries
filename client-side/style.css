@@ -248,7 +248,12 @@
 
 	font-family: "Arial";
 	font-size: 15px;
+
+	margin: 2px 0px;
 	padding: 2px;
+}
+.node_input::input-placeholder {
+	color: #555555;
 }
 .node_input::-webkit-input-placeholder {
 	color: #555555;
@@ -484,6 +489,6 @@
 	/* alternatively, we can set a width or max-width here */
 }
 #print_button:hover {
-	background-color: #0F0;
+	background-color: #0000FF;
 }
 
