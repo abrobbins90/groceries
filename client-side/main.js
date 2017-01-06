@@ -36,6 +36,12 @@ function initTriggers() {
 		}
 	})
 	$('#guestButton').click(account.guestLogin.bind(account))
+	$(window).keypress(function(event){
+		if( event.which === 27 /*Escape*/ ){
+			account.showAccountWindow(false) // i made this and it is stupid because it shouldn't be activated if the account window is already hidden.  also, this should call guestLogin, not just hide the window (but i'm working on something else right now).
+		}
+	})
+
 
 	/* recipe area */
 	$('#create_meal_button').click(function(){

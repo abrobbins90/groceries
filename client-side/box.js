@@ -105,7 +105,7 @@ class RecipeCloset extends Closet {
 		}
 		super(area, options)
 	}
-	
+
 }
 class SearchCloset extends Closet {
 	// Define a subclass of closet specific to the search area
@@ -148,7 +148,7 @@ class MenuCloset extends Closet {
 		}
 		super(area, options)
 	}
-	onSelectionChange(box) { 
+	onSelectionChange(box) {
 		groceryArea.groceryCloset.updateBoxes()
 		if (box.selected) recipe.selectMeal(box.node)  // send the node from this box to the recipe panel for editing
 	}
@@ -180,7 +180,7 @@ class GroceryCloset extends Closet {
 		}
 		super(area, options)
 	}
-	onSelectionChange() { 
+	onSelectionChange() {
 		groceryArea.menuCloset.updateBoxes()
 	}
 	shouldBeHighlighted(mainBox) {
