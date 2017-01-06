@@ -132,7 +132,7 @@
 	margin: 7px;
 	font-family: -apple-system, Verdana, Arial, sans-serif;
 	font-size: 15px;
-	color: white;
+	color: #FFFFFF;
 	cursor: pointer;
 }
 
@@ -142,9 +142,20 @@
 /*** General Box Settings ***/
 
 .box { /* Box to hold node names and X buttons*/
+	background-color: #DDDDDD;
+	height: 21px; /* it is necessary to specify a height in order for the box-sizing: border-box property to take effect properly */
+	margin: 2px 0px; /* vertical horizontal */
 	border-radius: 4px;
-	-webkit-border-radius: 4px; /* no idea why the browsers need this!  Modern browsers should do fine with border-radius */
 	overflow: hidden;
+}
+.box.disabled {
+	opacity: 0.35;
+}
+.box_selected {
+	border-color: #36F;
+}
+.box_highlighted {
+	border-color: gold;
 }
 .box_contents {
 	font-family: "Arial";
@@ -152,16 +163,18 @@
 	display: inline-block;
 	padding: 2px;
 }
-.Xable > .box_contents {
+.Xable.box > .box_contents {
 	padding: 2px 14px 2px 14px;
 	transition: all .2s;
 }
 
-.Xable:hover > .box_contents {
+.Xable.box:hover:not(.disabled) > .box_contents {
 	padding: 2px 4px 2px 2px;
 }
-.Xable:hover > .XButton {
+.Xable.box:hover:not(.disabled) > .XButton {
+	color: #FFFFFF;
 	width: 21px;
+	border-left: 1px solid #57F;
 }
 .XButton {
 	display: inline-block;
@@ -174,6 +187,23 @@
 	text-align: center;
 	transition: all .2s; /* was only 'width' before */
 }
+
+/*box color overrides*/
+#recipe_area .box {
+	background-color: #FF9999;
+}
+#search_area .box_selected {
+	border-color: #444444;
+}
+#recipe_area .Xable.box:hover:not(.disabled) > .XButton {
+	border-color: #FF5555;
+}
+
+#menu_area .box {
+	background-color: #9BF;
+}
+
+
 
 
 /***** Recipe Entry Panel *****/
@@ -223,7 +253,12 @@
 
 	font-family: "Arial";
 	font-size: 15px;
+
+	margin: 2px 0px;
 	padding: 2px;
+}
+.node_input::input-placeholder {
+	color: #555555;
 }
 .node_input::-webkit-input-placeholder {
 	color: #555555;
@@ -256,15 +291,6 @@
 	display: none;
 }
 
-.recipe_box { /*Box to hold item names and remove buttons*/
-	background-color: #FF9999;
-	border: 2px solid #FF9999;
-	margin: 0px 0px 3px 0px;
-}
-.Xable.recipe_box:hover > .XButton {
-	color: #FFFFFF;
-	border-left: 1px solid #FF5555;
-}
 
 /***** Recipe Instruction Panel *****/
 #instr_area {
@@ -421,21 +447,13 @@
 
 /* Search Results */
 #search_results {
-	padding: 2px;
+	padding: 10px;
 	flex: 1 0 200px;
 	display: flex;
 	background-color: #AAAAAA;
 	flex-direction: column;
 	align-items: flex-start;
 	flex-wrap: wrap;
-}
-.search_box {
-	border: 2px solid #AAAAAA;
-	margin: 1px 0px 1px 0px;
-}
-/* Box Effects*/
-.search_box.box_selected {
-	border-color: #444444;
 }
 
 
@@ -444,13 +462,11 @@
 
 /* Menu display area: includes meals and ingr lists */
 #menu_area {
-	flex: 5 0 300px;
-	flex-basis: 300px;
-	background-color: #58F; /*55F*/
-	color: #FFFFFF;
-
+	background-color: #57F;
 	display: flex;
 	flex-direction: column;
+	flex: 5 0 300px;
+	flex-basis: 300px;
 }
 
 #mealChoices {
@@ -478,7 +494,7 @@
 
 #menuField {
 	flex: 1 0 100px;
-	padding: 2px;
+	padding: 10px;
 
 	display: flex;
 	flex-direction: column;
@@ -487,52 +503,23 @@
 }
 #groceryField {
 	flex: 1 0 100px;
-	padding: 2px;
-
+	padding: 10px;
 	display: flex;
 	flex-direction: column;
 	flex-wrap: wrap;
 	align-items: flex-start;
-}
-/*Box Properties*/
-.menuMeal_box {
-	background-color: #69F;
-	border: 2px solid #69F;
-	margin: 0px 0px 3px 0px;
-}
-.Xable.menuMeal_box:hover > .XButton {
-	color: #FFFFFF;
-	border-left: 1px solid #58F;
-}
-
-.menuIngr_box {
-	background-color: #69F;
-	border: 2px solid #69F;
-	margin: 0px 0px 3px 0px;
-}
-.Xable.menuIngr_box:hover > .XButton {
-	color: #FFFFFF;
-	border-left: 1px solid #58F;
-}
-/* Box Effects*/
-.disabled {
-	opacity: 0.35;
-}
-.box_selected {
-	border-color: #36F;
-}
-.box_highlighted {
-	border-color: gold;
+	width: 100%;
 }
 
 
 /* print button */
 #print_button {
+	margin-top: 10px;
 	/* being in the flex environment, this gets a 100% width.  perhaps we should set the flex options align-items: center (doing that now) */
 	/* alternatively, we can set a width or max-width here */
 }
 #print_button:hover {
-	background-color: #0F0;
+	background-color: #0000FF;
 }
 
 .start_hidden {
