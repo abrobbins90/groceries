@@ -145,9 +145,12 @@
 	margin: 2px 0px; /* vertical horizontal */
 	border-radius: 4px;
 	overflow: hidden;
+	opacity: 1;
+	transition: all .2s;
 }
 .box.disabled {
 	opacity: 0.35;
+	transition: all .2s;
 }
 .box_selected {
 	border-color: #36F;
@@ -159,20 +162,18 @@
 	font-family: "Arial";
 	font-size: 15px;
 	display: inline-block;
-	padding: 2px;
-}
-.Xable.box > .box_contents {
-	padding: 2px 14px 2px 14px;
+	padding: 2px 14px;
 	transition: all .2s;
 }
-
 .Xable.box:hover:not(.disabled) > .box_contents {
-	padding: 2px 4px 2px 2px;
+	padding: 2px 4px;
+	transition: all .2s;
 }
 .Xable.box:hover:not(.disabled) > .XButton {
 	color: #FFFFFF;
 	width: 21px;
 	border-left: 1px solid #57F;
+	transition: all .2s;
 }
 .XButton {
 	display: inline-block;
@@ -183,7 +184,7 @@
 	cursor: pointer;
 	font-size: 15px;
 	text-align: center;
-	transition: all .2s; /* was only 'width' before */
+	transition: all .2s;
 }
 
 /*box color overrides*/
