@@ -25,13 +25,35 @@
 
 <body>
 
-<div id="AccountBar">
+<div id="AccountWindow">
+	<div id="AccountManagement">
+		<div id="AccountTabs">
+			<div id="AccountTab_login" class="AccountTab tab_selected">	Login </div>
+			<div id="AccountTab_signup" class="AccountTab"> Sign Up </div>
+		</div>
+		<div id="LoginWindow">
+			<div> Username </div>
+			<input type="text" id="username" class="loginText"></input>
+
+			<div id="loginResponse"></div>
+
+			<div> Password </div>
+			<input type="password" id="userpass" class="loginText"></input>
+
+			<input type="button" class="button" id="loginButton" value="Login"></input><br />
+
+			<input type="button" class="button" id="guestButton" value="Visit as Guest!"></input>
+		</div>
+	</div>
+</div>
+
+<div id="AccountBar" class="start_hidden">
 	<div id="logoutButton">
 		LogOut
 	</div>
 </div>
 
-<div id="MainWindow">
+<div id="MainWindow" class="start_hidden">
 	<div id="recipe_area">
 		<div id="meal_entry" class="recipe_entry">
 			<input type="text" id="meal_input" class="node_input" data-type="meal" placeholder="New Meal"></input>
@@ -46,6 +68,9 @@
 		<div id="tag_entry" class="recipe_entry">
 			<input type="text" id="tag_input" class="node_input tag_box" data-type="tag" placeholder="New Tag"></input>
 		</div>
+	</div>
+	<div id="instr_area">
+		<textarea type="text" id="instr_input" class="instruction"></textarea>		
 	</div>
 
 	<div id="search_area">
@@ -102,27 +127,6 @@
 
 </div>
 
-<div id="AccountWindow">
-	<div id="AccountManagement">
-		<div id="AccountTabs">
-			<div id="AccountTab_login" class="AccountTab tab_selected">	Login </div>
-			<div id="AccountTab_signup" class="AccountTab"> Sign Up </div>
-		</div>
-		<div id="LoginWindow">
-			<div> Username </div>
-			<input type="text" id="username" class="loginText"></input>
-
-			<div id="loginResponse"></div>
-
-			<div> Password </div>
-			<input type="password" id="userpass" class="loginText"></input>
-
-			<input type="button" class="button" id="loginButton" value="Login"></input><br />
-
-			<input type="button" class="button" id="guestButton" value="Visit as Guest!"></input>
-		</div>
-	</div>
-</div>
 
 </body>
 </html>

@@ -22,6 +22,7 @@ class RecipeArea {
 		this.closet = new RecipeCloset(this)
 		this.input = new Input()
 		this.mode = "closed"
+		this.expanded = false
 	}
 
 	keyPress(key, type, shownName) {
@@ -133,6 +134,8 @@ class RecipeArea {
 			this._toggleDisplay()
 		}
 		this.mode = "closed"
+		//$("#instr_input").disable() // fix
+		$("#instr_input").val("")
 	}
 
 	writeDisplay() {
@@ -140,6 +143,8 @@ class RecipeArea {
 		this.mode = "open"
 
 		this._fillCloset()
+		//$("#instr_input").enable() // fix
+		$("#instr_input").val(this.selectedMeal.info.instructions)
 	}
 
 	_toggleDisplay() {
@@ -158,5 +163,22 @@ class RecipeArea {
 
 	_fillCloset() {
 		this.closet.addNodes(Array.from(this.selectedMeal.edges), true)
+	}
+
+
+	expand(TF = 0) {
+		// TF : (T/F) whether or not to expand the recipe section or not (0 means toggle)
+		if (TF === 0) { TF = !this.expanded }
+		windowManage(0, TF)
+		this.expanded = TF
+	}
+
+	saveInstructions() {
+		let mealNode = this.selectedMeal
+		if (mealNode) {
+			let instrStr = $('#instr_input').val()
+			mealNode.info.instructions = instrStr
+			server.send('update-node-info', {"id": mealNode.id, "info": mealNode.info}) // update server
+		}
 	}
 }

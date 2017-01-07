@@ -116,6 +116,13 @@ class SocketHandler (WebSocketHandler):
 				print 'failed to remove edge'
 
 
+		elif command == "update-node-info":
+			success = self.db.update_node_info(data)
+			if success:
+				print 'updated node info'
+			else:
+				print 'failed to update node info'
+				
 		elif command == "update-data":
 			# Request data is updated
 			response["status"] = True
