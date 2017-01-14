@@ -68,7 +68,7 @@ class RecipeArea {
 			if (this.selectedMeal.inMenu) {
 				groceryArea.updateGroceryList()
 			}
-			
+
 			this.input[type].val("") // clear entry area
 			this.input[type].removeClass("input_selected")
 		}
@@ -134,7 +134,7 @@ class RecipeArea {
 			this._toggleDisplay()
 		}
 		this.mode = "closed"
-		//$("#instr_input").disable() // fix
+		$("#instr_input").attr("disabled", true)
 		$("#instr_input").val("")
 	}
 
@@ -143,7 +143,7 @@ class RecipeArea {
 		this.mode = "open"
 
 		this._fillCloset()
-		//$("#instr_input").enable() // fix
+		$("#instr_input").attr("disabled", false)
 		$("#instr_input").val(this.selectedMeal.info.instructions)
 	}
 

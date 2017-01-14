@@ -36,9 +36,11 @@ function initTriggers() {
 		}
 	})
 	$('#guestButton').click(account.guestLogin.bind(account))
-	$(window).keypress(function(event){
+	$(document).keyup(function(event){
 		if( event.which === 27 /*Escape*/ ){
-			account.showAccountWindow(false) // i made this and it is stupid because it shouldn't be activated if the account window is already hidden.  also, this should call guestLogin, not just hide the window (but i'm working on something else right now).
+			if (account.username === "" && account.guest === false) {
+				account.guestLogin()
+			}
 		}
 	})
 
@@ -72,7 +74,7 @@ function initTriggers() {
 		recipe.keyPress(key, type, inName)
 
 	})
-	$("#meal_input").dblclick(function(event) {recipe.expand()})
+	$("#meal_entry").dblclick(function(event) {recipe.expand()})
 
 	$("#instr_input").blur(function(event){recipe.saveInstructions()})
 
@@ -113,17 +115,17 @@ function initTriggers() {
 		groceryArea.menuCloset.add(node)
 	})
 
-	$('#print_button').click(groceryArea.groceryCloset.print)
+	$('#print_button').click(groceryArea.groceryCloset.print.bind(groceryArea.groceryCloset)) // weird error occurs here, but it still works?
 
 	$('#logoutButton').click(function(){
-		windowManage(true)
+		account.logout()
 	})
 
 }
 
 // Manage what windows are shown / hidden in html window
 function windowManage(account = false, recipeDesc = 0) {
-	// account    : (T/F) whether the account window will be shown 
+	// account    : (T/F) whether the account window will be shown
 	// recipeDesc : (T/F) whether the recipe description window will be shown
 	// Note a value besides T/F means "do nothing"
 

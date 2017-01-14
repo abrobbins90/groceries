@@ -3,6 +3,7 @@
 class UserAccount {
 	constructor(graph) {
 		this.username = ""
+		this.guest = false
 		this.tab = {
 			login: $("#AccountTab_login"),
 			signup: $("#AccountTab_signup"),
@@ -77,6 +78,7 @@ class UserAccount {
 	guestLogin() {
 		// no actual logging in occurs.  local javascript runs as usual.
 		windowManage(false, false)
+		this.guest = true
 		server.mute = true
 	}
 	// Create a new user account
@@ -129,11 +131,17 @@ class UserAccount {
 
 	// Log the user out
 	logout() {
-		server.send("logout", {})
-		this.username = ""
+		if (this.guest === false) {
+			server.send("logout", {})
+			this.username = ""
+		} else {
+			this.guest = false
+			this.mute = false
+		}
 		graph.wipe()
 		server.queries = {}
 		$("input[type='text']").val("")
+		windowManage(true) // show account window now
 	}
 
 }

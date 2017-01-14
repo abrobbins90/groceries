@@ -142,10 +142,10 @@
 /*** General Box Settings ***/
 
 .box { /* Box to hold node names and X buttons*/
-	background-color: #DDDDDD;
-	height: 21px; /* it is necessary to specify a height in order for the box-sizing: border-box property to take effect properly */
-	margin: 2px 0px; /* vertical horizontal */
+	background-color: #DDD;
+	border: 2px solid #DDD;
 	border-radius: 4px;
+	margin: 0px 0px 3px 0px; /* vertical horizontal */
 	overflow: hidden;
 	opacity: 1;
 	transition: all .2s;
@@ -154,12 +154,7 @@
 	opacity: 0.35;
 	transition: all .2s;
 }
-.box_selected {
-	border-color: #36F;
-}
-.box_highlighted {
-	border-color: gold;
-}
+
 .box_contents {
 	font-family: "Arial";
 	font-size: 15px;
@@ -167,11 +162,11 @@
 	padding: 2px 14px;
 	transition: all .2s;
 }
-.Xable.box:hover:not(.disabled) > .box_contents {
+.Xable.box:hover > .box_contents {
 	padding: 2px 4px;
 	transition: all .2s;
 }
-.Xable.box:hover:not(.disabled) > .XButton {
+.Xable.box:hover > .XButton {
 	color: #FFFFFF;
 	width: 21px;
 	border-left: 1px solid #57F;
@@ -191,18 +186,29 @@
 
 /*box color overrides*/
 #recipe_area .box {
-	background-color: #FF9999;
+	background-color: #F99;
+	border: 2px solid #F99;
 }
-#search_area .box_selected {
-	border-color: #444444;
-}
-#recipe_area .Xable.box:hover:not(.disabled) > .XButton {
-	border-color: #FF5555;
-}
-
 #menu_area .box {
 	background-color: #9BF;
+	border: 2px solid #9BF;
 }
+
+#menu_area .box_highlighted {
+	border: 2px solid gold;
+}
+
+#recipe_area .Xable.box:hover > .XButton {
+	border: 2px solid #F55;
+}
+#search_area .box_selected {
+	border: 2px solid #444;
+}
+#menu_area .box_selected {
+	border: 2px solid #36F;
+}
+
+
 
 
 
@@ -349,6 +355,16 @@
 	color: #000000;
 	cursor: pointer;
 }
+#tab_mealSearch {
+	flex-grow: 1;
+}
+#tab_ingrSearch {
+	flex-grow: 1.3;
+}
+#tab_menuGenerator {
+	flex-grow: 1.2;
+}
+
 .SearchTab:not(.tab_selected):hover {
 	background-color: #000000;
 	color: #DDDDDD;
@@ -515,14 +531,13 @@
 
 /* print button */
 #print_button {
+	display: none;
 	margin-top: 10px;
-	/* being in the flex environment, this gets a 100% width.  perhaps we should set the flex options align-items: center (doing that now) */
-	/* alternatively, we can set a width or max-width here */
 }
 #print_button:hover {
 	background-color: #0000FF;
 }
 
 .start_hidden {
-	display: none;
+	display: none !important;
 }
