@@ -167,13 +167,13 @@
 	transition: all .2s;
 }
 .Xable.box:hover > .XButton {
-	color: #FFFFFF;
 	width: 21px;
-	border-left: 1px solid #57F;
+	border-left: 1px solid #FFF;
 	transition: all .2s;
 }
 .XButton {
 	display: inline-block;
+	color: #FFF;
 	width: 0px;
 	border-left: 0px;
 	padding: 0px;
@@ -199,8 +199,12 @@
 }
 
 #recipe_area .Xable.box:hover > .XButton {
-	border: 2px solid #F55;
+	border-left: 1px solid #F55;
 }
+#menu_area .Xable.box:hover > .XButton {
+	border-left: 1px solid #57F;
+}
+
 #search_area .box_selected {
 	border: 2px solid #444;
 }
@@ -321,7 +325,6 @@
 	background-color: #FCB;
 	border: 4px solid #FCB;
 	-webkit-border-radius: 4px; /* no idea why the browsers need this!  Modern browsers should do fine with border-radius */
-	margin: 0px 0px 3px 0px;
 	outline: none;
 	font-family: "Arial";
 	font-size: 15px;
