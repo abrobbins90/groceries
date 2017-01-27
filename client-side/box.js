@@ -106,6 +106,15 @@ class RecipeCloset extends Closet {
 		super(area, options)
 	}
 
+	// save quantity entered for an ingredient
+	saveIngrQuantity(box, $quan) {
+		let ingrNode = box.node
+		let mealNode = recipe.selectedMeal
+		let info = mealNode.info
+		info[ingrNode.id] = $quan.val()
+		mealNode.info = info
+	}
+
 }
 class SearchCloset extends Closet {
 	// Define a subclass of closet specific to the search area
@@ -240,6 +249,19 @@ class Box {
 			$b.addClass("Xable")
 			$b.append(this.constructXButton())
 		}
+		if( options["className"] === "recipe_box" && this.node.type === "ingr") {
+			let $q = $("<input/>")
+				.attr("type", "text")
+				.attr("placeholder", "# of")
+				.addClass("ingr_quantity")
+
+			$q.blur(function() {
+				let $q = this.$el.children(".ingr_quantity")
+				this.closet.saveIngrQuantity(this, $q)
+			}.bind(this))
+
+			$b.prepend($q)
+		}
 		return $b
 	}
 
@@ -259,7 +281,14 @@ class Box {
 	}
 
 	update() {
+		// Update contents
 		this.$el.children(".box_contents").html(this.contents)
+
+		// Update quantity if need be
+		let $q = this.$el.children(".ingr_quantity")
+		if ($q.length !== 0) {
+			$q.val(recipe.selectedMeal.info[this.node.id])
+		}
 
 		// Update highlighting
 		this.highlighted = this.closet.shouldBeHighlighted(this)
@@ -267,9 +296,13 @@ class Box {
 
 	get contents() {
 		let string = this.node.shownName
-		if (this.node.quantity > 1) {
+		if (this.node.type === "ingr") {
+			// update
+		}
+
+		if (this.$el.hasClass("menuIngr_box") && this.node.grocQuantity > 1) {
 			// if multiple entries, bold and include x#
-			string = string + "<span style='font-weight: bold;'>" + " x" + this.node.quantity + "</span>"
+			string = string + "<span>" + " (" + this.node.grocQuantity + ")</span>"
 		}
 		return string
 	}

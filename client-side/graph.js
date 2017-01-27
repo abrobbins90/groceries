@@ -105,7 +105,7 @@ class Node {
 		this.edges = new Set()
 		this.boxes = new Set()
 		this.shownName = shownName
-		this.info = {} // dictionary with relevant information about the node
+		this._info = {} // dictionary with relevant information about the node
 	}
 
 	asDict() {
@@ -113,6 +113,7 @@ class Node {
 			shownName: this.shownName,
 			type: this.type,
 			id: this.id,
+			info: this.info
 		}
 	}
 
@@ -138,7 +139,7 @@ class MealNode extends Node {
 	// Define a subclass of node specific to meals
 	constructor(shownName) {
 		super(shownName, 'meal');
-		this.info = {"instructions" : ""}
+		this._info = {"instructions" : ""}
 	}
 
 	get inMenu() {
@@ -147,20 +148,29 @@ class MealNode extends Node {
 		}
 		return false
 	}
+	get info() {
+		return this._info
+	}
+
+	// update server with info
+	set info(newInfo) {
+		this._info = newInfo
+		server.send('update-node-info', {"id": this.id, "info": this._info})
+	}
 
 }
 
 class IngrNode extends Node {
 	// Define a subclass of node specific to ingrs
 	constructor(shownName) {
-		super(shownName, 'ingr');
-		this.quantity = 0;
+		super(shownName, 'ingr')
+		this.grocQuantity = 0
 	}
 }
 
 class TagNode extends Node {
 	// Define a subclass of node specific to tag
 	constructor(shownName) {
-		super(shownName, 'tag');
+		super(shownName, 'tag')
 	}
 }

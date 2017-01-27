@@ -36,11 +36,23 @@ class UserAccount {
 		this.tab[newTab].addClass("tab_selected")
 
 		if (newTab === "login") {
-			$("#loginButton").val("Login").click(this.serverLogin.bind(this))
+			$("#loginButton").val("Login")
 		}
 		else if (newTab === "signup") {
-			$("#loginButton").val("Sign Up").click(this.signup.bind(this))
+			$("#loginButton").val("Sign Up")
 		}
+		$("#loginResponse").html("")
+	}
+
+	// Activates when login/signup button is activated. Figure out which action it is and proceed
+	loginPress() {
+		var tab = this.selectedTab
+		if (tab === "login") {
+			this.serverLogin()
+		} else {
+			this.signup()
+		}
+
 	}
 
 	// Deal with Logging in
@@ -48,7 +60,7 @@ class UserAccount {
 		// First Read the username and password fields
 		$("#loginResponse").html('') // clear message
 		let username = $("#username").val()
-		let userpass = $("#userpass").val()
+		let userpass = $("#password").val()
 		let outData = {
 			"username" : username,
 			"password" : userpass,
@@ -70,6 +82,8 @@ class UserAccount {
 		this.username = username;
 
 		windowManage(false, false)
+		$("#username").val("")
+		$("#password").val("")
 
 		// Import all of the users data from the server
 		this.importData(inData.data);
@@ -86,10 +100,10 @@ class UserAccount {
 		// First check the username
 		$("#loginResponse").html('') // clear message
 		let username = $("#username").val()
-		let userpass = $("#userpass").val()
+		let password = $("#password").val()
 		let outData = {
 			"username" : username,
-			"password" : userpass,
+			"password" : password,
 		}
 		server.send("add-user", outData, this.signupResponse)
 	}
@@ -99,7 +113,7 @@ class UserAccount {
 			$("#loginResponse").html("Username Invalid or Unavailable")
 			return
 		}
-		this.username = outData.username
+		this.serverLogin()
 	}
 
 	// Import ALL of the server's data for this user
@@ -114,7 +128,14 @@ class UserAccount {
 			// Make it easier to access node for edges
 			data[id].node = graph.addNode(data[id].type, data[id].shownName)
 			// Any additional relevant fields...
-			data[id].node.info = data[id].info
+			let info = data[id].info
+			if (Array.isArray(info)) { // make sure its not stored as an array if empty
+				info = {}
+			}
+			if (data[id].node.type === "meal" && !("instructions" in info)) {
+				info["instructions"] = ""
+			}
+			data[id].node.info = info
 		}
 		// Repeat loop but for edges
 		for (let id1 in data) {

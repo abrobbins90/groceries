@@ -63,6 +63,9 @@ class RecipeArea {
 			if (this.selectedMeal.edges.has(node)) return node // do nothing
 
 			this.graph.addEdge(this.selectedMeal, node)
+			// initialize quantity entry for ingredient
+			this.selectedMeal.info[node.id] = ""
+
 			// if the selected meal is on the menu, and it's being added to right now,
 			// update the grocery list
 			if (this.selectedMeal.inMenu) {
@@ -102,6 +105,9 @@ class RecipeArea {
 			return false
 		}
 		this.graph.removeEdge(this.selectedMeal, node)
+		// delete quantity entry in selected meal
+		delete this.selectedMeal.info[node.id]
+
 		if (node.edges.size === 0) {
 			this.graph.removeNode(node)
 		}
@@ -171,6 +177,11 @@ class RecipeArea {
 		if (TF === 0) { TF = !this.expanded }
 		windowManage(0, TF)
 		this.expanded = TF
+		if (TF) {
+			$("#recipe_area").addClass("expanded")
+		} else {
+			$("#recipe_area").removeClass("expanded")
+		}
 	}
 
 	saveInstructions() {
@@ -178,7 +189,7 @@ class RecipeArea {
 		if (mealNode) {
 			let instrStr = $('#instr_input').val()
 			mealNode.info.instructions = instrStr
-			server.send('update-node-info', {"id": mealNode.id, "info": mealNode.info}) // update server
 		}
 	}
+
 }

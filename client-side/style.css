@@ -17,7 +17,7 @@
 	top: 0px;
 	height: 30px;
 	width: 100%;
-	background-color: #005500;
+	background-color: #000;
 }
 #MainWindow {
 	position:absolute;
@@ -90,7 +90,7 @@
 #username {
 
 }
-#userpass {
+#password {
 	margin-bottom: 30px;
 }
 #LoginWindow > div {
@@ -129,7 +129,7 @@
 #logoutButton {
 	position:absolute;
 	right: 0px;
-	margin: 7px;
+	margin: 6px;
 	font-family: -apple-system, Verdana, Arial, sans-serif;
 	font-size: 15px;
 	color: #FFFFFF;
@@ -162,11 +162,11 @@
 	padding: 2px 14px;
 	transition: all .2s;
 }
-.Xable.box:hover > .box_contents {
+.Xable.box:hover > .box_contents, #recipe_area.expanded .Xable.box > .box_contents {
 	padding: 2px 4px;
 	transition: all .2s;
 }
-.Xable.box:hover > .XButton {
+.Xable.box:hover > .XButton, #recipe_area.expanded .Xable.box > .XButton{
 	width: 21px;
 	border-left: 1px solid #FFF;
 	transition: all .2s;
@@ -184,10 +184,15 @@
 	transition: all .2s;
 }
 
+
 /*box color overrides*/
 #recipe_area .box {
 	background-color: #F99;
 	border: 2px solid #F99;
+}
+#search_area .box {
+	background-color: #DDD;
+	border: 2px solid #DDD;
 }
 #menu_area .box {
 	background-color: #9BF;
@@ -198,21 +203,40 @@
 	border: 2px solid gold;
 }
 
-#recipe_area .Xable.box:hover > .XButton {
+#recipe_area .Xable.box:hover > .XButton, #recipe_area.expanded .Xable.box > .XButton {
 	border-left: 1px solid #F55;
 }
 #menu_area .Xable.box:hover > .XButton {
 	border-left: 1px solid #57F;
 }
 
-#search_area .box_selected {
-	border: 2px solid #444;
-}
 #menu_area .box_selected {
-	border: 2px solid #36F;
+	border: 2px solid #00F;
 }
 
-
+.ingr_quantity {
+	font-family: "Arial";
+	font-size: 15px;
+	text-align: right;
+	display: inline-block;
+	background-color: #F99;
+	outline: none;
+	width: 0px;
+	padding: 2px 0px;
+	border-width: 0px;
+	transition: all .2s;
+}
+#recipe_area.expanded .ingr_quantity {
+	width: 50px;
+	padding: 2px 0px 2px 4px;
+	border-radius: 4px;
+}
+.ingr_quantity::input-placeholder {
+	color: #555555;
+}
+.ingr_quantity::-webkit-input-placeholder {
+	color: #555555;
+}
 
 
 
@@ -243,14 +267,12 @@
 	flex-wrap: wrap;
 	padding-top: 10px;
 	border-bottom: 10px solid #FF0000;
+	overflow: auto;
 }
 #tag_entry {
 	flex: 2 0 100px;
 	justify-content: flex-start;
 	padding-top: 10px;
-}
-#recipe_desc {
-
 }
 
 /* Input closet*/
@@ -305,31 +327,34 @@
 
 /***** Recipe Instruction Panel *****/
 #instr_area {
-	flex: 1.5 0 250px;
+	flex: 1.5 0 300px;
 
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 
-	background-color: #FF5555;
-	border-left: 10px solid #F00;
+	background-color: #F00;
 	padding: 10px;
 }
 #recipe_area.expanded {
-	flex: .5 0 250px;
+	flex: .5 0 200px;
 }
 
 .instruction {
 	width: 100%;
 	height: 100%;
-	background-color: #FCB;
-	border: 4px solid #FCB;
+	background-color: #F99;
+	border: 4px solid #F99;
 	-webkit-border-radius: 4px; /* no idea why the browsers need this!  Modern browsers should do fine with border-radius */
 	outline: none;
 	font-family: "Arial";
 	font-size: 15px;
-	overflow: hidden;
+	overflow: auto;
 	resize: none;
+}
+.instruction:disabled {
+	background-color: #F00;
+	border: 4px solid #F00;
 }
 
 

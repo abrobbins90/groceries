@@ -26,13 +26,13 @@ function initTriggers() {
 	})
 	$('#username').keypress(function(event){
 		if( event.which === 13 /*Enter*/ ){
-			$('#userpass').focus()
+			$('#password').focus()
 		}
 	})
-	$('#loginButton').click(account.serverLogin.bind(account))
-	$('#userpass').keypress(function(event){
+	$('#loginButton').click(account.loginPress.bind(account))
+	$('#password').keypress(function(event){
 		if( event.which === 13 /*Enter*/ ){
-			account.serverLogin()
+			account.loginPress()
 		}
 	})
 	$('#guestButton').click(account.guestLogin.bind(account))
@@ -255,31 +255,6 @@ function generate() {
 	positionResults(foundItemList,1);
 }
 
-//////Subfunctions functions//////
-//returns updated specList. adds tally to appropriate ingr quantities based on newly added menu item
-function tallyIngredients(addedMeal,specList) {
-	for (var i in specList) {
-		if (addedMeal.connections.indexOf(specList[i][2])!=-1) {specList[i][3]++}
-	}
-	return specList
-}
-//returns new possibleMenuItems with the added Meal removed
-function removeMeal(possibleMenuItems,addedMeal) {
-	mealIndex=possibleMenuItems.indexOf(addedMeal);
-	possibleMenuItems.splice(mealIndex,1);
-	return possibleMenuItems
-}
-//given list of currently allowed menu items, remove any meal with a maxed out ingr, then return new list
-function removeMaxes(possibleMenuItems,specList) {
-	for (var i in specList) {
-		if (specList[i][3]>=specList[i][1]) { //if any ingr is at its max, remove it
-			possibleMenuItems=itemSearch(possibleMenuItems,1,specList[i][2],-1);
-		}
-	}
-	return possibleMenuItems
-}
-
-
 
 
 ////////////////////////////////////////////////Save all Data////////////////////////////////////////////////
@@ -312,47 +287,6 @@ function saveData() {
 
 	setCookie("itemStore",itemStore)
 }
-
-
-
-//Undo or Redo changes that have been made
-var placeInHistory=0;
-function historyChange(undoORredo) {
-	editing=-1;
-	deleteItems(1);
-	placeInHistory+=undoORredo;
-	var systemRead=savedHistory[placeInHistory];
-	if (systemRead!='') {
-		processLoadData(systemRead);
-	}
-	if (placeInHistory==savedHistory.length-1){document.getElementById("undoButton").disabled=true;}
-	else {document.getElementById("undoButton").disabled=false;}
-	if (placeInHistory==0){document.getElementById("redoButton").disabled=true;}
-	else {document.getElementById("redoButton").disabled=false;}
-	launchSearch();
-	showMenu();
-}
-
-function setCookie(cname,value) {
-	var exdays=36500;
-	var exdate=new Date();
-	exdate.setTime(exdate.getTime() + exdays*24*60*60*1000);
-	var cvalue=value + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
-	document.cookie=cname + "=" + cvalue;
-}
-function getCookie(cname) {
-
-	var name = cname + "=";
-	var ca = document.cookie.split(';');
-	for (var i=0; i<ca.length; i++) {
-		var c = ca[i].trim();
-		if (c.indexOf(name)==0) return c.substring(name.length,c.length);
-	}
-	return "";
-}
-
-
-
 
 */
 

@@ -8,7 +8,7 @@ class GroceryListArea {
 	}
 
 	// Go through all meal nodes and find what is on the menu
-	getMenu() {
+	getMenu() {alert("entering grocery.js getMenu()")
 		// Assemble the menu list (meal nodes)
 		this.menuCloset.destructBoxes()
 		let mealNodes = graph.getNodesByID_partial("meal", "")
@@ -25,7 +25,7 @@ class GroceryListArea {
 		// Clear the quantities for all the ingredients
 		let ingrNodes = graph.getNodesByID_partial("ingr", "")
 		for (let ingr of ingrNodes) {
-			ingr.quantity = 0;
+			ingr.grocQuantity = 0;
 		}
 
 		// Now go through menu and tally up ingredients
@@ -34,11 +34,12 @@ class GroceryListArea {
 			let meal = box.node
 			for (let node of meal.edges) {
 				if (node.type === "ingr") { // Only tally ingredients
-					node.quantity++
+					node.grocQuantity++
 					this.groceryCloset.add(node) // add to list
 				}
 			}
 		}
+		this.groceryCloset.updateBoxes() // ensure quantities are updated
 	}
 
 }

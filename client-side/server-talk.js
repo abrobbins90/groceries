@@ -37,8 +37,8 @@ class ServerTalk {
 		}
 
 		if (responseFunction !== false) {
-			let token = this.makeToken();
-			outData.token = token;
+			let token = this.makeToken()
+			outData.token = token
 			this.queries[token] = {}
 			this.queries[token].func = responseFunction
 			this.queries[token].outData = data // store outgoing data

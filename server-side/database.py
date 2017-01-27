@@ -21,7 +21,7 @@ class DB:
 			return False
 
 		# Check if passwords match
-		username = userData["username"]
+		username = userData["username"].lower()
 		userList = self.mongo.find_one("admin", { "_id": "users"})
 		userPassTry = userData["password"]
 		userPass = userList["u_" + username]
@@ -34,7 +34,7 @@ class DB:
 	def user_query(self, userData):
 		""" Compare provided userData to database to see if user exists """
 		# First check if username is valid
-		username = userData["username"]
+		username = userData["username"].lower()
 		if not self.is_valid_username(username):
 			return False
 		# See if username exists
@@ -51,7 +51,7 @@ class DB:
 			return False
 
 		# Add username and password
-		username = userData["username"]
+		username = userData["username"].lower()
 		userPass = userData["password"]
 		self.mongo.update("admin", { "_id" : "users"}, {"$set": {"u_" + username: userPass}})
 
@@ -228,7 +228,7 @@ class DB:
 		nodeid = self.getNodeId(userData["id"])
 		info = userData["info"]
 		self.mongo.update("nodes", {"_id": nodeid},
-			{ "$<<>>": {"info": info}})
+			{ "$set": {"info": info}})
 
 
 		return True
