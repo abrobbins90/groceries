@@ -17,6 +17,12 @@ class DB:
 	def user_login(self, userData):
 		""" Check credentials. If correct, login the user. Otherwise, reject """
 		# Check if username in userdata is valid
+		uMatch = self.verify_user_credentials(userData)
+		if uMatch:
+			self.username = username
+		return uMatch
+
+	def verify_user_credentials(self, userData):
 		if not self.user_query(userData):
 			return False
 
@@ -26,10 +32,10 @@ class DB:
 		userPassTry = userData["password"]
 		userPass = userList["u_" + username]
 		if userPassTry == userPass:
-			self.username = username
 			return True
 		else:
 			return False
+
 
 	def user_query(self, userData):
 		""" Compare provided userData to database to see if user exists """
@@ -99,6 +105,25 @@ class DB:
 	def logout(self):
 		# Logout
 		self.username = ""
+
+	# Fully delete a user account
+	def delete_user(self, userData):
+		# Check credientials. If a match, start deleting
+		uMatch = self.verify_user_credentials(userData)
+		if uMatch:
+			username = userData["username"].lower()
+			# Must delete (1) admin entry, (2)user entry, and (3) all user nodes
+			# 1) Remove field from users document in admin
+			self.mongo.update("admin", { "_id" : "users"},
+			{"$unset": {"u_" + username: ""}})
+
+			# 2) Delete the user's document
+			self.mongo.delete_many("users", {"_id": "u_" + username})
+
+			#3) Delete all documents from the nodes collection belonging to the user
+			self.mongo.delete_many("nodes", {"_id": "id_" + username})
+
+		return uMatch
 
 	###
 
