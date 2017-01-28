@@ -44,6 +44,12 @@ function initTriggers() {
 		}
 	})
 
+	/* Account Management / Bar */
+	$('#accountButton').click(function(){
+		$("#AccountPanel").toggle()
+	})
+
+
 
 	/* recipe area */
 	$('#create_meal_button').click(function(){
@@ -117,42 +123,50 @@ function initTriggers() {
 
 	$('#print_button').click(groceryArea.groceryCloset.print.bind(groceryArea.groceryCloset)) // weird error occurs here, but it still works?
 
-	$('#logoutButton').click(function(){
-		account.logout()
-	})
-
 }
 
 // Manage what windows are shown / hidden in html window
-function windowManage(account = false, recipeDesc = 0) {
-	// account    : (T/F) whether the account window will be shown
-	// recipeDesc : (T/F) whether the recipe description window will be shown
-	// Note a value besides T/F means "do nothing"
+function windowManage(cmds) {
+	// cmds : dictionary with the following options:
+	// 		account    : (T/F) whether the account window will be shown
+	// 		recipeDesc : (T/F) whether the recipe description window will be shown
 
 
-	if (account === true) {
-		$("#AccountWindow").show()
-		$("#AccountBar").hide()
-		$("#MainWindow").hide()
-	}
-	else if (account === false) {
-		$("#AccountWindow").hide()
-		$("#AccountBar").show()
-		$("#MainWindow").show()
+	if ("account" in cmds) {
+		if (cmds["account"]) {
+			$("#AccountWindow").show()
+			$("#AccountBar").hide()
+			$("#MainWindow").hide()
+		} else {
+			$("#AccountWindow").hide()
+			$("#AccountBar").show()
+			$("#MainWindow").show()
+		}
 	}
 
-	if (recipeDesc === true) {
-		$("#instr_area").show()
-		$("#search_area").hide()
-		//$("#menu_area").hide()
-		$("#recipe_area").addClass("expanded")
+	if ("recipeDesc" in cmds) {
+		if (cmds["recipeDesc"]) {
+			$("#instr_area").show()
+			$("#search_area").hide()
+			//$("#menu_area").hide()
+			$("#recipe_area").addClass("expanded")
+		} else {
+			$("#instr_area").hide()
+			$("#search_area").show()
+			//$("#menu_area").show()
+			$("#recipe_area").removeClass("expanded")
+		}
 	}
-	else if (recipeDesc === false) {
-		$("#instr_area").hide()
-		$("#search_area").show()
-		//$("#menu_area").show()
-		$("#recipe_area").removeClass("expanded")
+
+	if ("accountPanel" in cmds) {
+		if (cmds["accountPanel"]) {
+			$("#AccountPanel").show()
+		} else {
+			$("#AccountPanel").hide()
+		}
 	}
+
+
 }
 
 
@@ -296,6 +310,10 @@ $(document).ready(function(){
 	// jquery wait till dom loaded (see https://avaminzhang.wordpress.com/2013/06/11/document-ready-vs-window-load/ if any issues)
 	initGlobals()
 	initTriggers()
-	windowManage(true, false)
+	windowManage({
+		"account" : true,
+		"recipeDesc" : false,
+		"accountPanel" : false
+	})
 	$(".start_hidden").removeClass("start_hidden") // only need this class during page loading (to hide elements as they load)
 })

@@ -80,8 +80,12 @@ class UserAccount {
 		// Successfully logged in
 		let username = inData.username;
 		this.username = username;
+		$("#accountButton").val("Welcome " + username)
 
-		windowManage(false, false)
+		windowManage({
+			"account" : false,
+			"recipeDesc" : false,
+		})
 		$("#username").val("")
 		$("#password").val("")
 
@@ -91,7 +95,10 @@ class UserAccount {
 	}
 	guestLogin() {
 		// no actual logging in occurs.  local javascript runs as usual.
-		windowManage(false, false)
+		windowManage({
+			"account" : false,
+			"recipeDesc" : false,
+		})
 		this.guest = true
 		server.mute = true
 	}
@@ -105,10 +112,10 @@ class UserAccount {
 			"username" : username,
 			"password" : password,
 		}
-		server.send("add-user", outData, this.signupResponse)
+		server.send("add-user", outData, this.signupResponse.bind(this))
 	}
 	signupResponse(inData, outData) {
-		let success = inData.success
+		let success = inData.status
 		if (!success) {
 			$("#loginResponse").html("Username Invalid or Unavailable")
 			return
@@ -162,7 +169,7 @@ class UserAccount {
 		graph.wipe()
 		server.queries = {}
 		$("input[type='text']").val("")
-		windowManage(true) // show account window now
+		windowManage({"account" : true}) // show account window now
 	}
 
 }

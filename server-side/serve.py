@@ -78,12 +78,21 @@ class SocketHandler (WebSocketHandler):
 			response["status"] = exist
 
 		elif command == "add-user":
-			# Add a new user.
+			# Add a new user
 			success = self.db.add_user(data)
 			if success:
 				print 'Added user: ' + data['username']
 			else:
 				print 'Failed to add user: ' + data['username']
+			# Send response to user query
+			response["status"] = success
+		elif command == "delete-user":
+			#Delete a user's account
+			success = self.db.delete_user(data)
+			if success:
+				print 'Deleted user: ' + data['username']
+			else:
+				print 'Failed to delete user: ' + data['username']
 			# Send response to user query
 			response["status"] = success
 

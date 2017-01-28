@@ -1,6 +1,7 @@
 from mongo import Mongo
 import re
 import datetime
+from passlib.hash import argon2
 
 class DB:
 	""" This class holds on direct functionality for maintaining and processing
@@ -19,7 +20,7 @@ class DB:
 		# Check if username in userdata is valid
 		uMatch = self.verify_user_credentials(userData)
 		if uMatch:
-			self.username = username
+			self.username = userData["username"].lower()
 		return uMatch
 
 	def verify_user_credentials(self, userData):
@@ -30,11 +31,18 @@ class DB:
 		username = userData["username"].lower()
 		userList = self.mongo.find_one("admin", { "_id": "users"})
 		userPassTry = userData["password"]
-		userPass = userList["u_" + username]
-		if userPassTry == userPass:
-			return True
-		else:
-			return False
+		userPass = userList["u_" + username]["password"]
+		passType = userList["u_" + username]["pStorage"] # password storage type
+
+		# Based on password storage type, verify it
+		if passType == "plaintext":
+			TF = userPassTry == userPass
+			# Change the user's password to upgraded hash algorithm
+
+		elif passType == "argon2":
+			TF = argon2.verify(userPassTry, userPass)
+
+		return TF
 
 
 	def user_query(self, userData):
@@ -59,7 +67,13 @@ class DB:
 		# Add username and password
 		username = userData["username"].lower()
 		userPass = userData["password"]
-		self.mongo.update("admin", { "_id" : "users"}, {"$set": {"u_" + username: userPass}})
+		method = "argon2"
+		if method == "plaintext":
+			userDict = {"password" : userPass, "pStorage" : "plaintext"}
+		elif method == "argon2":
+			userDict = {"password" : argon2.hash(userPass), "pStorage" : "argon2"}
+
+		self.mongo.update("admin", { "_id" : "users"}, {"$set": {"u_" + username: userDict}})
 
 		# Now must also add a new collection to the database for this user
 		accountInfo = {}
