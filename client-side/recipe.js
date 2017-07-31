@@ -188,7 +188,9 @@ class RecipeArea {
 		let mealNode = this.selectedMeal
 		if (mealNode) {
 			let instrStr = $('#instr_input').val()
-			mealNode.info.instructions = instrStr
+			let info = mealNode.info
+			info.instructions = instrStr
+			mealNode.info = info
 		}
 	}
 
