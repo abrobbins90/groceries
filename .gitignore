@@ -4,4 +4,6 @@ client-side-built/
 *.pyc
 *.swp
 local-config.ini
+*.sublime-project
+*.sublime-workspace
 
