@@ -38,18 +38,18 @@ do
 done
 
 # python 3 + libraries
-"$package_manager" install python3
+"$package_manager" install python2
 "$package_manager" install wget
 wget https://bootstrap.pypa.io/get-pip.py
-python3 get-pip.py
+python2 get-pip.py
 py_deps=(tornado pytest pymongo git-lint passlib)
 for py_dep in $py_deps
 do
-	pip3 install "$py_dep"
+	pip2 install "$py_dep"
 done
 
 # report success (gulp_deps and py_deps not verified here)
-dep_names=(node npm gulp babel python3 wget pip3)
+dep_names=(node npm gulp babel python3 wget pip)
 for dep_name in $dep_names
 do
 	dep_installed=$(is_installed "$dep_name")
