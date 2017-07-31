@@ -3,4 +3,5 @@ client-side-built/
 *.orig
 *.pyc
 *.swp
+local-config.ini
 
