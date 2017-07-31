@@ -8,6 +8,9 @@ const gulp = require('gulp')
 
 const babel = require('gulp-babel') // depends on: babel-preset-es2015
 const autoprefixer = require('gulp-autoprefixer')
+const exec = require('child_process').exec
+const moment = require('moment')
+const prop_reader = require('properties-reader')
 
 
 /////////////////// GLOBALS ///////////////////
@@ -62,6 +65,20 @@ gulp.task('watch.html', function() {
 	var watch_html = gulp.watch(src_html, ['html'])
 	watch_html.on('change', log_standard)
 })
+
+gulp.task('dump', function(cb) {
+	// Dump a backup of the current database contents into the mongo-dumps folder.
+	var props = prop_reader('local-config.ini')
+	var location = props.get('computer_name')
+	var date = moment().format()
+	var command = 'DUMPDIR="mongo-dumps/'+location+'.'+date+'" && mkdir "$DUMPDIR" && mongodump --db groceries --out "$DUMPDIR"'
+	exec(command, function (err, stdout, stderr) {
+		console.log(stdout)
+		console.log(stderr)
+		cb(err)
+	})
+})
+
 
 gulp.task('watch', ['watch.js', 'watch.css', 'watch.html'])
 
