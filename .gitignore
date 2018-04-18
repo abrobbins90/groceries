@@ -6,4 +6,4 @@ client-side-built/
 local-config.ini
 *.sublime-project
 *.sublime-workspace
-
+ignore/
