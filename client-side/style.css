@@ -29,13 +29,14 @@
 }
 
 
-/*** Account Window ***/
+/*** Account Window (Login/Sign Up) ***/
 #AccountManagement {
 	width: 250px;
-	height: 350px;
-
-	border: 4px solid black;
-	border-radius: 4px;
+	height: 360px;
+	background-image: url("static/brown-bag.png");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	padding-top: 40px;
 
 	display: flex;
 	align-items: stretch;
@@ -52,17 +53,14 @@
 	padding: 8px 6px;
 	border: none;
 	transition: all .3s;
-	background-color: #DDDDDD;
 	color: #000000;
 	cursor: pointer;
 }
 .AccountTab:not(.tab_selected):hover {
-	background-color: #000000;
 	color: #DDDDDD;
 	z-index: 2;
 }
 .AccountTab.tab_selected {
-	background-color: #BBB;
 	color: #000;
 	cursor: default;
 }
@@ -73,8 +71,6 @@
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-
-	background-color: #BBB;
 }
 #LoginWindow > .loginText {
 	text-align: left;
