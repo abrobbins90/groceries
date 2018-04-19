@@ -11,3 +11,11 @@ To kick off mongo daemon on matt's macbook:
 
     /usr/local/opt/mongodb/bin/mongod --config /usr/local/etc/mongod.conf
 
+To build:
+
+On the server, gulp may throw an 'operation not permitted' error when you try to build.  This can be overrided with sudo:
+
+    sudo gulp
+
+For now I have no better solution.
+
