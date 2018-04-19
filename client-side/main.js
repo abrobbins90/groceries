@@ -125,6 +125,17 @@ function initTriggers() {
 
 }
 
+function initAccountWindow() {
+	// Any account init things needed...
+
+	// set random background for login screen
+	let image_fnames = ['maki.jpg', 'masala.jpg', 'naan.jpg', 'tomato.jpg', 'veggie.jpg']
+	let rand_index = Math.floor(Math.random() * image_fnames.length)
+	let image_url = 'static/backgrounds/' + image_fnames[rand_index]
+	// alert('setting')
+	$('#AccountWindow').css({'background-image': 'url(' + image_url + ')'})
+}
+
 // Manage what windows are shown / hidden in html window
 function windowManage(cmds) {
 	// cmds : dictionary with the following options:
@@ -310,6 +321,8 @@ $(document).ready(function(){
 	// jquery wait till dom loaded (see https://avaminzhang.wordpress.com/2013/06/11/document-ready-vs-window-load/ if any issues)
 	initGlobals()
 	initTriggers()
+	initAccountWindow()
+
 	windowManage({
 		"account" : true,
 		"recipeDesc" : false,

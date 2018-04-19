@@ -12,3 +12,7 @@ Recipes could have other things associated with them of course, like a rating, e
 So there could be some kind of organization based on whether a recipe is attached to you, a group, both, sharing and importing recipes into your personal recipe book.
 Then the server could store username information. This could be quite basic, since I'm not anticipating more than a couple people using this.
 We'd need a password or something as well. Don't think this would need to be too crazily secure...
+
+resources:
+GREAT food fotos at
+https://www.dreamstime.com/somegirl_latest-stock-photos_pg7
