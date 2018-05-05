@@ -63,7 +63,7 @@ function initTriggers() {
 	$('#remove_meal_button').click(function(){
 		recipe.removeMeal()
 	})
-	$(#expandRecipe).click(function(){
+	$('#expandRecipe').click(function(){
 		recipe.toggleExpand()
 	})
 	$('.node_input').keypress(function(event) { // instantaneous processing of input names
