@@ -357,9 +357,9 @@ div#ap_delete_account {
 	display: none;
 }
 #expandRecipe {
-	position:absolute;
-	right: 20px;
-	bottom: 20px;
+	position: absolute;
+    left: 170px;
+    top: 60px;
 }
 
 

@@ -65,6 +65,7 @@ function initTriggers() {
 	})
 	$('#expandRecipe').click(function(){
 		recipe.toggleExpand()
+		$('#expandRecipe').blur()
 	})
 	$('.node_input').keypress(function(event) { // instantaneous processing of input names
 		let key = event.which;
