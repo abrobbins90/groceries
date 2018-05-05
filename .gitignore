@@ -3,4 +3,7 @@ client-side-built/
 *.orig
 *.pyc
 *.swp
-
+local-config.ini
+*.sublime-project
+*.sublime-workspace
+ignore/

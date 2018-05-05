@@ -172,15 +172,17 @@ class RecipeArea {
 	}
 
 
-	expand(TF = 0) {
+	toggleExpand(TF = 0) {
 		// TF : (T/F) whether or not to expand the recipe section or not (0 means toggle)
 		if (TF === 0) { TF = !this.expanded }
 		windowManage({"recipeDesc" : TF})
 		this.expanded = TF
 		if (TF) {
 			$("#recipe_area").addClass("expanded")
+			$("#expandRecipe").val('<<')
 		} else {
 			$("#recipe_area").removeClass("expanded")
+			$("#expandRecipe").val('>>')
 		}
 	}
 
@@ -188,7 +190,9 @@ class RecipeArea {
 		let mealNode = this.selectedMeal
 		if (mealNode) {
 			let instrStr = $('#instr_input').val()
-			mealNode.info.instructions = instrStr
+			let info = mealNode.info
+			info.instructions = instrStr
+			mealNode.info = info
 		}
 	}
 

@@ -63,6 +63,9 @@ function initTriggers() {
 	$('#remove_meal_button').click(function(){
 		recipe.removeMeal()
 	})
+	$(#expandRecipe).click(function(){
+		recipe.toggleExpand()
+	})
 	$('.node_input').keypress(function(event) { // instantaneous processing of input names
 		let key = event.which;
 		let character = String.fromCharCode(key);
@@ -80,7 +83,6 @@ function initTriggers() {
 		recipe.keyPress(key, type, inName)
 
 	})
-	$("#meal_entry").dblclick(function(event) {recipe.expand()})
 
 	$("#instr_input").blur(function(event){recipe.saveInstructions()})
 
@@ -123,6 +125,17 @@ function initTriggers() {
 
 	$('#print_button').click(groceryArea.groceryCloset.print.bind(groceryArea.groceryCloset)) // weird error occurs here, but it still works?
 
+}
+
+function initAccountWindow() {
+	// Any account init things needed...
+
+	// set random background for login screen
+	let image_fnames = ['maki.jpg', 'masala.jpg', 'naan.jpg', 'tomato.jpg', 'veggie.jpg']
+	let rand_index = Math.floor(Math.random() * image_fnames.length)
+	let image_url = 'static/backgrounds/' + image_fnames[rand_index]
+	// alert('setting')
+	$('#AccountWindow').css({'background-image': 'url(' + image_url + ')'})
 }
 
 // Manage what windows are shown / hidden in html window
@@ -310,6 +323,8 @@ $(document).ready(function(){
 	// jquery wait till dom loaded (see https://avaminzhang.wordpress.com/2013/06/11/document-ready-vs-window-load/ if any issues)
 	initGlobals()
 	initTriggers()
+	initAccountWindow()
+
 	windowManage({
 		"account" : true,
 		"recipeDesc" : false,

@@ -1,15 +1,21 @@
+/* GLOBAL SETTINGS (like a Normalize) */
+html {
+	font-family: -apple-system, Helvetica, Arial, sans-serif;
+}
 
-/*////////////////
-// HTML Display //
-////////////////*/
 
+
+/* LOCAL SETTINGS */
 #AccountWindow {
 	height: 100%;
 	width: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: #CCC;
+	background-color: #CCC; /* backup color if background image fails to load */
+	background-image: none; /* javascript will populate an image here */
+	background-size: cover;
+	background-position: center center;
 	z-index: 5;
 }
 #AccountBar {
@@ -29,13 +35,15 @@
 }
 
 
-/*** Account Window ***/
+/*** Account Window (Login/Sign Up) ***/
 #AccountManagement {
 	width: 250px;
-	height: 350px;
-
-	border: 4px solid black;
-	border-radius: 4px;
+	height: 360px;
+	background-image: url("static/brown-bag.png");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	padding-top: 50px;
+	color: white;
 
 	display: flex;
 	align-items: stretch;
@@ -52,18 +60,13 @@
 	padding: 8px 6px;
 	border: none;
 	transition: all .3s;
-	background-color: #DDDDDD;
-	color: #000000;
 	cursor: pointer;
 }
 .AccountTab:not(.tab_selected):hover {
-	background-color: #000000;
-	color: #DDDDDD;
+	color: black;
 	z-index: 2;
 }
 .AccountTab.tab_selected {
-	background-color: #BBB;
-	color: #000;
 	cursor: default;
 }
 
@@ -73,35 +76,32 @@
 	align-items: center;
 	justify-content: center;
 	flex-direction: column;
-
-	background-color: #BBB;
 }
 #LoginWindow > .loginText {
 	text-align: left;
 
 	border-radius: 4px;
-	outline: none;
 	width: 200px;
 
-	font-family: "Arial";
 	font-size: 15px;
 	padding: 2px;
 }
-#username {
-
+#LoginWindow > div {
+	font-size: 15px;
+	padding: 2px;
+}
+#username, #password {
+	padding: 1px 6px 0px 6px !important;
+	border: 0px; /* presence of border gets rid of inset thingy */
+	height: 30px;
 }
 #password {
 	margin-bottom: 30px;
 }
-#LoginWindow > div {
-	font-family: "Arial";
-	font-size: 15px;
-	padding: 2px;
-}
 #loginResponse {
 	height: 15px;
 	margin: 5px;
-	color: red;
+	color: #0000ff;
 	font-style: italic;
 }
 #loginButton {
@@ -110,12 +110,10 @@
 
 .button {
 	display: inline-block; /* even if we hide buttons, they should be restored to this */
-	font-family: -apple-system, Verdana, Arial, sans-serif;
 	font-size: 12px;
 	height: 25px;
 	padding-left: 4px;
 	padding-right: 4px;
-	outline: none;
 	border: 2px solid #F4F4F4;
 	border-radius: 4px;
 	background-color: #F4F4F4;
@@ -165,7 +163,6 @@
 	width: 100%;
 	color: #000;
 	text-align: right;
-	font-family: -apple-system, Verdana, Arial, sans-serif;
 	font-size: 16px;
 	font-weight: bold;
 	padding: 10px;
@@ -196,7 +193,6 @@ div#ap_delete_account {
 }
 
 .box_contents {
-	font-family: "Arial";
 	font-size: 15px;
 	display: inline-block;
 	padding: 2px 14px;
@@ -217,7 +213,6 @@ div#ap_delete_account {
 	width: 0px;
 	border-left: 0px;
 	padding: 0px;
-	outline: none;
 	cursor: pointer;
 	font-size: 15px;
 	text-align: center;
@@ -258,12 +253,10 @@ div#ap_delete_account {
 	flex-shrink: 0;
 }
 .ingr_quantity {
-	font-family: "Arial";
 	font-size: 15px;
 	text-align: right;
 	display: inline-block;
 	background-color: #F99;
-	outline: none;
 	width: 0px;
 	padding: 2px 0px;
 	border-width: 0px;
@@ -323,10 +316,8 @@ div#ap_delete_account {
 	background-color: #FF9999;
 	border: 2px solid #FF9999;
 	border-radius: 4px;
-	outline: none;
 	width: 150px;
 
-	font-family: "Arial";
 	font-size: 15px;
 
 	margin: 2px 0px;
@@ -365,11 +356,16 @@ div#ap_delete_account {
 #remove_meal_button {
 	display: none;
 }
+#expandRecipe {
+	position:absolute;
+	right: 20px;
+	bottom: 20px;
+}
 
 
 /***** Recipe Instruction Panel *****/
 #instr_area {
-	flex: 1.5 0 300px;
+	flex: 3 0 300px;
 
 	display: flex;
 	flex-direction: column;
@@ -388,8 +384,6 @@ div#ap_delete_account {
 	background-color: #F99;
 	border: 4px solid #F99;
 	-webkit-border-radius: 4px; /* no idea why the browsers need this!  Modern browsers should do fine with border-radius */
-	outline: none;
-	font-family: "Arial";
 	font-size: 15px;
 	overflow: auto;
 	resize: none;
@@ -416,6 +410,7 @@ div#ap_delete_account {
 }
 
 .SearchTab {
+	font-family: "Times New Roman", Times, serif;
 	font-weight: bold;
 	text-align: center;
 	padding: 8px 6px;
@@ -474,7 +469,6 @@ div#ap_delete_account {
 #mealSearch {
 	display: block;
 	border: none;
-	outline: none;
 	padding: 4px;
 	border-radius: 4px;
 }
@@ -497,7 +491,6 @@ div#ap_delete_account {
 #ingrSearch {
 	display: block;
 	border: none;
-	outline: none;
 	padding: 4px;
 	border-radius: 4px;
 }
@@ -526,7 +519,6 @@ div#ap_delete_account {
 	width: 18px;
 	background-color: #DDDDDD;
 	color: #000000;
-	outline: none;
 	text-align: center;
 	font-weight: bold;
 }
@@ -574,7 +566,6 @@ div#ap_delete_account {
 	align-self: stretch;
 	line-height: 200%;
 	background-color: #1626FF;
-	font-family: "Arial";
 	color: #EEF;
 	text-align: center;
 }

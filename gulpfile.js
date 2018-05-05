@@ -8,6 +8,9 @@ const gulp = require('gulp')
 
 const babel = require('gulp-babel') // depends on: babel-preset-es2015
 const autoprefixer = require('gulp-autoprefixer')
+const exec = require('child_process').exec
+const moment = require('moment')
+const prop_reader = require('properties-reader')
 
 
 /////////////////// GLOBALS ///////////////////
@@ -17,9 +20,11 @@ const src_js_6 = 'client-side/*.js'
 const src_js_5 = 'client-side/lib/*.js'
 const src_css = 'client-side/**/*.css'
 const src_html = 'client-side/**/*.html'
+const src_static = 'client-side/static/**/*'
 
 const dest = 'client-side-built'
 const dest_js_5 = 'client-side-built/lib'
+const dest_static = 'client-side-built/static'
 
 const log_standard = function(event) {
 	console.log('File ' + event.path + ' was ' + event.type + ', running tasks...')
@@ -63,7 +68,30 @@ gulp.task('watch.html', function() {
 	watch_html.on('change', log_standard)
 })
 
-gulp.task('watch', ['watch.js', 'watch.css', 'watch.html'])
+gulp.task('static', function() {
+	gulp.src(src_static)
+		.pipe(gulp.dest(dest_static))
+})
+gulp.task('watch.static', function() {
+	var watch_static = gulp.watch(src_static, ['static'])
+	watch_static.on('change', log_standard)
+})
 
-gulp.task('default', ['js', 'css', 'html', 'watch'])
+gulp.task('dump', function(cb) {
+	// Dump a backup of the current database contents into the mongo-dumps folder.
+	var props = prop_reader('local-config.ini')
+	var location = props.get('computer_name')
+	var date = moment().format()
+	var command = 'DUMPDIR="mongo-dumps/'+location+'.'+date+'" && mkdir "$DUMPDIR" && mongodump --db groceries --out "$DUMPDIR"'
+	exec(command, function (err, stdout, stderr) {
+		console.log(stdout)
+		console.log(stderr)
+		cb(err)
+	})
+})
+
+
+gulp.task('watch', ['watch.js', 'watch.css', 'watch.html', 'watch.static'])
+
+gulp.task('default', ['js', 'css', 'html', 'static', 'watch'])
 
