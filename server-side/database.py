@@ -1,7 +1,9 @@
-from mongo import Mongo
 import re
 import datetime
+
 from passlib.hash import argon2
+
+from mongo import Mongo
 
 class DB:
 	""" This class holds on direct functionality for maintaining and processing

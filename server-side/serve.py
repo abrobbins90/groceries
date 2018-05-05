@@ -14,6 +14,7 @@ from database import DB
 
 IMAGE_DIRECTORY_PATH = "../images/"
 CLIENT_SIDE_DIRECTORY_PATH = "../client-side-built/"
+GROCERIES_PORT_NUMBER = 8243
 
 
 class SocketHandler (WebSocketHandler):
@@ -177,7 +178,7 @@ def make_app():
 def main():
 	enable_pretty_logging()
 	application = make_app()
-	application.listen(8243) # groceries port number
+	application.listen(GROCERIES_PORT_NUMBER)
 	IOLoop.current().start()
 
 if __name__ == "__main__":
