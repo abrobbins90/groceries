@@ -6,7 +6,7 @@ Access groceries [here](http://learnnation.org:8243)!
 This code is meant to collect recipes for various meals and allow convenient management of those recipes.
 
 
-## setting up mongo
+## set up mongo
 
 The following is specific to the FUJI server unless otherwise stated.
 
@@ -41,6 +41,12 @@ or similar.
 ## install
 Please refer to http://provemath.org/docs/install.html for directions on installing gulp and any dependencies.  That website is for PROVEMATH, but things should be similar for groceries.
 
+To install python2 packages:
+
+    sudo python2 -m pip install pymongo
+    
+and similar.
+
 
 ## build
 
@@ -50,3 +56,8 @@ On the server, gulp may throw an 'operation not permitted' error when you try to
 
 For now I have no better solution.
 
+## serve
+
+    cd server-side
+    python2 serve.py
+    
