@@ -44,7 +44,8 @@ Please refer to http://provemath.org/docs/install.html for directions on install
 To install python2 packages:
 
     sudo python2 -m pip install pymongo
-    
+    sudo python2 -m pip install argon2_cffi
+
 and similar.
 
 
