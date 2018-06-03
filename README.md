@@ -38,6 +38,10 @@ To restore the DB from an old backup:
 or similar.
 
 
+## install
+Please refer to http://provemath.org/docs/install.html for directions on installing gulp and any dependencies.  That website is for PROVEMATH, but things should be similar for groceries.
+
+
 ## build
 
 On the server, gulp may throw an 'operation not permitted' error when you try to build.  This can be overrided with sudo:
