@@ -63,6 +63,10 @@ function initTriggers() {
 	$('#remove_meal_button').click(function(){
 		recipe.removeMeal()
 	})
+	$('#expandRecipe').click(function(){
+		recipe.toggleExpand()
+		$('#expandRecipe').blur()
+	})
 	$('.node_input').keypress(function(event) { // instantaneous processing of input names
 		let key = event.which;
 		let character = String.fromCharCode(key);
@@ -80,7 +84,6 @@ function initTriggers() {
 		recipe.keyPress(key, type, inName)
 
 	})
-	$("#meal_entry").dblclick(function(event) {recipe.expand()})
 
 	$("#instr_input").blur(function(event){recipe.saveInstructions()})
 

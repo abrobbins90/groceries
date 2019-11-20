@@ -356,11 +356,16 @@ div#ap_delete_account {
 #remove_meal_button {
 	display: none;
 }
+#expandRecipe {
+	position: absolute;
+    left: 170px;
+    top: 60px;
+}
 
 
 /***** Recipe Instruction Panel *****/
 #instr_area {
-	flex: 1.5 0 300px;
+	flex: 3 0 300px;
 
 	display: flex;
 	flex-direction: column;
