@@ -7,3 +7,5 @@ local-config.ini
 *.sublime-project
 *.sublime-workspace
 ignore/
+package-lock.json
+
