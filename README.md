@@ -58,11 +58,14 @@ To install python2 deps, use `pip install -r requirements.txt`, since we have th
 
 ## build
 
+Make sure you are using the correct version of `node` and `gulp` (see above) before running the build:
+
+    gulp
+
 On the server, gulp may throw an 'operation not permitted' error when you try to build.  This can be overrided with sudo:
 
     sudo gulp
 
-For now I have no better solution.
 
 
 ## serve
