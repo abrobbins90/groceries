@@ -6,7 +6,10 @@ Access groceries [here](http://learnnation.org:8243)!
 This code is meant to collect recipes for various meals and allow convenient management of those recipes.
 
 
+
 ## set up mongo
+
+First install MongoDB.  For me, the output of `mongod --version` is **db version v3.0.4**.
 
 The following is specific to the FUJI server unless otherwise stated.
 
@@ -34,19 +37,23 @@ To kick off mongo daemon on *matt's macbook*:
 To restore the DB from an old backup:
 
     mongorestore mongo-dumps/guava-server.2018-05-25T21:38:54+00:00
-    
+
 or similar.
 
 
+
 ## install
+
+Since we are using NodeJS, I recommend installing `nvm`.  Then install and enable node v11.15.0.  The output of `nvm which current` is **/path/to/.nvm/versions/node/v11.15.0/bin/node**.
+
+Then use `npm` to install gulp.  The output of `gulp --version` contains **Local version: 3.9.1**.
+
 Please refer to http://provemath.org/docs/install.html for directions on installing gulp and any dependencies.  That website is for PROVEMATH, but things should be similar for groceries.
 
-To install python2 packages:
+For our python backend, the output of `python --version` is **Python 2.7.12**.
 
-    sudo python2 -m pip install pymongo
-    sudo python2 -m pip install argon2_cffi
+To install python2 deps, use `pip install -r requirements.txt`, since we have the version info there.
 
-and similar.
 
 
 ## build
@@ -57,8 +64,15 @@ On the server, gulp may throw an 'operation not permitted' error when you try to
 
 For now I have no better solution.
 
+
 ## serve
+
+This serves BOTH the front-end HTML/JS/CSS stuff as well as the backend Python stuff.
 
     cd server-side
     python2 serve.py
-    
+
+Then you can visit the site at http://localhost:8243/index.html
+
+
+
