@@ -73,12 +73,6 @@ class ServerTalk {
 	// Generate a random token to identify query requests/responses
 	makeToken() {
 		// token will be 16 characters long
-		let length = 16;
-		let text = "";
-		let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-		for(let i = 0; i < length; i++) {
-			text += possible.charAt(Math.floor(Math.random() * possible.length));
-		}
-		return text;
+		return getRandomString(16);
 	}
 }
