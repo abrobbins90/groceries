@@ -107,11 +107,11 @@ class RecipeCloset extends Closet {
 	}
 
 	// save quantity entered for an ingredient
-	saveIngrQuantity(box, $quan) {
+	saveIngrQuantity(box, $quantity) {
 		let ingrNode = box.node
 		let mealNode = recipe.selectedMeal
 		let info = mealNode.info
-		info[ingrNode.id] = $quan.val()
+		info[ingrNode.id]['quantityDict'] = getQuantityDictFromUserInputtedString($quantity.val())
 		mealNode.info = info
 	}
 
@@ -287,7 +287,9 @@ class Box {
 		// Update quantity if need be
 		let $q = this.$el.children(".ingr_quantity")
 		if ($q.length !== 0) {
-			$q.val(recipe.selectedMeal.info[this.node.id])
+			let quantity = recipe.selectedMeal.info[this.node.id]['quantity']
+			let quantityString = quantity
+			$q.val(quantityString)
 		}
 
 		// Update highlighting
@@ -300,9 +302,10 @@ class Box {
 			// update
 		}
 
-		if (this.$el.hasClass("menuIngr_box") && this.node.grocQuantity > 1) {
+		if (this.$el.hasClass("menuIngr_box")) {
+			// skip this step entirely if the quantity dict is merely { '': 1 }
 			// if multiple entries, bold and include x#
-			string = string + "<span>" + " (" + this.node.grocQuantity + ")</span>"
+			string = string + "<span>" + " (" + this.node.getQuantityString() + ")</span>"
 		}
 		return string
 	}

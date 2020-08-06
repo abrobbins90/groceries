@@ -63,8 +63,15 @@ class RecipeArea {
 			if (this.selectedMeal.edges.has(node)) return node // do nothing
 
 			this.graph.addEdge(this.selectedMeal, node)
-			// initialize quantity entry for ingredient
-			this.selectedMeal.info[node.id] = ""
+
+			// initialize an info dictionary for the ingredient within this meal
+			this.selectedMeal.info[node.id] = {}
+
+			// the ingr quantity is a dictionary where keys are units, and values are amounts (numbers)
+			this.selectedMeal.info[node.id]['quantityDict'] = {
+				// the key '' indicates a unitless amount
+				'': 1,
+			}
 
 			// if the selected meal is on the menu, and it's being added to right now,
 			// update the grocery list
@@ -105,9 +112,9 @@ class RecipeArea {
 			return false
 		}
 		this.graph.removeEdge(this.selectedMeal, node)
-		// delete quantity entry in selected meal
+		// delete all info about the node specific to the meal
 		delete this.selectedMeal.info[node.id]
-
+		// if the node isn't connected to anything, we can delete it entirely
 		if (node.edges.size === 0) {
 			this.graph.removeNode(node)
 		}

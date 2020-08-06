@@ -99,7 +99,6 @@ class Node {
 	// A node possesses various properties, as well as edges to other nodes
 	// This node is meant to be a superclass
 	constructor(shownName = '', type) {
-
 		// Default Initializations
 		this.type = type // Declare node type: "meal", "ingr", or "desc"
 		this.edges = new Set()
@@ -164,7 +163,6 @@ class IngrNode extends Node {
 	// Define a subclass of node specific to ingrs
 	constructor(shownName) {
 		super(shownName, 'ingr')
-		this.grocQuantity = 0
 	}
 }
 

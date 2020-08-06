@@ -22,14 +22,7 @@ class GroceryListArea {
 
 	// Collect grocery list based on the menu
 	updateGroceryList() {
-		// Clear the quantities for all the ingredients
-		let ingrNodes = graph.getNodesByID_partial("ingr", "")
-		for (let ingr of ingrNodes) {
-			ingr.grocQuantity = {
-				// unit (string) -> quantity (whole number)
-				// intentionally a blank dictionary at first
-			};
-		}
+		console.log('update grocery list')
 
 		// Now go through menu and tally up ingredients
 		this.groceryCloset.destructBoxes()
@@ -37,15 +30,7 @@ class GroceryListArea {
 			let meal = box.node
 			for (let node of meal.edges) {
 				if (node.type === "ingr") { // Only tally ingredients
-					// todo: detect units
-					let unit = ''
-					// todo: detect quantity
-					let quantity = 5
-					// add quantity to dictionary
-					if (!node.grocQuantity.hasOwnProperty(unit)) {
-						node.grocQuantity[unit] = 0
-					}
-					node.grocQuantity[unit] += quantity
+					calculateAndSetGroceryQuantities(node)
 					// add node to list
 					this.groceryCloset.add(node)
 				}
@@ -55,3 +40,17 @@ class GroceryListArea {
 	}
 
 }
+
+function calculateAndSetGroceryQuantities(ingrNode) {
+	// `ingrNode` is an ingredient node.
+	// todo: detect units
+	let unit = ''
+	// todo: detect quantity
+	let quantity = 5
+	// add quantity to dictionary
+	if (!ingrNode.quantityDict.hasOwnProperty(unit)) {
+		ingrNode.quantityDict[unit] = 0
+	}
+	ingrNode.quantityDict[unit] += quantity
+}
+

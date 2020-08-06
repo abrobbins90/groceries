@@ -1,4 +1,4 @@
-//Class to handle user account
+// Class to handle user account
 
 class UserAccount {
 	constructor(graph) {

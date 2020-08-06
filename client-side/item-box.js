@@ -1,4 +1,4 @@
-// an CoordBox is like a Box, but with a position and sizing (for the graph animation)
+// A CoordBox is like a Box, but with a position and sizing (for the graph animation)
 
 
 class CoordBox extends Box {
