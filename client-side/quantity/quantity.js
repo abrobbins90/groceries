@@ -89,8 +89,21 @@ function getUnit(user_inputted_string) {
 
 function getAmountString(amount, unit) {
     // Given a unit and an amount, outputs a stringified amount.
-    // The displayed about will show at most 2 decimal places.
-    return `${amount}`
+    const amount_string = `${amount}`
+    // The displayed about will show AT MOST 2 decimal places, but not unecessarily.
+    const found = amount_string.match(/\./)
+    if (found === null) {
+        return amount_string
+    }
+    else {
+        const two_places_amount = amount.toFixed(2)
+        let string = `${two_places_amount}`
+        // trim any trailing zeros (or the decimal place), since we don't want them unecessarily
+        while (_.endsWith(string, '0') || _.endsWith(string, '.')) {
+            string = string.substr(0, string.length - 1)
+        }
+        return string
+    }
 }
 
 function getUnitString(amount, unit) {
@@ -157,6 +170,7 @@ function constructQuantityFromUserInputtedString(user_inputted_string) {
         unitToAmount: {[unit]: amount}
     }
     const quantity = new Quantity(dict)
+    return quantity
 }
 
 function constructQuantityFromObjects(quantity_objects) {
@@ -164,7 +178,11 @@ function constructQuantityFromObjects(quantity_objects) {
     // Given an iterable of Quantity objects, create a new Quantity object which combines them.
     const unit_to_amount_dicts = _.map(quantity_objects, 'unitToAmount')
     // merge the dictionaries, adding the values together when the keys match
-    const merged_dict = _.mergeWith({}, ...unit_to_amount_dicts, (amountA, amountB) => amountA + amountB)
+    const combiner = (amountA, amountB) => {
+        // undefined amounts are the same as 0
+        return (amountA || 0) + (amountB || 0)
+    }
+    const merged_dict = _.mergeWith({}, ...unit_to_amount_dicts, combiner)
     const quantity = new Quantity({unitToAmount: merged_dict})
     return quantity
 }
