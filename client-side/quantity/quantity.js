@@ -1,7 +1,7 @@
 /*
 The 'quantity' data model and class are stored here.
 */
-
+console.log('quantity.js')
 
 /*
 ## Quantity Data Model:
