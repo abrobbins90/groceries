@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "The official repository for the 'groceries' project.",
   "main": "gulpfile.js",
+  "browserslist": [
+    "defaults",
+    "not IE 11",
+    "not IE_Mob 11"
+  ],
   "dependencies": {
   },
   "devDependencies": {
