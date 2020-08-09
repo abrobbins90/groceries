@@ -1,3 +1,5 @@
+console.log('main.js')
+alert('main.js')
 //////////////////// GLOBALS ////////////////////
 let account = undefined
 let graph = undefined
@@ -9,7 +11,9 @@ let socket = undefined
 
 
 /////////////////// FUNCTIONS ///////////////////
-function initGlobals() {
+function initGlobals() {//
+	console.log('initGlobals')
+	alert('initGlobals')
 	account = new UserAccount()
 	graph = new Graph()
 	recipe = new RecipeArea(graph)
