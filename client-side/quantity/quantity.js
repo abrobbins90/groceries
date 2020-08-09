@@ -16,7 +16,9 @@ For example, the user may have typed "2 heads of broccoli".  For example, "1/3 c
 
 For a single thing that a user has typed, the dictionary will be a singleton.  But when we combine together ingredients, the dictionary may have more keys.
 */
+const _ = require('lodash')
 
+const convert = require('./convert')
 
 
 // Atomic Quantity Helper Functions:
@@ -41,7 +43,7 @@ function getAmount(user_inputted_string) {
     // Uses getUserInputtedAmountString and then processes it into a JavaScript decimal.  For example, function 2` or function 0.33`.
     const user_inputted_amount = getUserInputtedAmountString(user_inputted_string)
     const trimmed_amount = user_inputted_amount.trim()
-    if (timmed_amount === '') {
+    if (trimmed_amount === '') {
         // If no amount is found, we default to 1.  This makes sense for inputs like "apple" or "stick of butter".
         return 1
     }
@@ -76,7 +78,7 @@ function getUnit(user_inputted_string) {
         return ''
     }
     else {
-        const standardized_unit = convertUnitToPlural(trimmed_unit)
+        const standardized_unit = convert.unitToPluralUnit(trimmed_unit)
         return standardized_unit
     }
 }
@@ -88,7 +90,7 @@ function getUnit(user_inputted_string) {
 function getAmountString(amount, unit) {
     // Given a unit and an amount, outputs a stringified amount.
     // The displayed about will show at most 2 decimal places.
-    return `{amount}`
+    return `${amount}`
 }
 
 function getUnitString(amount, unit) {
@@ -100,17 +102,17 @@ function getUnitString(amount, unit) {
         return unit
     }
     else if (amount === 1) {
-        return convertUnitToSingular(unit)
+        return convert.unitToSingularUnit(unit)
     }
     else {
-        return convertUnitToPlural(unit)
+        return convert.unitToPluralUnit(unit)
     }
 }
 
 function getAmountUnitString(amount, unit) {
     // Helper function.  Given a unit and an amount, output the correct pluralized formatted string.
     // For example, `"2 heads"`.  For example, `"1/3 cups"`.
-    return `{getAmountString(amount, unit)} {getUnitString(amount, unit)}`
+    return `${getAmountString(amount, unit)} ${getUnitString(amount, unit)}`
 }
 
 
@@ -165,6 +167,21 @@ function constructQuantityFromObjects(quantity_objects) {
     const merged_dict = _.mergeWith({}, ...unit_to_amount_dicts, (amountA, amountB) => amountA + amountB)
     const quantity = new Quantity({unitToAmount: merged_dict})
     return quantity
+}
+
+
+// exports for jest
+module.exports = {
+    getUserInputtedAmountString,
+    getAmount,
+    getUserInputtedUnit,
+    getUnit,
+    getAmountString,
+    getUnitString,
+    getAmountUnitString,
+    Quantity,
+    constructQuantityFromUserInputtedString,
+    constructQuantityFromObjects,
 }
 
 
