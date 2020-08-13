@@ -26,9 +26,14 @@ class GroceryListArea {
 
 		// Now go through menu and tally up ingredients
 		this.groceryCloset.destructBoxes()
+		// const quantities = getAllQuantities()
+		// const ingredient_ids = getAllIngredientIds()
+
+
 		for (let box of this.menuCloset.boxes) {
 			let meal = box.node
 			for (let node of meal.edges) {
+				alert('node is ' + node)
 				if (node.type === "ingr") { // Only tally ingredients
 					calculateAndSetGroceryQuantities(node)
 					// add node to list
@@ -36,21 +41,35 @@ class GroceryListArea {
 				}
 			}
 		}
+
+
+
 		this.groceryCloset.updateBoxes() // ensure quantities are updated
 	}
 
 }
 
-function calculateAndSetGroceryQuantities(ingrNode) {
-	// `ingrNode` is an ingredient node.
-	// todo: detect units
-	let unit = ''
-	// todo: detect quantity
-	let quantity = 5
-	// add quantity to dictionary
-	if (!ingrNode.quantityDict.hasOwnProperty(unit)) {
-		ingrNode.quantityDict[unit] = 0
-	}
-	ingrNode.quantityDict[unit] += quantity
-}
+
+
+		// const boxes = this.menuCloset.boxes
+		// const meals = box.node for box in boxes
+		// const nodes = node for node in meal.edges for meal in meals
+		// const ingrNodes = node for node in nodes if node.type === 'ingr'
+		// const ingrIds = node.id for node in ingrNodes
+		// const ingrIdToQuantity
+
+
+
+		// 	for (let node of meal.edges) {
+		// 		if (node.type === "ingr") { // Only tally ingredients
+		// 			const ingr_id = node.id ?
+
+		// 			const quantity =
+		// 			calculateAndSetGroceryQuantities(node)
+		// 			// add node to list
+		// 			this.groceryCloset.add(node)
+		// 		}
+		// 	}
+		// }
+
 

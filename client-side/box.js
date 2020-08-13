@@ -57,7 +57,9 @@ class Closet {
 	}
 
 	getBoxByNode(node) {
+
 		for( let box of this.boxes ) {
+			console.log('ok')
 			if( box.node === node ) return box
 		}
 		return false
@@ -111,7 +113,8 @@ class RecipeCloset extends Closet {
 		let ingrNode = box.node
 		let mealNode = recipe.selectedMeal
 		let info = mealNode.info
-		info[ingrNode.id]['quantityDict'] = getQuantityDictFromUserInputtedString($quantity.val())
+		const quantity = q.constructQuantityFromUserInputtedString($quantity.val())
+		info[ingrNode.id]['quantity'] = quantity
 		mealNode.info = info
 	}
 
