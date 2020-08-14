@@ -1,0 +1,54 @@
+{
+  "name": "groceries",
+  "version": "1.0.0",
+  "description": "The official repository for the 'groceries' project.",
+  "main": "gulpfile.js",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "child_process": "^1.0.2",
+    "exec": "^0.2.1",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^7.0.1",
+    "gulp-babel": "^8.0.0",
+    "jest": "^26.2.2",
+    "moment": "^2.27.0",
+    "properties-reader": "^2.0.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abrobbins90/groceries.git"
+  },
+  "keywords": [
+    "groceries",
+    "grocery",
+    "recipe",
+    "recipes",
+    "food",
+    "meal",
+    "ingredient",
+    "menu",
+    "organizer"
+  ],
+  "author": {
+    "name": "Andrew Robbins"
+  },
+  "contributors": [
+    {
+      "name": "Matthew Lancellotti",
+      "email": "mvlancellotti@gmail.com",
+      "url": "http://matthewlancellotti.com/"
+    }
+  ],
+  "license": "UNLICENSED",
+  "private": true,
+  "bugs": {
+    "url": "https://github.com/abrobbins90/groceries/issues"
+  },
+  "homepage": "https://github.com/abrobbins90/groceries#readme"
+}
