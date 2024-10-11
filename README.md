@@ -9,7 +9,8 @@ This code is meant to collect recipes for various meals and allow convenient man
 
 ## quick notes
 - Groceries server and MongoDB are both on the FUJI server (159.89.229.227).
-- 
+- learnnation.org is the FUJI server.
+
 
 ## set up mongo
 
