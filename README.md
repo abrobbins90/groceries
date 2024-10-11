@@ -7,6 +7,10 @@ This code is meant to collect recipes for various meals and allow convenient man
 
 
 
+## quick notes
+- Groceries server and MongoDB are both on the FUJI server (159.89.229.227).
+- 
+
 ## set up mongo
 
 First install MongoDB.  For me, the output of `mongod --version` is **db version v3.0.4**.
@@ -36,7 +40,7 @@ To kick off mongo daemon on *matt's macbook*:
 
 To restore the DB from an old backup:
 
-    mongorestore mongo-dumps/guava-server.2018-05-25T21:38:54+00:00
+    mongorestore mongo-dumps/fuji-server.2024-08-31T12:26:08-04:00
 
 or similar.
 
