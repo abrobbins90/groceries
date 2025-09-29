@@ -332,4 +332,5 @@ $(document).ready(function(){
 		"accountPanel" : false
 	})
 	$(".start_hidden").removeClass("start_hidden") // only need this class during page loading (to hide elements as they load)
+	$("#username").focus() // Put the cursor in the username input box so that the user can immediately start typing without having to click in the box.
 })
